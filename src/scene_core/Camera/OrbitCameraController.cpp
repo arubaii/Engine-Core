@@ -23,7 +23,7 @@ void OrbitCameraController::Update(float dt, Input& input)
 	const float maxRadius		     = 100000.0f;
 	// TODO: Set min and max radius proportional to the size the pivot object
 
-	if (input.IsMousePressed(Mouse::Left))
+	if (input.IsMousePressed(Mouse::Left) && !input.IsInUI())
 	{
 		m_Yaw    += mouse.x * mouseSensitivity;
 		m_Pitch  -= mouse.y * mouseSensitivity;

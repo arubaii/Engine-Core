@@ -150,7 +150,7 @@ Ref<Asset> TextureLoader::LoadAsset(const AssetMetaData& meta)
 	texture->Height = static_cast<uint32_t>(height);
 
 	// Repo currently has no Texture class / GPU texture creation path,
-	// RendererID must be created somewhere else (renderer) until  add it.
+	// RendererID must be created somewhere else (renderer) until added.
 	// texture->RendererID = ...
 
 	stbi_image_free(data);

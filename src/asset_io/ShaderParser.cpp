@@ -5,8 +5,7 @@
 
 ShaderSource ShaderParser::Parse(const std::filesystem::path& path)
 {
-	// TEMP STUB
-	// Later: support #type vertex / #type fragment
+	// TODO: support #type vertex / #type fragment
 
 	std::ifstream file(path);
 	if (!file)

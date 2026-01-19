@@ -1,6 +1,8 @@
 #pragma once
 #include <imgui.h>
 #include <glm/glm.hpp>
+#include "utils/SmartPtrs.h"
+
 
 struct DebugData
 {
@@ -10,6 +12,8 @@ struct DebugData
     glm::vec3 cameraPos;
     float pitch, yaw;
     float greyScale = 0.1f;
+    bool showGrid = true;
+
 };
 
 

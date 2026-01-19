@@ -13,7 +13,6 @@
 #include "scene_core/Camera/OrbitCameraController.h"
 #include "math/RayHit.h"
 #include "math/Intersect.h"
-#include "scene_core/surface/SurfaceMesh.h"
 
 
 
@@ -37,6 +36,7 @@ public:
 
 	void Update(float dt, Input& input);
 	void Render(Renderer& renderer);
+
 
 	// ============ Entity Configuration ============
 	Entity InitEntity(const std::string& name = "Unnamed Entity");
@@ -63,11 +63,11 @@ public:
 	float	  GetMainCameraPitch();
 	float	  GetMainCameraYaw();
 
-	SurfaceSampling ComputeSamplingFromCamera(const PerspectiveCamera& cam);
 private:
 	Window&   m_Window;
 	CameraProps m_CameraProps;
 
+	glm::vec2 m_Viewport;
 
 	// ============ Camera Configuration ============
 	std::vector<Scope<CameraController>> m_CameraControllers;
@@ -94,6 +94,7 @@ private:
 	Ref<Shader> m_CrosshairShader;
 	Ref<Shader> m_LightShader;
 	Ref<Shader> m_PhongShader;
+	Ref<Shader> m_OutlineShader;
 
 	VertexBufferLayout m_CrosshairLayout;
 	VertexBuffer m_CrosshairVB;
@@ -101,12 +102,14 @@ private:
 
 	glm::vec3 CROSSHAIR_COLOR = glm::vec3(1.0f);
 
-public:
-	// Camera, see perspective camera for defaults --> refactor later
-	static constexpr glm::vec3 DefaultPosition{ 0.0f, 0.0f, 3.0f };
-	static constexpr float     DefaultPitch = 0.0f;
-	static constexpr float     DefaultYaw   = -90.0f;
 
+
+public:
+	static constexpr glm::vec3 DefaultCameraPosition{ 46.14f, 38.95f, 45.98f };
+	static constexpr float     DefaultPitch = -20.19f;
+	static constexpr float     DefaultYaw   = -135.68f;
+
+	bool m_ShowGrid = true;
 
 };
 

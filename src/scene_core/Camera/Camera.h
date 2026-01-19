@@ -14,7 +14,8 @@
 			- Handles user I/O
 
 */
-class Camera
+class
+Camera
 {
 public:
 	virtual ~Camera() = default;

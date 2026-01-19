@@ -35,7 +35,7 @@ void Application::Run()
 		m_Window->PollEvents();
 
 
-		m_Input.Update(m_DeltaTime);
+		m_Input.Update();
 		m_Scene->Update(m_DeltaTime, m_Input);
 		glClearColor(m_DebugData.greyScale, m_DebugData.greyScale, m_DebugData.greyScale, 1.0f);
 		m_Renderer->Clear();
@@ -49,6 +49,7 @@ void Application::Run()
 		m_DebugData.cameraPos  = m_Scene->GetMainCameraPos();
 		m_DebugData.pitch      = m_Scene->GetMainCameraPitch();
 		m_DebugData.yaw        = m_Scene->GetMainCameraYaw();
+
 
 		DebugPanel::Render(m_DebugData);
 		m_ImGuiLayer->EndFrame();

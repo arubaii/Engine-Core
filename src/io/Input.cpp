@@ -9,13 +9,12 @@ void Input::Init(GLFWwindow* window)
 {
 	m_Window = window;
 	s_Instance = this;
-	// glfwSetWindowUserPointer(m_Window, this);
 	glfwSetCursorPosCallback(m_Window, MouseCallback);
 	glfwSetMouseButtonCallback(m_Window, MouseButtonCallback);
 	glfwSetScrollCallback(m_Window, ScrollCallback);
 }
 
-void Input::Update(double deltaTime)
+void Input::Update()
 {
 
 	// Escape enables cursor
@@ -29,7 +28,7 @@ void Input::Update(double deltaTime)
 		s_Mouse.first = true;
 	}
 
-	// Disabled keyboard input when clicking into the ImGUI window
+	// Update mouse state
 	for (int b = 0; b <= GLFW_MOUSE_BUTTON_LAST; ++b)
 	{
 		bool isDown = glfwGetMouseButton(m_Window, b) == GLFW_PRESS;
@@ -39,9 +38,31 @@ void Input::Update(double deltaTime)
 		s_Mouse.down[b] = isDown;
 	}
 
-	if (s_Mouse.releasedOnce[GLFW_MOUSE_BUTTON_LEFT])
-		s_KeyboardEnabled = !ImGui::GetIO().WantCaptureKeyboard;
+	// UI activity state
+	ImGuiIO& io = ImGui::GetIO();
+	if (s_Mouse.pressedOnce[GLFW_MOUSE_BUTTON_LEFT])
+	{
+		if (io.WantCaptureMouse)
+		{
+			m_IsInUI = true;
+			s_KeyboardEnabled = false;
+		}
+		else
+		{
+			m_IsInUI = false;
+			s_KeyboardEnabled = true;
+		}
+	}
+	// ====================================================
 
+	// When not in UI → keyboard always enabled
+	if (!m_IsInUI)
+		s_KeyboardEnabled = true;
+}
+
+bool Input::IsInUI() const
+{
+	return m_IsInUI;
 }
 
 bool Input::IsKeyPressed(int key) const
@@ -124,7 +145,6 @@ void Input::MouseButtonCallback(GLFWwindow* window, int button, int action, int 
 
 }
 
-// MouseScroll Input::s_Scroll{};
 void Input::ScrollCallback(GLFWwindow*, double xoffset, double yoffset)
 {
 	s_Scroll.X = xoffset;  // Horizontal scroll

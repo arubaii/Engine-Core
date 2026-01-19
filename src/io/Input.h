@@ -9,7 +9,10 @@ class Input
 {
 public:
 	void Init(GLFWwindow* window);
-	void Update(double deltaTime);
+	void Update();
+
+	bool IsInUI() const;
+
 	static Input* s_Instance;
 
 	bool IsKeyPressed		(int key)		  const;
@@ -60,7 +63,7 @@ private:
 		MouseScroll() : X(0.0), Y(0.0) {}
 	};
 
-
+	bool m_IsInUI = false;
 private:
 	GLFWwindow* m_Window = nullptr;
 	inline static MouseState  s_Mouse;

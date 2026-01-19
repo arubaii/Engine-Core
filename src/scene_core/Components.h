@@ -4,10 +4,14 @@
 #include <glm/gtc/matrix_transform.hpp>
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/quaternion.hpp>
+
+
 #include "Camera/PerspectiveCamera.h"
 #include "renderer_core/IndexBuffer.h"
 #include "renderer_core/Mesh.h"
 #include "renderer_core/VertexArray.h"
+#include "utils/UUID.h"
+#include "utils/SmartPtrs.h"
 
 
 struct TransformComponent
