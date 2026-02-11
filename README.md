@@ -34,7 +34,5 @@ Currently working on
 
 Showcase: 
 
-<video controls width="1100">
-  <source src="assets/media/engine_showcase.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
+
+[Watch the engine showcase](https://www.dropbox.com/scl/fi/utqbizelglxb73pumgol6/engine_showcase.mp4?rlkey=wkrip3kqnec3h1t62uzubdo3b&st=alp0ipyk&dl=0)
