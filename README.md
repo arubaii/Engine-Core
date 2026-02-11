@@ -9,6 +9,47 @@ Clone with:
 ```bash
 git clone --recurse-submodules https://github.com/arubaii/Engine-Core.git
 ```
+
+## Building
+
+**macOS**
+
+Required libraries 
+```bash
+brew install cmake ninja glfw glm glew
+```
+
+Build
+```bash
+cd Engine-Core
+cmake -B cmake-build-debug -G Ninja
+cmake --build cmake-build-debug
+```
+--- 
+
+**Windows**
+
+Install `vcpkg` (requires MVSC)
+```powershell
+git clone https://github.com/microsoft/vcpkg.git
+cd vcpkg
+.\bootstrap-vcpkg.bat
+```
+
+Required libraries
+```powershell
+.\vcpkg install glfw3:x64-windows glew:x64-windows glm:x64-windows
+```
+
+Build
+```powershell
+cd Engine-Core
+cmake -B cmake-build-debug -G Ninja -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake
+cmake --build cmake-build-debug
+```
+
+---
+
 The scene adopts an ECS for entity management, as opposed to an object-oriented hierarchy. This allows for 
 easy runtime entity configuration. 
 
