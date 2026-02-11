@@ -14,7 +14,7 @@ git clone --recurse-submodules https://github.com/arubaii/Engine-Core.git
 
 **macOS**
 
-Required libraries 
+Required libraries (requires homebrew)
 ```bash
 brew install cmake ninja glfw glm glew
 ```
