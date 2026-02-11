@@ -23,7 +23,7 @@ public:
 	void Draw(const VertexArray& va, const IndexBuffer& ib) const;
 	void DrawLines(const VertexArray &va, const IndexBuffer &ib) const;
 
-	void DrawOutline(const Ref<Shader>& outlineShader, const glm::mat4& MVP, const VertexArray& va, const IndexBuffer& ib);
+	void DrawWireframe(const Ref<Shader>& outlineShader, const glm::mat4& MVP, const VertexArray& va, const IndexBuffer& ib);
 
 private:
 	Ref<Shader> m_Shader;

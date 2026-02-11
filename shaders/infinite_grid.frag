@@ -13,6 +13,8 @@ uniform vec4 zAxisColor = vec4(0.7, 0.3, 0.3, 1.0); // Red
 uniform vec3 CameraWorldPos;
 uniform float gGridSize = 400;
 
+uniform bool ShowAxes;
+
 float log10(float x)
 {   // log10 N/A in 410
     return log(x) / log(10.0);
@@ -46,17 +48,16 @@ void main(){
     vec4 Color;
 
     // Check if we're on an axis first
-    if (xAxisMask > 0.0) {
+    if (xAxisMask > 0.0 && ShowAxes) {
         Color = xAxisColor;
         Color.a = xAxisMask;
     }
-    else if (zAxisMask > 0.0) {
+    else if (zAxisMask > 0.0 && ShowAxes) {
         Color = zAxisColor;
         Color.a = zAxisMask;
     }
     else // Only draw grid if we're not on an axis
     {
-
         vec2 mod_div_dudv = mod(WorldPos.xz, GridCellSizeLod0) / dudv;
         // Level of Detail 0
         float Lod0a = max(

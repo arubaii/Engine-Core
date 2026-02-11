@@ -7,10 +7,7 @@
 class ImGuiLayer
 {
 public:
-    // ImGuiLayer();
-    // ~ImGuiLayer();
-
-    void OnAttach(GLFWwindow* window);
+	void OnAttach(GLFWwindow* window);
     void OnDetach();
 
     void BeginFrame();

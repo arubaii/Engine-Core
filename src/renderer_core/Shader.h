@@ -38,15 +38,15 @@ public:
 		return CreateRef<Shader>(vertPath, fragPath);
 	}
 
-	void SetBool  (const std::string& name, bool state) const
+	void SetBool  	 (const std::string& name, bool state) const
 	{
-		glUniform1f(glGetUniformLocation(ID, name.c_str()), (int)state);
+		glUniform1i(glGetUniformLocation(ID, name.c_str()), (int)state);
 	}
-	void SetInt   (const std::string& name, int value) const
+	void SetInt	  	 (const std::string& name, int value) const
 	{
-		glUniform1f(glGetUniformLocation(ID, name.c_str()), value);
+		glUniform1i(glGetUniformLocation(ID, name.c_str()), value);
 	}
-	void SetFloat (const std::string& name, float value) const
+	void SetFloat 	 (const std::string& name, float value) const
 	{
 		glUniform1f(glGetUniformLocation(ID, name.c_str()), value);
 	};

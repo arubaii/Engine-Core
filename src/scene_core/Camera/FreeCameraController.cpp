@@ -1,7 +1,6 @@
 #include <algorithm>
 #include "FreeCameraController.h"
 #include "utils/Base.h"
-// #include "utils/LOG.h"
 
 
 void FreeCameraController::Update(float dt, Input& input)
@@ -28,7 +27,8 @@ void FreeCameraController::Update(float dt, Input& input)
 		if (input.IsKeyPressed(Key::A)) 	   move -= right;
 		if (input.IsKeyPressed(Key::D))		   move += right;
 		if (input.IsKeyPressed(Key::Space))    move += up;
-		if (input.IsKeyPressed(Key::LeftCtrl)) move -= up;
+		if (input.IsKeyPressed(Key::C)) move -= up;
+
 	}
 
 	if (move != glm::vec3(0.0f))

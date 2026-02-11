@@ -7,6 +7,6 @@ uint32_t AudioAPI::CreateBuffer(
 	uint32_t,
 	uint32_t)
 {
-	// STUB — OpenAL / miniaudio later
+	// TODO: OpenAL / miniaudio later
 	return 0;
 }

@@ -1,4 +1,5 @@
 #include <stdexcept>
+#include <yaml-cpp/yaml.h>
 #include "stb/stb_image.h" // Need
 #include "AssetTypes.h"
 #include "Loaders.h"
@@ -52,43 +53,117 @@ Ref<Asset> AudioStreamLoader::LoadAsset(const AssetMetaData& meta)
 
 Ref<Asset> ShaderLoader::LoadAsset(const AssetMetaData& meta)
 {
-
-	// Shader is a render/runtime object created from two file paths
-	// via Shader::Create(vertPath, fragPath).
-	//
-	// AssetMetaData  must tell paths.
-	//
-	// If meta.FilePath points to some "shader asset file" parse, parse it here to get:
-	//   vertPath, fragPath
-
-	ShaderDesc paths = ShaderSerializer::Deserialize(meta.FilePath);
-
 	auto shaderAsset = CreateRef<ShaderAsset>();
 	shaderAsset->Handle = meta.Handle;
 	shaderAsset->Type   = meta.Type;
 
+	ShaderDesc paths = ShaderSerializer::Deserialize(meta.FilePath);
 	shaderAsset->VertexSource   = paths.VertexPath;
 	shaderAsset->FragmentSource = paths.FragmentPath;
+
+	// Compile once here
+	shaderAsset->Compiled = Shader::Create(
+		shaderAsset->VertexSource,
+		shaderAsset->FragmentSource
+	);
 
 	return shaderAsset;
 }
 
 Ref<Asset> MeshLoader::LoadAsset(const AssetMetaData& meta)
 {
-	// Repo has renderer_core::Mesh as a CPU mesh.
-	// Doesn't use raw VAO/VBO/EBO IDs in a "Mesh" class.
-	// So MeshAsset should eventually store that CPU mesh data (Vertices/Indices),
-	// and the renderer uses MeshRendererCache::GetOrCreate(mesh) when drawing.
-
-	MeshData meshData = MeshImporter::Import(meta.FilePath);
+	MeshData imported = MeshImporter::Import(meta.FilePath);
 
 	auto mesh = CreateRef<MeshAsset>();
 	mesh->Handle = meta.Handle;
 	mesh->Type   = meta.Type;
 
-	// If keeping VAO/VBO/EBO in MeshAsset: need GPU upload API.
-	// If switching MeshAsset to store CPU vertices/indices: fill them here instead.
-	mesh->IndexCount = static_cast<uint32_t>(meshData.Indices.size());
+	mesh->MeshData = CreateRef<Mesh>();
+
+	const size_t vertexCount = imported.Vertices.size() / 3;
+	mesh->MeshData->Vertices.resize(vertexCount);
+
+	for (size_t i = 0; i < vertexCount; i++)
+	{
+		Vertex v{};
+
+		// Position
+		v.Position = {
+			imported.Vertices[i * 3 + 0],
+			imported.Vertices[i * 3 + 1],
+			imported.Vertices[i * 3 + 2]
+		};
+
+		// Normal
+		if (imported.Normals.size() >= (i + 1) * 3)
+		{
+			v.Normal = {
+				imported.Normals[i * 3 + 0],
+				imported.Normals[i * 3 + 1],
+				imported.Normals[i * 3 + 2]
+			};
+		}
+		else
+			v.Normal = { 0.0f, 0.0f, 1.0f };
+
+		// Texcoord
+		if (imported.TexCoords.size() >= (i + 1) * 2)
+		{
+			v.TexCoord = {
+				imported.TexCoords[i * 2 + 0],
+				imported.TexCoords[i * 2 + 1]
+			};
+		}
+		else
+			v.TexCoord = { 0.0f, 0.0f };
+
+		// Color
+		if (imported.Colors.size() >= (i + 1) * 3)
+		{
+			v.Color = {
+				imported.Colors[i * 3 + 0],
+				imported.Colors[i * 3 + 1],
+				imported.Colors[i * 3 + 2]
+			};
+		}
+		else
+			v.Color = glm::vec3(1.0f);
+
+
+		// Tangent
+		if (imported.Tangents.size() >= (i + 1) * 3)
+		{
+			v.Tangent = {
+				imported.Tangents[i * 3 + 0],
+				imported.Tangents[i * 3 + 1],
+				imported.Tangents[i * 3 + 2]
+			};
+		}
+		else
+		{
+			v.Tangent = { 1.0f, 0.0f, 0.0f };
+		}
+
+		// Bitangent
+		if (imported.Bitangents.size() >= (i + 1) * 3)
+		{
+			v.Bitangent = {
+				imported.Bitangents[i * 3 + 0],
+				imported.Bitangents[i * 3 + 1],
+				imported.Bitangents[i * 3 + 2]
+			};
+		}
+		else
+		{
+			v.Bitangent = { 0.0f, 1.0f, 0.0f };
+		}
+
+		mesh->MeshData->Vertices[i] = v;
+	}
+
+	// Indices
+	mesh->MeshData->Indices = std::move(imported.Indices);
+	mesh->IndexCount        = (uint32_t)mesh->MeshData->Indices.size();
 
 	return mesh;
 }
@@ -97,34 +172,34 @@ Ref<Asset> MaterialLoader::LoadAsset(const AssetMetaData& meta)
 {
 	MaterialDesc desc = MaterialSerializer::Deserialize(meta.FilePath);
 
-	auto material = CreateRef<MaterialAsset>();
-	material->Handle = meta.Handle;
-	material->Type   = meta.Type;
+	Ref<MaterialAsset> mat = CreateRef<MaterialAsset>();
+	mat->Handle = meta.Handle;
+	mat->Type   = meta.Type;
+	mat->Desc   = desc;
 
-	material->ShaderProgram = AssetManager::GetAsset<ShaderAsset>(desc.ShaderProgram);
-	material->Albedo        = AssetManager::GetAsset<TextureAsset>(desc.Albedo);
-	material->Color         = desc.Color;
-
-	return material;
+	return mat;
 }
 
 Ref<Asset> ModelLoader::LoadAsset(const AssetMetaData& meta)
 {
-	ModelImportData data = ModelImporter::Import(meta.FilePath);
+	YAML::Node root = YAML::LoadFile(meta.FilePath.string());
+	auto modelNode = root["Model"];
+	auto submeshesNode = modelNode["Submeshes"];
 
 	auto model = CreateRef<ModelAsset>();
 	model->Handle = meta.Handle;
 	model->Type   = meta.Type;
 
-	for (const auto& part : data.Submeshes)
+	for (auto sm : submeshesNode)
 	{
-		ModelAsset::Submesh submesh;
-		submesh.Mesh        = AssetManager::GetAsset<MeshAsset>(part.Mesh);
-		submesh.Material    = AssetManager::GetAsset<MaterialAsset>(part.Material);
-		submesh.IndexOffset = part.IndexOffset;
-		submesh.IndexCount  = part.IndexCount;
+		ModelAsset::Submesh sub;
 
-		model->Submeshes.push_back(submesh);
+		sub.Mesh        = AssetManager::GetAsset<MeshAsset>( (AssetHandle)sm["Mesh"].as<uint64_t>() );
+		sub.Material    = AssetManager::GetAsset<MaterialAsset>( (AssetHandle)sm["Material"].as<uint64_t>() );
+		sub.IndexOffset = sm["IndexOffset"].as<uint32_t>();
+		sub.IndexCount  = sm["IndexCount"].as<uint32_t>();
+
+		model->Submeshes.push_back(sub);
 	}
 
 	return model;
@@ -133,26 +208,17 @@ Ref<Asset> ModelLoader::LoadAsset(const AssetMetaData& meta)
 Ref<Asset> TextureLoader::LoadAsset(const AssetMetaData& meta)
 {
 	int width, height, channels;
-	stbi_uc* data = stbi_load(
-		meta.FilePath.string().c_str(),
-		&width, &height,
-		&channels,
-		4
-	);
 
-	if (!data)
-		throw std::runtime_error("TextureLoader: failed to load image");
+	stbi_info(meta.FilePath.string().c_str(), &width, &height, &channels);
 
-	auto texture = CreateRef<TextureAsset>();
-	texture->Handle = meta.Handle;
-	texture->Type   = meta.Type;
-	texture->Width  = static_cast<uint32_t>(width);
-	texture->Height = static_cast<uint32_t>(height);
+	auto tex = CreateRef<TextureAsset>();
+	tex->Handle = meta.Handle;
+	tex->Type   = meta.Type;
+	tex->Width  = width;
+	tex->Height = height;
 
-	// Repo currently has no Texture class / GPU texture creation path,
-	// RendererID must be created somewhere else (renderer) until added.
-	// texture->RendererID = ...
+	// GPU Upload
+	tex->Texture = new GLTexture2D(meta.FilePath.string());
 
-	stbi_image_free(data);
-	return texture;
+	return tex;
 }

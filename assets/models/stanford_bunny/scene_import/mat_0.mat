@@ -1,0 +1,14 @@
+Material:
+  Shader: 0
+  BaseColorTexture: 0
+  NormalTexture: 0
+  MetallicRoughnessTexture: 0
+  OcclusionTexture: 0
+  EmissiveTexture: 0
+  BaseColorFactor: [1, 1, 1, 1]
+  MetallicFactor: 0
+  RoughnessFactor: 0.6
+  EmissiveFactor: [0, 0, 0]
+  AlphaMode: OPAQUE
+  AlphaCutoff: 0.5
+  DoubleSided: true

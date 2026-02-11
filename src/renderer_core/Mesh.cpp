@@ -26,7 +26,9 @@ GPUMesh& MeshRendererCache::GetOrCreate(Mesh& mesh)
 		layout.Push<float>(3); // layout(location = 0) Position
 		layout.Push<float>(3); // layout(location = 1) Normal
 		layout.Push<float>(2); // layout(location = 2) TexCoord
-		layout.Push<float>(3); // layout(location = 3) Color (optional)
+		layout.Push<float>(3); // layout(location = 3) Color
+		layout.Push<float>(3); // layout(location = 4) Tangent
+		layout.Push<float>(3); // layout(location = 5) Bitangent
 
 		va.AddBuffer(vb, layout);
 

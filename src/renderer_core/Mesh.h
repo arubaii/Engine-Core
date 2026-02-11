@@ -12,7 +12,9 @@ struct Vertex
 	glm::vec3 Position;   // location = 0
 	glm::vec3 Normal;     // location = 1
 	glm::vec2 TexCoord;   // location = 2
-	glm::vec3 Color;      // location = 3 (optional / debug)
+	glm::vec3 Color;      // location = 3
+	glm::vec3 Tangent;    // location = 4
+	glm::vec3 Bitangent;  // location = 5
 };
 
 
@@ -45,6 +47,10 @@ struct GPUMesh
 
 	uint64_t LastRevision = 0;
 
+	glm::vec3 LocalBoundsCenter = glm::vec3(0.0f);
+	float     LocalBoundsRadius = 1.0f;
+	bool      BoundsReady = false;
+
 	GPUMesh(VertexArray&& va, VertexBuffer&& vb, IndexBuffer&& ib)
 	: VA(std::move(va)), VB(std::move(vb)), IB(std::move(ib)) {}
 };
@@ -59,3 +65,4 @@ public:
 	static GPUMesh& GetOrCreate(Mesh& mesh);
 
 };
+

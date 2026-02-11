@@ -1,36 +1,14 @@
 #include "core/Application.h"
 
-/*
-	TODO: REFACTOR PROCEDURE
 
-	class structure:
-
-	class Foo
-	{
-	public:
-		public fields...
-
-	private:
-		private fields...
-
-	public:
-		public member functions...
-
-	private:
-
-		private member functions..
-
-
-
-	}
-*/
 
 int main()
 {
 	ApplicationProperties appProps;
 	appProps.Name = "App Name";
 	appProps.WindowProps.Title = "Engine Core";
-	appProps.WindowProps.MonitorSelected = 0; // 0 is the main monitor
+	appProps.WindowProps.MonitorSelected = 1; // 0 is the main monitor
+	appProps.WindowProps.VSyncEnabled = false;
 
 	Application app(appProps);
 	app.Run();
@@ -38,7 +16,20 @@ int main()
 
 
 
+/*
 
+	TODO:
+	- Refine Orbit Camera controls, e.g. SketchFab
+		- Add interpolation curves to cursor hold movement
+			- Click and throw with velocity
+		- Click selects up close pivot
+			- Add a recenter button
+		- Add cursor hand grab cursor on click
+		- Change cursor to hand when hovering overing over entity (easy)
+
+	TODO: ============== BUGS ==============
+	-
+*/
 
 /* Ownership:
 		Application
@@ -50,7 +41,7 @@ int main()
 
 		Application
 		   ↓
-		 Scene ───→ Renderer
+		 Scene --> Renderer
 		   ↑
 		 Window (queried, not owned)
 

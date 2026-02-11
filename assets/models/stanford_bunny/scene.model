@@ -1,0 +1,6 @@
+Model:
+  Submeshes:
+    - Mesh: 11674591418888982811
+      Material: 1556341128137583163
+      IndexOffset: 0
+      IndexCount: 208980

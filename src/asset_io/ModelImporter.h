@@ -14,6 +14,8 @@ struct ModelImportData
 	};
 
 	std::vector<Submesh> Submeshes;
+
+	AssetHandle Model{0};
 };
 
 class ModelImporter

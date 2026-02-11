@@ -1,7 +1,7 @@
 #pragma once
 #include <functional>
 
-class UUID
+class UUID // Univserally Unique Identifier
 {
 private:
 	uint64_t m_UUID;

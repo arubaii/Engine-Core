@@ -162,6 +162,67 @@ namespace PRIMITIVES
         0,1,5, 5,4,0
     };
 
+    inline const float SkyboxVerts[] = {
+        -1,  1, -1,  -1, -1, -1,   1, -1, -1,   1, -1, -1,   1,  1, -1,  -1,  1, -1,
+        -1, -1,  1,  -1, -1, -1,  -1,  1, -1,  -1,  1, -1,  -1,  1,  1,  -1, -1,  1,
+         1, -1, -1,   1, -1,  1,   1,  1,  1,   1,  1,  1,   1,  1, -1,   1, -1, -1,
+        -1, -1,  1,  -1,  1,  1,   1,  1,  1,   1,  1,  1,   1, -1,  1,  -1, -1,  1,
+        -1,  1, -1,   1,  1, -1,   1,  1,  1,   1,  1,  1,  -1,  1,  1,  -1,  1, -1,
+        -1, -1, -1,  -1, -1,  1,   1, -1, -1,   1, -1, -1,  -1, -1,  1,   1, -1,  1
+    };
+
+
+    inline Mesh GenerateSphere(int stacks = 32, int slices = 32)
+    {
+        std::vector<Vertex> vertices;
+        std::vector<uint32_t> indices;
+
+        for (int i = 0; i <= stacks; i++) {
+            float v = float(i) / stacks;
+            float phi = v * glm::pi<float>();
+
+            for (int j = 0; j <= slices; j++) {
+                float u = float(j) / slices;
+                float theta = u * glm::two_pi<float>();
+
+                float x = sin(phi) * cos(theta);
+                float y = cos(phi);
+                float z = sin(phi) * sin(theta);
+
+                glm::vec3 N(x, y, z);
+                glm::vec3 up = (abs(N.y) < 0.999f) ? glm::vec3(0,1,0) : glm::vec3(1,0,0);
+                glm::vec3 T = glm::normalize(glm::cross(up, N));
+                glm::vec3 B = glm::normalize(glm::cross(N, T));
+
+                Vertex vert{};
+                vert.Position = N;
+                vert.Normal = N;
+                vert.TexCoord = glm::vec2(u, v);
+                vert.Tangent = T;
+                vert.Bitangent = B;
+
+                vertices.push_back(vert);
+            }
+        }
+
+        for (int i = 0; i < stacks; i++) {
+            for (int j = 0; j < slices; j++) {
+                int row1 = i * (slices + 1);
+                int row2 = (i + 1) * (slices + 1);
+
+                indices.push_back(row1 + j);
+                indices.push_back(row2 + j);
+                indices.push_back(row2 + j + 1);
+
+                indices.push_back(row1 + j);
+                indices.push_back(row2 + j + 1);
+                indices.push_back(row1 + j + 1);
+            }
+        }
+
+        return Mesh(vertices, indices);
+    }
+
 }
 
 

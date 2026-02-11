@@ -11,6 +11,7 @@ struct WindowProperties
 	unsigned int Height = 0;
 	std::string Title   = "OpenGL";
 	unsigned int MonitorSelected = 0;
+	bool VSyncEnabled = false;
 
 };
 
@@ -49,8 +50,7 @@ public:
 	}
 	void AttachInput(class Input& input);
 
-	// void SetVSync(bool enabled = 0);
-
+	void SetVSync(bool enabled = 0);
 
     static Scope<Window> Create
 	(

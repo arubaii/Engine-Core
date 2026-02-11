@@ -14,9 +14,14 @@ public:
 	: m_Radius(radius) {}
 
 	void SetPivot(const glm::vec3& pivot) { m_Pivot = pivot; }
+	void SetRadius(const float& radius )  { m_Radius = radius; }
 	void Update(float dt, Input& input) override;
 	void OnActivate(Input& input) override;		// Reset mouse deltas
-	void OnSelect(const glm::vec3& position) override { SetPivot(position); }
+	void OnSelect(const glm::vec3& position, float radius) override
+	{
+		SetPivot(position);
+		SetRadius(radius);
+	}
 
 
 

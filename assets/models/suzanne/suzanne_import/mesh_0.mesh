@@ -1,0 +1,3 @@
+Mesh:
+  Source: ../assets/models/suzanne/suzanne.glb
+  MeshIndex: 0

@@ -6,15 +6,6 @@
 #include <algorithm>
 #include <glm/glm.hpp>
 
-#define TRY_MATH(expr)                                      \
-    do {                                                    \
-        try {                                               \
-            expr;                                           \
-        } catch (const std::exception& e) {                 \
-            LOG_ERROR("[Math Parser] ", e.what());    \
-        }                                                   \
-    } while (0)
-
 
 template<typename... Args>
 void LOG(Args&&... args)
@@ -27,6 +18,7 @@ void LOG_ERROR(Args&&... args)
 {
 	(std::cerr << ... << args) << '\n';
 }
+
 
 namespace glm // Logging overloads
 {
@@ -101,7 +93,6 @@ namespace glm // Logging overloads
 		return out;
 	}
 
-	// ---------- mat4 ---------- //
 	inline std::ostream& operator<<(std::ostream& out, const glm::mat4& M)
 	{
 		// Save stream formatting

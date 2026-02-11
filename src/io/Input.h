@@ -9,9 +9,10 @@ class Input
 {
 public:
 	void Init(GLFWwindow* window);
-	void Update();
+	void Update(GLFWwindow* window);
 
 	bool IsInUI() const;
+
 
 	static Input* s_Instance;
 
@@ -20,22 +21,23 @@ public:
 	bool IsMousePressed	    (int mouseButton) const;
 	bool IsMousePressedOnce (int mouseButton);
 
-	bool CursorToggle(GLFWwindow* window);
 
 	glm::vec2 GetMouseDelta();
 	double GetMouseScrollY() { return s_Scroll.Y; }
 	double GetMouseScrollX() { return s_Scroll.X; } // Useless for now
 	glm::vec2 GetMousePos()  { return glm::vec2(s_Mouse.x, s_Mouse.y); }
 
+
+
 	void EndFrame() { s_Scroll = {}; }
 	bool IsCursorEnabled() const;
 	bool IsKeyboardEnabled() const;
-
-
+	static void SetKeyState(int key, bool state);
 private:
 	static void MouseCallback(GLFWwindow* window, double xpos, double ypos);
 	static void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
 	static void ScrollCallback(GLFWwindow*, double xoffset, double yoffset);
+	static void KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mods);
 
 
 	struct MouseState {
@@ -45,12 +47,12 @@ private:
 		double dy = 0.0;
 		bool first = true;
 		bool cursorEnabled = false;
+		bool initCursor = true;
 
 		// Buttons
 		bool down[GLFW_MOUSE_BUTTON_LAST + 1]        = {};
 		bool pressedOnce[GLFW_MOUSE_BUTTON_LAST + 1] = {};
 		bool releasedOnce[GLFW_MOUSE_BUTTON_LAST + 1] = {};
-
 
 		MouseState()
 		: x(0.0), y(0.0), dx(0.0), dy(0.0), first(true), cursorEnabled(false) {}
@@ -64,6 +66,7 @@ private:
 	};
 
 	bool m_IsInUI = false;
+
 private:
 	GLFWwindow* m_Window = nullptr;
 	inline static MouseState  s_Mouse;
@@ -72,7 +75,8 @@ private:
 	std::unordered_map<int, bool> m_LastMouseButtonState;
 
 	inline static bool s_KeyboardEnabled = true;
-
+	static bool s_KeyState[GLFW_KEY_LAST + 1];
+	static bool s_KeyPressedOnce[GLFW_KEY_LAST + 1];
 
 };
 

@@ -48,34 +48,36 @@ private:
 	uint32_t m_Stride = 0;
 
 public:
+	const std::vector<VertexBufferElement>& GetElements() const { return m_Elements; }
+	uint32_t GetStride() const { return m_Stride; }
+
 	template<typename T>
 	void Push(uint32_t count)
 	{
 		static_assert(sizeof(T) == 0, "Unsupported type in VertexBufferLayout::Push");
 	}
 
-	const std::vector<VertexBufferElement>& GetElements() const { return m_Elements; }
-	uint32_t GetStride() const { return m_Stride; }
+	template<>
+	void Push<float>(uint32_t count)
+	{
+		m_Elements.push_back({ ShaderDataType::Float, count, GL_FALSE });
+		m_Stride += VertexBufferElement::GetSizeOfType(ShaderDataType::Float) * count;
+	}
+
+	template<>
+	void Push<uint32_t>(uint32_t count)
+	{
+		m_Elements.push_back({ ShaderDataType::UInt, count, GL_FALSE });
+		m_Stride += VertexBufferElement::GetSizeOfType(ShaderDataType::UInt) * count;
+	}
+
+	template<>
+	void Push<uint8_t>(uint32_t count)
+	{
+		m_Elements.push_back({ ShaderDataType::UByte, count, true });
+		m_Stride += VertexBufferElement::GetSizeOfType(ShaderDataType::UByte) * count;
+	}
+
 };
 
-template<>
-inline void VertexBufferLayout::Push<float>(uint32_t count)
-{
-	m_Elements.push_back({ ShaderDataType::Float, static_cast<uint32_t>(count), GL_FALSE });
-	m_Stride += VertexBufferElement::GetSizeOfType(ShaderDataType::Float) * count;
-}
-
-template<>
-inline void VertexBufferLayout::Push<uint32_t>(uint32_t count)
-{
-	m_Elements.push_back({ ShaderDataType::UInt, static_cast<uint32_t>(count), GL_FALSE });
-	m_Stride += VertexBufferElement::GetSizeOfType(ShaderDataType::UInt) * count;
-}
-
-template<>
-inline void VertexBufferLayout::Push<std::uint8_t>(uint32_t count)
-{
-	m_Elements.push_back({ ShaderDataType::UByte, static_cast<uint32_t>(count), true });
-	m_Stride += VertexBufferElement::GetSizeOfType(ShaderDataType::UByte) * count;
-}
 

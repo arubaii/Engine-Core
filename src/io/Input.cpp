@@ -14,16 +14,26 @@ void Input::Init(GLFWwindow* window)
 	glfwSetScrollCallback(m_Window, ScrollCallback);
 }
 
-void Input::Update()
+// GLFWwindow is incomplete, window must be passed through here
+void Input::Update(GLFWwindow* window)
 {
 
-	// Escape enables cursor
-	if (IsKeyPressedOnce(GLFW_KEY_ESCAPE))
+	if (IsKeyPressedOnce(GLFW_KEY_ESCAPE) || s_Mouse.initCursor)
 	{
 		if (!s_Mouse.cursorEnabled)
-			glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+			{
+				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+
+				// Center the cursor
+				int w, h;
+				glfwGetWindowSize(window, &w, &h);
+				glfwSetCursorPos(window, w * 0.5, h * 0.5);
+				s_Mouse.initCursor = false;
+			}
 		else
-			glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+
 		s_Mouse.cursorEnabled = !s_Mouse.cursorEnabled;
 		s_Mouse.first = true;
 	}
@@ -40,6 +50,13 @@ void Input::Update()
 
 	// UI activity state
 	ImGuiIO& io = ImGui::GetIO();
+
+	// mouse-only blocking (hovering UI should not disable keyboard)
+	m_IsInUI =
+		io.WantCaptureMouse ||
+		ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow) ||
+		ImGui::IsAnyItemHovered() ||
+		ImGui::IsAnyItemActive();
 	if (s_Mouse.pressedOnce[GLFW_MOUSE_BUTTON_LEFT])
 	{
 		if (io.WantCaptureMouse)
@@ -53,11 +70,8 @@ void Input::Update()
 			s_KeyboardEnabled = true;
 		}
 	}
-	// ====================================================
 
-	// When not in UI → keyboard always enabled
-	if (!m_IsInUI)
-		s_KeyboardEnabled = true;
+
 }
 
 bool Input::IsInUI() const
@@ -88,11 +102,13 @@ bool Input::IsKeyboardEnabled() const
 
 bool Input::IsMousePressed(int button) const
 {
+	if (m_IsInUI) return false;
 	return s_Mouse.down[button];
 }
 
 bool Input::IsMousePressedOnce(int button)
 {
+	if (m_IsInUI) return false;
 	return s_Mouse.pressedOnce[button];
 }
 
@@ -150,4 +166,3 @@ void Input::ScrollCallback(GLFWwindow*, double xoffset, double yoffset)
 	s_Scroll.X = xoffset;  // Horizontal scroll
 	s_Scroll.Y = yoffset;
 }
-

@@ -75,6 +75,7 @@ target_compile_definitions(Engine_Core PRIVATE
 # =============== Include Directories ==================
 # ======================================================
 add_subdirectory(vendor/yaml-cpp)
+add_subdirectory(vendor/assimp)
 
 target_link_libraries(Engine_Core PRIVATE yaml-cpp)
 
@@ -100,6 +101,7 @@ if(APPLE)
                 imgui
                 EnTT::EnTT
                 yaml-cpp
+                assimp
         )
     else()
         target_link_libraries(Engine_Core PRIVATE
@@ -109,6 +111,7 @@ if(APPLE)
                 imgui
                 EnTT::EnTT
                 yaml-cpp
+                assimp
         )
     endif()
 else()
@@ -119,9 +122,15 @@ else()
             imgui
             EnTT::EnTT
             yaml-cpp
+            assimp
     )
 endif()
 
 if(APPLE)
     target_link_libraries(Engine_Core PRIVATE m)
+endif()
+
+if(APPLE)
+    target_link_libraries(Engine_Core PRIVATE
+    )
 endif()

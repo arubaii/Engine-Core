@@ -1,3 +1,5 @@
+#include <yaml-cpp/yaml.h>
+#include <fstream>
 #include "AssetManager.h"
 #include "Loaders.h"
 
@@ -15,32 +17,47 @@ void AssetManager::Init()
 	s_Serializers[AssetType::Model]    = CreateScope<ModelLoader>();
 }
 
-// Helper (internal linkage)
-static AssetType DeduceAssetType(const std::filesystem::path& path)
+
+static std::filesystem::path GetAssetsRoot()
 {
-	auto ext = path.extension().string();
+	// path to executable
+	std::filesystem::path exe = std::filesystem::current_path();
 
-	if (ext == ".png" || ext == ".jpg")
-		return AssetType::Texture;
-	if (ext == ".vert" || ext == ".frag")
-		return AssetType::Shader;
-	if (ext == ".obj")
-		return AssetType::Model;
-
-	return AssetType::None;
+	// Executable is inside "cmake-build-debug/"
+	// Assets are one directory up, inside "../assets/"
+	return exe.parent_path() / "assets";
 }
+
 
 // AssetManager implementation
 AssetHandle AssetManager::ImportAsset(const std::filesystem::path& path)
 {
-	AssetHandle handle;
+	// Absolute path of the source file
+	std::filesystem::path abs = std::filesystem::absolute(path);
+
+	// Correct assets root
+	std::filesystem::path assetsRoot = GetAssetsRoot();
+
+	// Make relative to assets/
+	std::filesystem::path rel = std::filesystem::relative(abs, assetsRoot).lexically_normal();
+
+	// Already registered
+	for (auto& [h, meta] : s_Metadata)
+		if (meta.FilePath == rel)
+			return h;
+
+	// New asset
+	AssetHandle handle = UUID();
 
 	AssetMetaData meta;
 	meta.Handle   = handle;
-	meta.FilePath = path;
-	meta.Type     = DeduceAssetType(path); // Add in symbol
+	meta.Type     = DeduceAssetType(path);
+	meta.FilePath = rel;
 
 	s_Metadata[handle] = meta;
+
+	SaveRegistry((assetsRoot / "assets.yaml").string());
+
 	return handle;
 }
 
@@ -48,12 +65,18 @@ Ref<Asset> AssetManager::LoadAssetInternal(const AssetMetaData& meta)
 {
 	auto loaderIt = s_Serializers.find(meta.Type);
 	if (loaderIt == s_Serializers.end())
-		throw std::runtime_error("No loader registered for asset type");
+	{
+		throw std::runtime_error(
+			std::string("No loader registered for type=") +
+			AssetTypeToString(meta.Type) +
+			" file=" + meta.FilePath.generic_string()
+		);
+	}
 
-	// loaderIt is an iterator into the unordered_map.
-	// Dereferencing it yields a std::pair<const AssetType, Scope<AssetLoader>>.
-	// ->second accesses the value (the loader), and LoadAsset(meta) is dispatched virtually.
-	return loaderIt->second->LoadAsset(meta);
+	AssetMetaData fixed = meta;
+	fixed.FilePath = std::filesystem::path("../assets") / meta.FilePath;
+
+	return loaderIt->second->LoadAsset(fixed);
 }
 
 bool AssetManager::IsLoaded(AssetHandle handle)
@@ -71,3 +94,66 @@ bool AssetManager::Exists(AssetHandle handle)
 	return s_Metadata.find(handle) != s_Metadata.end();
 }
 
+void AssetManager::LoadRegistry(const std::filesystem::path& path)
+{
+	YAML::Node data = YAML::LoadFile(path.string());
+	auto assets = data["Assets"];
+	if (!assets) return;
+
+	for (auto entry : assets)
+	{
+		AssetMetaData meta;
+		meta.Handle = UUID{ entry["Handle"].as<uint64_t>() };
+		meta.Type   = AssetTypeFromString(entry["Type"].as<std::string>());
+		meta.FilePath = entry["File"].as<std::string>();
+		s_Metadata[meta.Handle] = meta;
+	}
+}
+
+void AssetManager::SaveRegistry(const std::string& path)
+{
+	YAML::Emitter out;
+
+	out << YAML::BeginMap;
+	out << YAML::Key << "Assets" << YAML::Value << YAML::BeginSeq;
+
+	for (auto& [handle, meta] : s_Metadata)
+	{
+		out << YAML::BeginMap;
+		out << YAML::Key << "Handle" << YAML::Value << (uint64_t)handle;
+		out << YAML::Key << "Type"   << YAML::Value << AssetTypeToString(meta.Type);
+		out << YAML::Key << "File"   << YAML::Value << meta.FilePath.string();
+		out << YAML::EndMap;
+	}
+
+	out << YAML::EndSeq;
+	out << YAML::EndMap;
+
+	std::ofstream fout(path);
+	fout << out.c_str();
+}
+
+AssetHandle AssetManager::GetHandleForPath(const std::filesystem::path& path)
+{
+	std::filesystem::path rel = path.lexically_normal();
+	std::string rs = rel.generic_string();
+
+	while (rs.starts_with("../")) rs = rs.substr(3);
+	while (rs.starts_with("./"))  rs = rs.substr(2);
+
+	const char* assetsPrefix = "assets/";
+	if (rs.starts_with(assetsPrefix))
+		rs = rs.substr(strlen(assetsPrefix));
+
+
+	for (auto& [h, meta] : s_Metadata)
+	{
+		std::string stored = meta.FilePath.generic_string();
+		stored = std::filesystem::path(stored).lexically_normal().generic_string();
+
+		if (stored == rs)
+			return h;
+	}
+
+	return AssetHandle(0);
+}

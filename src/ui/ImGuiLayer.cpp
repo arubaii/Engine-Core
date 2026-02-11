@@ -1,8 +1,8 @@
 #include "ui/ImGuiLayer.h"
 
-// ImGuiLayer::ImGuiLayer() = default;
+#include "io/Input.h"
+#include "utils/Log.h"
 
-// ImGuiLayer::~ImGuiLayer() = default;
 
 void ImGuiLayer::OnAttach(GLFWwindow* window)
 {
@@ -11,6 +11,7 @@ void ImGuiLayer::OnAttach(GLFWwindow* window)
 
     ImGuiIO& io = ImGui::GetIO(); (void)io;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+    io.ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange;
 
     ImGui::StyleColorsDark();
     ImGui_ImplGlfw_InitForOpenGL(window, true);
@@ -21,6 +22,17 @@ void ImGuiLayer::BeginFrame()
 {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
+
+    if (!Input::s_Instance->IsCursorEnabled()) {
+        ImGuiIO& io = ImGui::GetIO();
+
+        io.MousePos = ImVec2(-FLT_MAX, -FLT_MAX);
+        for (int i = 0; i < IM_ARRAYSIZE(io.MouseDown); i++)
+            io.MouseDown[i] = false;
+        io.MouseWheel = 0.0f;
+        io.MouseWheelH = 0.0f;
+    }
+
     ImGui::NewFrame();
 }
 

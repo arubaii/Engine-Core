@@ -6,13 +6,23 @@
 #include <glm/gtx/quaternion.hpp>
 
 
+#include "asset_core/AssetTypes.h"
 #include "Camera/PerspectiveCamera.h"
 #include "renderer_core/IndexBuffer.h"
 #include "renderer_core/Mesh.h"
+#include "renderer_core/MeshUtils.h"
 #include "renderer_core/VertexArray.h"
 #include "utils/UUID.h"
 #include "utils/SmartPtrs.h"
 
+
+struct TransformCache
+{
+	glm::mat4 Model{1.0f};
+	glm::mat4 InvModel{1.0f};
+	glm::mat3 NormalMat{1.0f};
+	bool Dirty = true;
+};
 
 struct TransformComponent
 {
@@ -25,15 +35,46 @@ struct TransformComponent
 	TransformComponent(const glm::vec3& translation)
 		: Translation(translation) {}
 
-	glm::mat4 GetTransform() const
+	const glm::vec3& GetPosition() const { return Translation; }
+	glm::mat4 GetModelMatrix() const
 	{
 		glm::mat4 T = glm::translate(glm::mat4(1.0f), Translation);
 		glm::mat4 R = glm::toMat4(glm::quat(Rotation));
 		glm::mat4 S = glm::scale(glm::mat4(1.0f), Scale);
 
-		return T * R * S; // TRS
+		if (!Cache.Dirty)
+			Cache.Dirty = true;
+
+		return T * R * S;
 	}
+
+	void SetScale(const glm::vec3& s) { Scale = s; MarkDirty(); }
+	void SetTranslation(const glm::vec3& t) { Translation = t; MarkDirty(); }
+	void SetRotation(const glm::vec3& r) { Rotation = r;MarkDirty(); }
+
+
+	void MarkDirty() { Cache.Dirty = true; }
+
+
+	const TransformCache& GetCache() const
+	{
+		if (Cache.Dirty)
+		{
+			Cache.Model = GetModelMatrix();
+			Cache.InvModel = glm::inverse(Cache.Model);
+			Cache.NormalMat = glm::transpose(glm::inverse(glm::mat3(Cache.Model)));
+
+			Cache.Dirty = false;
+		}
+		return Cache;
+	}
+
+private:
+	// So Scene::Raycast (const) can update it
+	mutable TransformCache Cache;
 };
+
+
 
 struct IDComponent
 {
@@ -49,15 +90,58 @@ struct TagComponent
 
 struct ScreenComponent // Screen space; UI entities
 {
-	uint8_t _ = 0;	// Should be nonempty
+	uint8_t _ = 0;
 };
 
 
 struct MeshComponent
 {
 	Ref<Mesh> MeshData;
+	Ref<MaterialAsset> Material;
+
+	// Lazy-computed cached bounds
+	mutable glm::vec3 BoundsCenter{0.0f};
+	mutable float BoundsRadius = 0.0f;
+	mutable bool BoundsCalculated = false;
+
+	glm::vec4 BaseColor = glm::vec4(1.0); // Fallback
+	bool UseNormalColors = false;
+
 };
 
+
+struct ModelComponent
+{
+	Ref<ModelAsset> Model;
+};
+
+struct ModelRootComponent
+{
+	std::vector<UUID> Parts;   // entities of each submesh
+	glm::vec3 LastTranslation{0.0f};
+	glm::vec3 LastRotation{0.0f};
+	glm::vec3 LastScale{1.0f};
+};
+
+struct MaterialComponent
+{
+	AssetHandle BaseMaterial = UUID(0);
+	MaterialDesc Desc;
+};
+
+struct SelectedComponent
+{
+	uint8_t _ = 0;
+};
+
+// TODO: Add multiple light types later, e.g. Point, Diffuse, Flashlight
+struct LightComponent
+{
+	float Luminosity = 100.0f; // Lumens
+	float Temperature = 100000; // Kelvin (1000 - 200000), 0 means ignore
+	glm::vec3 TintColor = glm::vec3(1.0f);
+	bool HideLight = false;
+};
 
 struct CameraComponent
 {

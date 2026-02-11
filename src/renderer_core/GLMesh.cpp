@@ -42,7 +42,6 @@ void GLMesh::Upload(const Mesh& mesh)
 		GL_STATIC_DRAW
 	);
 
-	// position (layout location = 0)
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(
 		0, 3, GL_FLOAT, GL_FALSE,
@@ -50,7 +49,6 @@ void GLMesh::Upload(const Mesh& mesh)
 		(void*)offsetof(Vertex, Position)
 	);
 
-	// normal (layout location = 1)
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(
 		1, 3, GL_FLOAT, GL_FALSE,
@@ -58,7 +56,6 @@ void GLMesh::Upload(const Mesh& mesh)
 		(void*)offsetof(Vertex, Normal)
 	);
 
-	// texcoord (layout location = 2)
 	glEnableVertexAttribArray(2);
 	glVertexAttribPointer(
 		2, 2, GL_FLOAT, GL_FALSE,
@@ -66,12 +63,25 @@ void GLMesh::Upload(const Mesh& mesh)
 		(void*)offsetof(Vertex, TexCoord)
 	);
 
-	// color (optional) (layout location = 3)
 	glEnableVertexAttribArray(3);
 	glVertexAttribPointer(
 		3, 3, GL_FLOAT, GL_FALSE,
 		sizeof(Vertex),
 		(void*)offsetof(Vertex, Color)
+	);
+
+	glEnableVertexAttribArray(4);
+	glVertexAttribPointer(
+		4, 3, GL_FLOAT, GL_FALSE,
+		sizeof(Vertex),
+		(void*)offsetof(Vertex, Tangent)
+	);
+
+	glEnableVertexAttribArray(5);
+	glVertexAttribPointer(
+		5, 3, GL_FLOAT, GL_FALSE,
+		sizeof(Vertex),
+		(void*)offsetof(Vertex, Bitangent)
 	);
 
 	glBindVertexArray(0);

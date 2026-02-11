@@ -22,7 +22,7 @@ void Renderer::DrawLines(const VertexArray& va, const IndexBuffer& ib) const
 	glDrawElements(GL_LINES, ib.GetCount(), GL_UNSIGNED_INT, nullptr);
 }
 
-void Renderer::DrawOutline(const Ref<Shader>& outlineShader, const glm::mat4& MVP, const VertexArray& va, const IndexBuffer& ib)
+void Renderer::DrawWireframe(const Ref<Shader>& outlineShader, const glm::mat4& MVP, const VertexArray& va, const IndexBuffer& ib)
 {
 	glEnable(GL_POLYGON_OFFSET_LINE);
 

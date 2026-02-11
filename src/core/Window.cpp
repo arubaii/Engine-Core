@@ -2,6 +2,8 @@
 #include "io/Input.h"
 #include "utils/Log.h"
 
+
+
 Window::Window(const WindowProperties& props)
     : m_WindowProperties(props)
 {
@@ -12,7 +14,8 @@ Window::Window(const WindowProperties& props)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // REQUIRED on macOS
-    // ===== Monitor and Window Size Query =====
+
+    // Monitor and Window Size Query
     GLFWmonitor** monitors;
     int count;
     monitors = glfwGetMonitors(&count);
@@ -30,7 +33,6 @@ Window::Window(const WindowProperties& props)
     }
 
     GLFWmonitor* monitor = monitors[m_WindowProperties.MonitorSelected];
-
     int xpos, ypos, workW, workH;
     glfwGetMonitorWorkarea(monitor, &xpos, &ypos, &workW, &workH);
 
@@ -39,7 +41,8 @@ Window::Window(const WindowProperties& props)
         m_WindowProperties.Width  = workW;
         m_WindowProperties.Height = workH;
     }
-    // ===== Window Creation =====
+
+    // Window Creation
     m_Window = glfwCreateWindow(m_WindowProperties.Width,
                                m_WindowProperties.Height,
                                m_WindowProperties.Title.c_str(),
@@ -53,16 +56,16 @@ Window::Window(const WindowProperties& props)
 
     glfwSetWindowPos(m_Window, windowX, windowY); // Center of window
 
-
     glfwMakeContextCurrent(m_Window);
+
     int fbw, fbh;
     glfwGetFramebufferSize(m_Window, &fbw, &fbh);
 
     m_FramebufferWidth  = fbw;
     m_FramebufferHeight = fbh;
-    glfwSwapInterval(0); // Glitchy, keep off for now
 
-    // IMPORTANT: set initial viewport (Retina screens need framebuffer size)
+
+    // Set initial viewport (Retina screens need framebuffer size)
     float xscale, yscale;
     glfwGetMonitorContentScale(monitor, &xscale, &yscale);
 
@@ -77,7 +80,7 @@ Window::Window(const WindowProperties& props)
     if (glewInit() != GLEW_OK)
         std::cout << "Failed to initialize GLEW" << std::endl;
 
-    // ===== Resize callback =====
+    // Resize callback
     glfwSetWindowUserPointer(m_Window, this);
     glfwSetFramebufferSizeCallback(m_Window, [](GLFWwindow* win, int w, int h) {
         glViewport(0, 0, w, h);
@@ -86,6 +89,8 @@ Window::Window(const WindowProperties& props)
             window->m_FramebufferHeight = h;
         }
     });
+
+    SetVSync(m_WindowProperties.VSyncEnabled);
 }
 
 
@@ -93,7 +98,7 @@ Window::~Window()
 {
     if (m_Window)
         glfwDestroyWindow(m_Window);
-	glfwTerminate();
+    glfwTerminate();
 }
 
 void Window::AttachInput(Input& input)
@@ -102,9 +107,9 @@ void Window::AttachInput(Input& input)
 }
 
 Scope<Window> Window::Create(unsigned int width,
-                                       unsigned int height,
-                                       const std::string& title,
-                                       unsigned int MonitorSelected)
+                             unsigned int height,
+                             const std::string& title,
+                             unsigned int MonitorSelected)
 {
     WindowProperties spec;
     spec.Width = width;
@@ -119,3 +124,7 @@ bool Window::ShouldClose() const { return glfwWindowShouldClose(m_Window); }
 void Window::SwapBuffers() const { glfwSwapBuffers(m_Window); }
 void Window::PollEvents()  const { glfwPollEvents(); }
 
+void Window::SetVSync(bool enabled)
+{
+    glfwSwapInterval(enabled);
+}

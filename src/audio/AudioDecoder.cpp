@@ -4,13 +4,13 @@
 
 AudioDecodeResult AudioDecoder::Decode(const std::filesystem::path&)
 {
-	// STUB — miniaudio / stb_vorbis later
+	// TODO: miniaudio / stb_vorbis later
 	throw std::runtime_error("AudioDecoder::Decode not implemented");
 }
 
 void* AudioDecoder::CreateStream(const std::filesystem::path&)
 {
-	// STUB
+	// TODO
 	return nullptr;
 }
 

@@ -1,0 +1,14 @@
+Material:
+  Shader: 0
+  BaseColorTexture: 716384849547090595
+  NormalTexture: 12321815414181265351
+  MetallicRoughnessTexture: 3945969342613177998
+  OcclusionTexture: 3945969342613177998
+  EmissiveTexture: 6990325061173386322
+  BaseColorFactor: [1, 1, 1, 1]
+  MetallicFactor: 1
+  RoughnessFactor: 1
+  EmissiveFactor: [1, 1, 1]
+  AlphaMode: OPAQUE
+  AlphaCutoff: 0.5
+  DoubleSided: false
