@@ -50,6 +50,8 @@ cmake --build cmake-build-debug
 
 ---
 
+Uses OpenGL 4.1 (Latest macos supported version). 
+
 The scene adopts an ECS for entity management, as opposed to an object-oriented hierarchy. This allows for 
 easy runtime entity configuration. 
 
@@ -72,6 +74,7 @@ Currently working on
 - Basic audio engine
 - Entity gizmos
 - Scene serialization (reloading scene specs)
+
 
 Showcase: 
 
