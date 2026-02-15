@@ -9,9 +9,9 @@ class PerspectiveCamera : public Camera
 public:
 	PerspectiveCamera(float fov, float aspect, float nearPlane, float farPlane);
 
-	void SetPosition(const glm::vec3& pos)   { m_Position = pos; GetViewMatrix(); }
-	void SetRotation(float pitch, float yaw) { m_Pitch = pitch; m_Yaw = yaw; GetViewMatrix(); }
-	void SetAspect(float aspect)			 { m_Aspect = aspect; }
+	void SetPosition(const glm::vec3& pos)       { m_Position = pos; GetViewMatrix(); }
+	void SetRotation(float pitch, float yaw)     { m_Pitch = pitch; m_Yaw = yaw; GetViewMatrix(); }
+	void SetAspectRatio(float aspect)			 { m_Aspect = aspect; RecalculateProjection(); }
 
 	const float 	 GetYaw()    		   const		  { return m_Yaw; }
 	const float 	 GetPitch()  		   const		  { return m_Pitch; }
@@ -48,6 +48,7 @@ private:
 	float xInitPos;
 	float yInitPos;
 	float zInitPos;
+
 	glm::vec3 m_Position{0.0f};
 
 	glm::mat4 m_ViewMatrix{1.0f};

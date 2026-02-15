@@ -12,44 +12,37 @@ void OrbitCameraController::Update(float dt, Input& input)
 	glm::vec2 mouse    = input.GetMouseDelta();
 	double mouseScroll = input.GetMouseScrollY();
 
-	const float mouseSensitivity     = 0.1f;
-	const float mouseScrollSensivity = 0.0001f;
-	const float keySensitivity	     = 135.0f; // 135 deg per second
-	const float keyZoomSensitivity   = 3.0f;
-	const float minRadius            = 5.0f;
-	const float maxRadius		     = 100000.0f;
+
 	// TODO: Set min and max radius proportional to the size the pivot object
 
 	if (input.IsMousePressed(Mouse::Left) && !input.IsInUI())
 	{
-		m_Yaw    += mouse.x * mouseSensitivity;
-		m_Pitch  -= mouse.y * mouseSensitivity;
+		m_Yaw    += mouse.x * m_MouseSensitivity;
+		m_Pitch  -= mouse.y * m_MouseSensitivity;
 	}
-
 
 	// Zoom
 	if (mouseScroll != 0.0 && !input.IsInUI())
 	{
-		const float scrollSensitivity = 0.1f;
-		m_Radius *= std::exp(-mouseScroll * scrollSensitivity);
+
+		m_Radius *= std::exp(-mouseScroll * m_MouseScrollSensitivity);
 	}
 
-
-	if (!input.IsInUI())
+	if (!input.IsKeyboardCapturedByUI())
 	{
-		if (input.IsKeyPressed(Key::A) || input.IsKeyPressed(Key::Left))  m_Yaw   += keySensitivity * dt;
-		if (input.IsKeyPressed(Key::D) || input.IsKeyPressed(Key::Right)) m_Yaw   -= keySensitivity * dt;
-		if (input.IsKeyPressed(Key::W) || input.IsKeyPressed(Key::Up))    m_Pitch += keySensitivity * dt;
-		if (input.IsKeyPressed(Key::S) || input.IsKeyPressed(Key::Down))  m_Pitch -= keySensitivity * dt;
-		if (input.IsKeyPressed(Key::Space))    m_Radius *= std::exp(-keyZoomSensitivity * dt);
-		if (input.IsKeyPressed(Key::C))		   m_Radius *= std::exp(+keyZoomSensitivity * dt);
+		if (input.IsKeyPressed(Key::A) || input.IsKeyPressed(Key::Left))  m_Yaw   += m_KeySensitivity * dt;
+		if (input.IsKeyPressed(Key::D) || input.IsKeyPressed(Key::Right)) m_Yaw   -= m_KeySensitivity * dt;
+		if (input.IsKeyPressed(Key::W) || input.IsKeyPressed(Key::Up))    m_Pitch += m_KeySensitivity * dt;
+		if (input.IsKeyPressed(Key::S) || input.IsKeyPressed(Key::Down))  m_Pitch -= m_KeySensitivity * dt;
+		if (input.IsKeyPressed(Key::Space))    m_Radius *= std::exp(-m_KeyZoomSensitivity * dt);
+		if (input.IsKeyPressed(Key::C))		   m_Radius *= std::exp(+m_KeyZoomSensitivity * dt);
 	}
 
 	// Clamp radius
-	if (m_Radius < minRadius)
-		m_Radius = minRadius + 0.001f; // Small buffer
-	if (m_Radius > maxRadius)
-		m_Radius = maxRadius - 0.001f;
+	if (m_Radius < m_MinRadius)
+		m_Radius = m_MinRadius + 0.001f; // Small buffer
+	if (m_Radius > m_MaxRadius)
+		m_Radius = m_MaxRadius - 0.001f;
 
 	// Prevent flipping
 	m_Pitch = std::clamp(m_Pitch, -89.0f, 89.0f);

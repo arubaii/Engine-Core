@@ -9,6 +9,15 @@ private:
 	float m_Radius;
 	float m_Yaw   = 0.0f;
 	float m_Pitch = 0.0f;
+
+	// TODO: Add serialization for changes in settings in GUI
+	float m_MouseSensitivity       = 0.20f;
+	float m_MouseScrollSensitivity = 0.01f;
+	float m_KeySensitivity	     = 135.0f; // 135 deg per second
+	float m_KeyZoomSensitivity     = 3.0f;
+	float m_MinRadius              = 5.0f;
+	float m_MaxRadius		         = 100000.0f;
+
 public:
 	explicit OrbitCameraController(float radius = 10.0f)
 	: m_Radius(radius) {}

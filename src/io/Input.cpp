@@ -79,6 +79,16 @@ bool Input::IsInUI() const
 	return m_IsInUI;
 }
 
+bool Input::IsMouseCapturedByUI() const
+{
+	return ImGui::GetIO().WantCaptureMouse;
+}
+
+bool Input::IsKeyboardCapturedByUI() const
+{
+	return ImGui::GetIO().WantCaptureKeyboard;
+}
+
 bool Input::IsKeyPressed(int key) const
 {
 	return glfwGetKey(m_Window, key) == GLFW_PRESS;

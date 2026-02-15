@@ -7,11 +7,12 @@
 
 
 #include "asset_core/AssetTypes.h"
-#include "Camera/PerspectiveCamera.h"
+#include "../camera/PerspectiveCamera.h"
 #include "renderer_core/IndexBuffer.h"
 #include "renderer_core/Mesh.h"
 #include "renderer_core/MeshUtils.h"
 #include "renderer_core/VertexArray.h"
+#include "scene_core/camera/FreeCameraController.h"
 #include "utils/UUID.h"
 #include "utils/SmartPtrs.h"
 
@@ -117,16 +118,27 @@ struct ModelComponent
 
 struct ModelRootComponent
 {
+	UUID RootID;
 	std::vector<UUID> Parts;   // entities of each submesh
 	glm::vec3 LastTranslation{0.0f};
 	glm::vec3 LastRotation{0.0f};
 	glm::vec3 LastScale{1.0f};
 };
 
+struct ModelPartComponent
+{
+	UUID RootID;
+};
+
 struct MaterialComponent
 {
 	AssetHandle BaseMaterial = UUID(0);
 	MaterialDesc Desc;
+};
+
+struct TextureComponent
+{
+	uint8_t _ = 0;
 };
 
 struct SelectedComponent
@@ -143,6 +155,13 @@ struct LightComponent
 	bool HideLight = false;
 };
 
+struct BulletComponent
+{
+
+	glm::vec3 Velocity;
+};
+
+
 struct CameraComponent
 {
 	PerspectiveCamera Camera;
@@ -151,8 +170,12 @@ struct CameraComponent
 	float NearPlane;
 	float FarPlane;
 
+	float MoveSpeed;
+
 	bool Primary = false; // Denotes the primary camera in the scene
 
-	CameraComponent(float Fov, float AspectRatio, float NearPlane, float FarPlane)
-	: Camera(Fov, AspectRatio, NearPlane, FarPlane) {}
+
+	CameraComponent(float Fov, float AspectRatio, float NearPlane, float FarPlane, float MoveSpeed)
+	: Camera(Fov, AspectRatio, NearPlane, FarPlane), MoveSpeed(MoveSpeed) {}
+
 };

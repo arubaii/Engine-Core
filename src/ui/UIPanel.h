@@ -2,7 +2,7 @@
 #include <imgui.h>
 #include <glm/glm.hpp>
 #include "utils/SmartPtrs.h"
-#include "scene_core/Entity.h"
+#include "../scene_core/ecs/Entity.h"
 #include "core/Scene.h"
 
 
@@ -17,13 +17,15 @@ struct UI
     float greyScale = 0.1f;
     bool showGrid = false;
     bool showAxes = true;
-    bool showSkybox = true;
+    bool showSkybox = false;
     bool showLights = false;
     bool showCrosshair = false;
     float geometryScale = 1.0f;
 
     bool dragAffectsVertical = true;
     bool dragAffectsXZ;
+
+    bool enablePhysics = false;
 
 };
 
@@ -72,5 +74,15 @@ class UIPanel
 {
 public:
     static void Render(UI& data, entt::entity selected, Scene* scene);
+
+
+
+
+    static const int s_MaxSamples;
+    static float s_FPSHistory[120];
+    static int   s_FPSOffset;
+    static float s_RunningSum;
+    static int   s_SampleCount;
+    static float smoothedFPS;
 };
 

@@ -44,10 +44,10 @@ Window::Window(const WindowProperties& props)
 
     // Window Creation
     m_Window = glfwCreateWindow(m_WindowProperties.Width,
-                               m_WindowProperties.Height,
-                               m_WindowProperties.Title.c_str(),
-                               nullptr,
-                               nullptr);
+                                m_WindowProperties.Height,
+                                m_WindowProperties.Title.c_str(),
+                                nullptr,
+                                nullptr);
     if (!m_Window)
         throw std::runtime_error("Failed to create GLFW window");
 

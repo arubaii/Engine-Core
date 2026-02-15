@@ -2,21 +2,19 @@
 #include <cstdint>
 #include <glm/vec3.hpp>
 #include <cassert>
-#include "core/Scene.h"
+#include <entt/entt.hpp>
 #include "Components.h"
-
-
 
 class Entity
 {
 private:
 	entt::entity m_EntityHandle{ entt::null }; // Strong typing
-	Scene* m_Scene = nullptr;
+	entt::registry* m_Registry = nullptr;
 
 public:
 	Entity() = default;
-	Entity(entt::entity handle, Scene* scene)
-	: m_EntityHandle(handle), m_Scene(scene) { }
+	Entity(entt::entity handle, entt::registry* registry)
+	: m_EntityHandle(handle), m_Registry(registry) { }
 	Entity(const Entity& other) = default;
 
 	template<typename T, typename... Args>
@@ -24,13 +22,19 @@ public:
 	{
 		assert(!HasComponent<T>() && "Entity already has component!");
 
-		m_Scene->m_Registry.emplace<T>(m_EntityHandle, std::forward<Args>(args)...);
+		m_Registry->emplace<T>(m_EntityHandle, std::forward<Args>(args)...);
 
 		// Always fetch explicitly
-		T& component = m_Scene->m_Registry.get<T>(m_EntityHandle);
+		T& component = m_Registry->get<T>(m_EntityHandle);
 
-		m_Scene->OnComponentAdded<T>(*this, component);
 		return component;
+	}
+
+	// Doesn't take args, although rarely are args used for AddComponent
+	template<typename... Components>
+	void AddComponents()
+	{
+		(AddComponent<Components>(), ...);
 	}
 
 	/**
@@ -42,30 +46,35 @@ public:
 	T& GetComponent()
 	{
 		assert(HasComponent<T>() && "entity does not have component");
-		return m_Scene->m_Registry.get<T>(m_EntityHandle);
+		return m_Registry->get<T>(m_EntityHandle);
 	}
 
 	template<typename T>
 	const T& GetComponent() const
 	{
 		assert(HasComponent<T>() && "Entity does not have component");
-		return m_Scene->m_Registry.get<T>(m_EntityHandle);
+		return m_Registry->get<T>(m_EntityHandle);
 	}
 
 	template<typename T>
 	bool HasComponent() const
 	{
-		return m_Scene->m_Registry.any_of<T>(m_EntityHandle);
+		return m_Registry->any_of<T>(m_EntityHandle);
 	}
-
 
 	template<typename T>
 	void RemoveComponent()
 	{
 		assert(HasComponent<T>() && "entity does not have component");
-		m_Scene->m_Registry.remove<T>(m_EntityHandle);
+		m_Registry->remove<T>(m_EntityHandle);
 	}
 
+	// Doesn't take args, although rarely are args used for RemoveComponent
+	template<typename... Components>
+	void RemoveComponents()
+	{
+		(RemoveComponent<Components>(), ...);
+	}
 
 	const std::string& GetTag() const
 	{
@@ -77,8 +86,18 @@ public:
 	operator uint32_t()		const { return (uint32_t)m_EntityHandle; }
 
 	bool operator!=(const Entity& other) const { return !(*this == other); }
+
+
 	bool operator==(const Entity& other) const
-	{ return m_EntityHandle == other.m_EntityHandle && m_Scene == other.m_Scene; }
+	{
+		return m_EntityHandle == other.m_EntityHandle;
+	}
+
+	bool operator==(entt::entity handle) const
+	{
+		return m_EntityHandle == handle;
+	}
+
 
 	const std::string& GetName() { return GetComponent<TagComponent>().Tag;}
 	UUID GetUUID()				 { return GetComponent<IDComponent>().ID;}

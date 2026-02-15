@@ -5,57 +5,33 @@
 #include <entt/entt.hpp>
 #include "utils/SmartPtrs.h"
 #include "utils/UUID.h"
-#include "scene_core/Components.h"
+#include "scene_core/ecs/Components.h"
+#include "scene_core/ecs/EntitySnapshot.h"
+#include "scene_core/ecs/Entity.h"
 #include "Renderer.h"
 #include "Window.h"
 #include "io/Input.h"
-#include "scene_core/Camera/FreeCameraController.h"
-#include "scene_core/Camera/OrbitCameraController.h"
-#include "math/RayHit.h"
+#include "scene_core/camera/FreeCameraController.h"
+#include "scene_core/camera/OrbitCameraController.h"
+#include "asset_io/Cursors.h"
 #include "math/Intersect.h"
 #include "renderer_core/Skybox.h"
 #include "utils/Primitives.h"
 
+#include "scene_core/systems/FrameContext.h"
+#include "scene_core/systems/DragSystem.h"
+#include "scene_core/systems/RaycastSystem.h"
+#include "scene_core/systems/SelectionSystem.h"
+#include "scene_core/systems/UndoSystem.h"
+#include "scene_core/systems/CameraSystem.h"
+#include "scene_core/systems/EditorCommandSystem.h"
 
-struct EntitySnapshot
-{
-	UUID id;
-	std::string tag;
-
-	bool hasTransform = false;
-	TransformComponent transform;
-
-	bool hasMesh = false;
-	MeshComponent mesh;
-
-	bool hasLight = false;
-	LightComponent light;
-
-	bool hasMaterial = false;
-	MaterialComponent material;
-
-	bool hasModelRoot = false;
-	std::vector<EntitySnapshot> parts; // Deep snapshot of parts
-};
-
-struct MoveAction
-{
-	UUID id;
-	glm::vec3 before;
-	glm::vec3 after;
-};
-
-struct CreateAction
-{
-	EntitySnapshot snapshot;
-};
-
-struct DeleteAction
-{
-	EntitySnapshot snapshot;
-};
-
-using Action = std::variant<MoveAction, CreateAction, DeleteAction>;
+class SelectionSystem;
+class RaycastSystem;
+class DragSystem;
+class UndoSystem;
+class CameraSystem;
+class EditorCommandSystem;
 
 
 struct CameraProps
@@ -64,6 +40,7 @@ struct CameraProps
 	float AspectRatio;
 	float NearPlane;
 	float FarPlane;
+	float MoveSpeed;
 };
 
 // Refactor out later
@@ -173,14 +150,13 @@ inline MaterialSpecs GetMaterialType(MATERIALS m)
 };
 
 
-class Entity; // Incomplete at compile time
 
 class Scene
 {
 public:
-	void BindMaterial(const MaterialComponent& material, const Ref<Shader>& shader, int& slot);
+	// void BindMaterial(const MaterialComponent& material, const Ref<Shader>& shader, int& slot);
 
-	void SetModelMaterial(Entity root, AssetHandle matHandle);
+	// void SetModelMaterial(Entity root, AssetHandle matHandle);
 
 	Scene(Window& window, Input& input);
 
@@ -189,12 +165,24 @@ public:
 	void Update(float dt, Input& input);
 	void Render(Renderer& renderer);
 
+	void Shoot(glm::vec3 camPos, glm::vec3 camForward, float speed);
+
 
 	// ============ Entity Configuration ============
-	Entity InitEntity(const std::string& name = "Unnamed Entity");
+	entt::registry& GetRegistry() { return m_Registry; }
 
-	Entity CreateEntity(UUID uuid, const std::string& name = "Unnamed Entity");
+	Window& GetWindow() { return m_Window; }
+	const Window& GetWindow() const { return m_Window; }
 
+	GLFWwindow* GetGLFWwindow() { return m_Window.GetGLFWwindow(); }
+	GLFWwindow* GetGLFWwindow() const { return m_Window.GetGLFWwindow(); }
+
+	Entity CreateEntity(UUID uuid = UUID(), const std::string& name = "Unnamed Entity");
+
+	Entity CreateEntityForRestore(UUID uuid, const std::string &name);
+
+
+	std::string GenerateCopyName(const std::string &base);
 
 	Entity DuplicateEntity(Entity src);
 	void   DeleteEntity   (Entity entity);
@@ -206,19 +194,27 @@ public:
 	Entity GetEntityByID  (UUID id);
 	UUID GetSelectedUUID() const { return m_SelectedUUID; }
 
-	float CalculateEntityRadius(Entity entity);
+
+	// size_t GetMaxEntityIndex(std::string startsWith);
 
 	template<class T>
 	void OnComponentAdded(Entity entity, T &component);
 
 	Entity FindModelRootFromPart(Entity part);
 
-	void SetEntityMaterial(Entity e, AssetHandle matHandle);
+	// void SetEntityMaterial(Entity e, AssetHandle matHandle);
 	void ApplyMaterialToSelection(Entity selected, const Ref<MaterialAsset> &mat);
-	void DrawGrid(const CameraComponent& cc) const;
-	void DrawLocalGrid(const CameraComponent &cc);
-	void DrawSkybox(const CameraComponent &cc) const;
+	void DrawGrid(const CameraComponent &cc, Renderer &renderer) const;
+	void DrawLocalGrid(const CameraComponent& cc,
+						  Renderer& renderer,
+						  const glm::vec3& origin,
+						  float height,
+						  float size);
+
+	void DrawSkybox(const CameraComponent &cc, Renderer &renderer) const;
 	void DrawYAxis(const CameraComponent &cc, Renderer &renderer, Entity selected);
+
+	void DrawOutline(const CameraComponent &cc, Renderer &renderer);
 
 
 	bool Raycast(const Ray& ray, RayHit& outHit) const;
@@ -237,11 +233,11 @@ public:
 	entt::entity GetSelectedEntity() const { return m_SelectedEntity; }
 	void SetSelectedEntity(entt::entity e);
 
-	glm::vec3 ColorFromTemperature(float kelvin);
+	// glm::vec3 ColorFromTemperature(float kelvin);
 
-	float ComputeEntityFloorY(Entity e);
+	// float ComputeEntityFloorY(Entity e);
 
-	float ComputeXZRadius(Entity e);
+	// float ComputeXZRadius(Entity e);
 
 	void PushAction(Action a);
 
@@ -260,6 +256,17 @@ public:
 
 	void Redo();
 
+	CameraSystem& GetCameraSystem() { return *m_CameraSystem; }
+	const CameraSystem& GetCameraSystem() const { return *m_CameraSystem; }
+	DragSystem& GetDragSystem() { return *m_DragSystem; }
+
+	UndoSystem& GetUndoSystem() { return *m_UndoSystem; }
+	const UndoSystem& GetUndoSystem() const { return *m_UndoSystem; }
+
+	SelectionSystem& GetSelectionSystem() { return *m_SelectionSystem; }
+	const SelectionSystem& GetSelectionSystem() const { return *m_SelectionSystem; }
+
+
 private:
 	Window&   m_Window;
 	CameraProps m_CameraProps;
@@ -267,10 +274,7 @@ private:
 	glm::vec2 m_Viewport;
 
 	// ============ Camera Configuration ============
-	std::vector<Scope<CameraController>> m_CameraControllers;
-	std::size_t m_ActiveController = 0;
-	std::size_t FREE_CONTROLLER_INDEX = 0;
-	std::size_t ORBIT_CONTROLLER_INDEX = 1;
+
 	float MOVE_PLANE_Y = 0.0f;
 
 
@@ -287,6 +291,8 @@ private:
 
 	unsigned int m_InfiniteGridVAO = 0;
 	unsigned int m_GridVAO = 0;
+
+	// TODO: Move later
 	Ref<Shader> m_InfiniteGridShader;
 	Ref<Shader> m_GridShader;
 	Ref<Shader> m_BasisShader;
@@ -297,6 +303,9 @@ private:
 	Ref<Shader> m_OutlineShader;
 	Ref<Shader> m_SkyboxShader;
 	Ref<Shader> m_PBRShader;
+	Ref<Shader> m_MaskShader;
+	Ref<Shader> m_OutlinePostShader;
+	Ref<Shader> m_DepthOnlyShader;
 
 	VertexBufferLayout m_CrosshairLayout;
 	VertexBuffer m_CrosshairVB;
@@ -319,6 +328,8 @@ private:
 	GLuint m_HDRSkyboxCubemap = 0;
 
 public:
+
+
 	static constexpr glm::vec3 DefaultCameraPosition{ 154.23f, 122.63f, 99.62f };
 	static constexpr float     DefaultPitch = -35.42f;
 	static constexpr float     DefaultYaw   = -169.88f;
@@ -345,14 +356,8 @@ public:
 	bool m_DragAffectsVertical = true;
 	bool m_DragAffectsXZ = false;
 
-	// Cursor
-	GLFWcursor* m_ArrowCursor = nullptr;
-	GLFWcursor* m_PointHandCursor = nullptr;
-	GLFWcursor* m_OpenHandCursor = nullptr;
-	GLFWcursor* m_GrabHandCursor = nullptr;
-	GLFWcursor* m_ResizeHandCursor = nullptr;
-	GLFWcursor* m_ResizeUpDownCursor = nullptr;
-	GLFWcursor* m_MoveCursor = nullptr;
+
+
 
 
 	bool m_WasHovering = false;
@@ -375,9 +380,7 @@ public:
 
 	bool m_ShouldDrawLocalGrid = false;
 	entt::entity m_LocalGridID = entt::null;
-	glm::vec3 m_LocalGridOrigin = glm::vec3(0.0f);
-	float m_LocalGridHeight = 0.0f;
-	float m_LocalGridSize = 0.0f;
+
 
 
 	std::vector<Action> m_Undo;
@@ -397,6 +400,19 @@ public:
 	GLuint m_BRDFLUTTex    = 0;   // GL_TEXTURE_2D
 
 	Mesh m_SphereMesh = PRIMITIVES::GenerateSphere();
+	Mesh m_BulletMesh = PRIMITIVES::GenerateSphere(8, 8);
 
+	bool m_EnablePhysics;
+
+	Scope<CameraSystem>    		m_CameraSystem;
+	Scope<RaycastSystem>   		m_RaycastSystem;
+	Scope<SelectionSystem> 		m_SelectionSystem;
+	Scope<DragSystem>      		m_DragSystem;
+	Scope<UndoSystem>			m_UndoSystem;
+	Scope<EditorCommandSystem>  m_EditorCommandSystem;
+
+	bool m_OutlinesInitialized = false;
+	int  m_LastOutlineW = 0;
+	int  m_LastOutlineH = 0;
 };
 

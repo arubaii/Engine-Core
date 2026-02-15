@@ -13,6 +13,10 @@ public:
 
 	bool IsInUI() const;
 
+	bool IsMouseCapturedByUI() const;
+
+	bool IsKeyboardCapturedByUI() const;
+
 
 	static Input* s_Instance;
 

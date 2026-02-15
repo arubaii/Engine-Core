@@ -16,8 +16,8 @@ void FreeCameraController::Update(float dt, Input& input)
 	glm::vec3 up	  = glm::vec3(0.0f, 1.0f, 0.0f);
 
 	glm::vec3 position = m_Camera->GetPosition();
-	// =========== Keyboard Movement ===========
 
+	// =========== Keyboard Movement ===========
 	glm::vec3 move{0.0f};
 
 	if (input.IsKeyboardEnabled())

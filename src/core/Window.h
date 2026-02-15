@@ -22,16 +22,15 @@ public:
 	Window(const WindowProperties& props = WindowProperties());
 	~Window();
 
-	// Use sparingly, currently only used for m_ImGuiLayer in Application.cpp
 	GLFWwindow* GetGLFWwindow() const { return m_Window; }
 
-	int	GetWidth()  const { return m_WindowProperties.Width; }
-	int	GetHeight()	const { return m_WindowProperties.Height; }
+	int	GetWidth()  const { return m_FramebufferWidth / 2; }
+	int	GetHeight()	const { return m_FramebufferHeight / 2; }
 	glm::vec2 GetViewport() const
 	{
-		return glm::vec2(m_WindowProperties.Width, m_WindowProperties.Height);
+		return glm::vec2(m_FramebufferWidth / 2, m_FramebufferHeight / 2);
 	}
-	float GetAspectRatio() const
+	float GetAspect() const
 	{
 		if (m_FramebufferHeight == 0)
 			return 1.0f;

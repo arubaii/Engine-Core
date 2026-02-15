@@ -2,6 +2,8 @@
 #include <glm/mat4x4.hpp>
 #include <glm/mat3x3.hpp>
 
+
+
 Skybox::Skybox(Ref<Shader> s)
 	: m_Shader(std::move(s))
 {
@@ -36,4 +38,5 @@ Skybox::Skybox(Ref<Shader> s)
 
 	m_VAO.ResetAttribIndex();
 }
+
 
