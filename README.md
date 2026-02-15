@@ -1,20 +1,9 @@
 # Engine-Core
 
-Showcase: 
-
-<img width="2047" height="1088" alt="Screenshot 2026-02-15 at 8 52 17 AM" src="https://github.com/user-attachments/assets/e858af53-6f49-4caa-8576-8ad4b28d3e37" />
-<img width="2046" height="1083" alt="Screenshot 2026-02-15 at 8 51 11 AM" src="https://github.com/user-attachments/assets/572db3c4-12e7-4bad-8ff0-581b2c48f647" />
-
-<img width="2042" height="1090" alt="Screenshot 2026-02-15 at 8 47 39 AM" src="https://github.com/user-attachments/assets/93d334eb-0a52-4892-b2ed-538cac88ed7d" />
 
 
 
-
-[Watch the engine showcase](https://www.dropbox.com/scl/fi/utqbizelglxb73pumgol6/engine_showcase.mp4?rlkey=wkrip3kqnec3h1t62uzubdo3b&st=alp0ipyk&dl=0)
-
-
----
-
+A work-in-progress 3D graphics engine. *Better name TBD*. 
 
 Uses OpenGL 4.1 (Latest macos supported version). 
 
@@ -41,6 +30,21 @@ Currently working on
 - Basic audio engine
 - Expand scene gizmos
 - Scene serialization (reloading scene specs)
+
+---
+
+Showcase: 
+
+<img width="2047" height="1088" alt="Screenshot 2026-02-15 at 8 52 17 AM" src="https://github.com/user-attachments/assets/e858af53-6f49-4caa-8576-8ad4b28d3e37" />
+<img width="2046" height="1083" alt="Screenshot 2026-02-15 at 8 51 11 AM" src="https://github.com/user-attachments/assets/572db3c4-12e7-4bad-8ff0-581b2c48f647" />
+
+<img width="2042" height="1090" alt="Screenshot 2026-02-15 at 8 47 39 AM" src="https://github.com/user-attachments/assets/93d334eb-0a52-4892-b2ed-538cac88ed7d" />
+
+
+
+
+[Watch an engine showcase](https://www.dropbox.com/scl/fi/utqbizelglxb73pumgol6/engine_showcase.mp4?rlkey=wkrip3kqnec3h1t62uzubdo3b&st=alp0ipyk&dl=0)
+
 
 ---
 
