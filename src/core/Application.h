@@ -45,7 +45,7 @@ private:
 	Scope<ImGuiLayer> m_ImGuiLayer;
 	Scope<Shader>	  m_Shader;
 	Input			  m_Input;
-	UI		  m_UI{};
+	UIData		  m_UI{};
 
 
 	double m_LastFrame;

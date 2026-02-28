@@ -3,10 +3,8 @@ project(Engine_Core)
 set(CMAKE_CXX_STANDARD 23)
 
 find_package(glfw3 CONFIG REQUIRED)
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(GLEW REQUIRED glew)
+#find_package(GLEW REQUIRED)
 find_package(glm CONFIG REQUIRED)
-find_package(OpenGL REQUIRED)
 
 
 # ======================================================
@@ -24,6 +22,15 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(entt)
 
 
+add_library(glad STATIC
+        vendor/glad/src/gl.c
+)
+
+target_include_directories(glad PUBLIC
+        ${CMAKE_SOURCE_DIR}/vendor/glad/include
+)
+
+
 # ======================================================
 # =============== IMGUI SETUP ==========================
 # ======================================================
@@ -38,7 +45,6 @@ set(IMGUI_SOURCES
         ${IMGUI_DIR}/imgui_demo.cpp
         ${IMGUI_DIR}/backends/imgui_impl_glfw.cpp
         ${IMGUI_DIR}/backends/imgui_impl_opengl3.cpp
-        ${CMAKE_SOURCE_DIR}/include/GLcommon.h
 )
 
 add_library(imgui STATIC ${IMGUI_SOURCES})
@@ -47,7 +53,8 @@ target_include_directories(imgui PUBLIC
         ${IMGUI_DIR}/backends
 )
 
-target_link_libraries(imgui PUBLIC glfw "-framework OpenGL")
+target_link_libraries(imgui PUBLIC glfw glad)
+
 
 # ======================================================
 # =============== Project Sources ======================
@@ -55,29 +62,29 @@ target_link_libraries(imgui PUBLIC glfw "-framework OpenGL")
 
 file(GLOB_RECURSE SRC_FILES
         ${CMAKE_SOURCE_DIR}/src/*.cpp
-
 )
 
 add_executable(Engine_Core
         ${SRC_FILES}
         vendor/stb/stb_image.cpp
-
 )
 
 target_compile_definitions(Engine_Core PRIVATE
         PROJECT_DIR="${CMAKE_SOURCE_DIR}"
 )
 
-#add_compile_definitions(ASSET_DIR="${CMAKE_SOURCE_DIR}/assets")
-
 
 # ======================================================
 # =============== Include Directories ==================
 # ======================================================
+
+set(ASSIMP_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(ASSIMP_BUILD_ASSIMP_VIEW OFF CACHE BOOL "" FORCE)
+set(ASSIMP_BUILD_SAMPLES OFF CACHE BOOL "" FORCE)
+set(ASSIMP_NO_EXPORT ON CACHE BOOL "" FORCE)
+
 add_subdirectory(vendor/yaml-cpp)
 add_subdirectory(vendor/assimp)
-
-target_link_libraries(Engine_Core PRIVATE yaml-cpp)
 
 target_include_directories(Engine_Core PRIVATE
         ${CMAKE_SOURCE_DIR}/src
@@ -85,52 +92,32 @@ target_include_directories(Engine_Core PRIVATE
         ${CMAKE_SOURCE_DIR}/vendor
         ${CMAKE_SOURCE_DIR}/vendor/imgui
         ${CMAKE_SOURCE_DIR}/vendor/imgui/backends
-        ${GLEW_INCLUDE_DIRS}
 )
+
 
 # ======================================================
 # =============== Link Libraries =======================
 # ======================================================
 
 if(APPLE)
-    if (EXISTS "/opt/homebrew/lib/libGLEW.dylib")
-        target_link_libraries(Engine_Core PRIVATE
-                glfw
-                "-framework OpenGL"
-                /opt/homebrew/lib/libGLEW.dylib
-                imgui
-                EnTT::EnTT
-                yaml-cpp
-                assimp
-        )
-    else()
-        target_link_libraries(Engine_Core PRIVATE
-                glfw
-                ${GLEW_LIBRARIES}
-                "-framework OpenGL"
-                imgui
-                EnTT::EnTT
-                yaml-cpp
-                assimp
-        )
-    endif()
-else()
     target_link_libraries(Engine_Core PRIVATE
             glfw
-            ${GLEW_LIBRARIES}
-            OpenGL::GL
+            #            GLEW::GLEW
+            glad
             imgui
             EnTT::EnTT
             yaml-cpp
             assimp
+            m
     )
-endif()
-
-if(APPLE)
-    target_link_libraries(Engine_Core PRIVATE m)
-endif()
-
-if(APPLE)
+else()
     target_link_libraries(Engine_Core PRIVATE
+            glfw
+            #            GLEW::GLEW
+            glad
+            imgui
+            EnTT::EnTT
+            yaml-cpp
+            assimp
     )
 endif()

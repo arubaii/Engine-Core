@@ -1,5 +1,5 @@
 #pragma once
-#include <GLFW/glfw3.h>
+#include "GLcommon.h"
 #include <cstdint>
 
 namespace Key

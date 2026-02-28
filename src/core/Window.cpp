@@ -51,12 +51,19 @@ Window::Window(const WindowProperties& props)
     if (!m_Window)
         throw std::runtime_error("Failed to create GLFW window");
 
+
     int windowX = xpos + (workW - m_WindowProperties.Width) / 2;
     int windowY = ypos + (workH - m_WindowProperties.Height) / 2;
 
     glfwSetWindowPos(m_Window, windowX, windowY); // Center of window
 
     glfwMakeContextCurrent(m_Window);
+
+    if (!gladLoadGL(glfwGetProcAddress))
+    {
+        throw std::runtime_error("Failed to initialize OpenGL loader");
+    }
+
 
     int fbw, fbh;
     glfwGetFramebufferSize(m_Window, &fbw, &fbh);
@@ -74,23 +81,41 @@ Window::Window(const WindowProperties& props)
     int fbH = static_cast<int>(workH * yscale);
 
     glfwGetFramebufferSize(m_Window, &fbw, &fbh);
-    glViewport(0, 0, fbw, fbh);
 
-    glewExperimental = GL_TRUE;
-    if (glewInit() != GLEW_OK)
-        std::cout << "Failed to initialize GLEW" << std::endl;
 
     // Resize callback
     glfwSetWindowUserPointer(m_Window, this);
-    glfwSetFramebufferSizeCallback(m_Window, [](GLFWwindow* win, int w, int h) {
-        glViewport(0, 0, w, h);
-        if (auto* window = static_cast<Window*>(glfwGetWindowUserPointer(win))) {
-            window->m_FramebufferWidth  = w;
-            window->m_FramebufferHeight = h;
+    glfwSetFramebufferSizeCallback(m_Window,
+        [](GLFWwindow* win, int fbW, int fbH)
+        {
+            Window* self = static_cast<Window*>(glfwGetWindowUserPointer(win));
+            if (!self) return;
+
+            self->m_FramebufferWidth  = fbW;
+            self->m_FramebufferHeight = fbH;
         }
-    });
+    );
 
     SetVSync(m_WindowProperties.VSyncEnabled);
+}
+
+// Some systems use a pixel ratio != 1 (HiDPI / DPI)
+// e.g. macOS Retina renders at a 2x pixel ratio
+float Window::GetDPIScale() const
+{
+    int winW, winH;
+    int fbW, fbH;
+
+    glfwGetWindowSize(m_Window, &winW, &winH);
+    glfwGetFramebufferSize(m_Window, &fbW, &fbH);
+
+    if (winW == 0 || winH == 0) return 1.0f;
+
+    float sx = float(fbW) / float(winW);
+    float sy = float(fbH) / float(winH);
+
+    // Usually sx == sy, but take the average just in case
+    return (sx + sy) * 0.5f;
 }
 
 
@@ -101,9 +126,9 @@ Window::~Window()
     glfwTerminate();
 }
 
-void Window::AttachInput(Input& input)
+void Window::AttachInput(Input* input)
 {
-    input.Init(m_Window);
+    input->Init(m_Window);
 }
 
 Scope<Window> Window::Create(unsigned int width,

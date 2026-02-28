@@ -2,6 +2,8 @@
 #include "GLcommon.h"
 #include <glm/vec2.hpp>
 #include <iostream>
+#include <glm/vec4.hpp>
+
 #include "utils/SmartPtrs.h"
 
 
@@ -19,53 +21,138 @@ struct WindowProperties
 class Window
 {
 public:
-	Window(const WindowProperties& props = WindowProperties());
-	~Window();
+    Window(const WindowProperties& props = WindowProperties());
 
-	GLFWwindow* GetGLFWwindow() const { return m_Window; }
+    float GetDPIScale() const;
 
-	int	GetWidth()  const { return m_FramebufferWidth / 2; }
-	int	GetHeight()	const { return m_FramebufferHeight / 2; }
-	glm::vec2 GetViewport() const
-	{
-		return glm::vec2(m_FramebufferWidth / 2, m_FramebufferHeight / 2);
-	}
-	float GetAspect() const
-	{
-		if (m_FramebufferHeight == 0)
-			return 1.0f;
+    ~Window();
 
-		return (float)m_FramebufferWidth / (float)m_FramebufferHeight;
-	}
+    GLFWwindow* GetGLFWwindow() const { return m_Window; }
 
-	void SetInputMode         (int mode, int value) const
-	{
-		glfwSetInputMode(m_Window, mode, value);
-	}
+    void SetFBW(int fbw) { m_FramebufferWidth = fbw; }
+    void SetFBH(int fbh) { m_FramebufferHeight = fbh; }
+    int  GetFBW() const { return m_FramebufferWidth; }
+    int  GetFBH() const { return m_FramebufferHeight; }
 
-	void SetCursorPosCallback (GLFWcursorposfun callback) const
-	{
-		glfwSetCursorPosCallback(m_Window, callback);
-	}
-	void AttachInput(class Input& input);
+    // Currently used for: Raycasting, ImGui
+    glm::vec2 GetLogicalViewport() const
+    {
+        int winW, winH;
+        int fbW, fbH;
 
-	void SetVSync(bool enabled = 0);
+        glfwGetWindowSize(m_Window, &winW, &winH);
+        glfwGetFramebufferSize(m_Window, &fbW, &fbH);
+
+        float sx = float(fbW) / float(winW);
+        float sy = float(fbH) / float(winH);
+
+        return glm::vec2(
+            float(m_RenderWidth)  / sx,
+            float(m_RenderHeight) / sy
+        );
+    }
+
+    glm::vec2 GetFramebufferViewport() const
+    {
+        return glm::vec2(
+            float(m_RenderWidth),
+            float(m_RenderHeight)
+        );
+    }
+
+    int GetWindowWidth() const
+    {
+        int winW, winH;
+        glfwGetWindowSize(m_Window, &winW, &winH);
+        return winW;
+    }
+
+    int GetWindowHeight() const
+    {
+        int winW, winH;
+        glfwGetWindowSize(m_Window, &winW, &winH);
+        return winH;
+    }
+
+    glm::vec2 GetViewport() const
+    {
+        return glm::vec2((float)GetWindowWidth(), (float)GetWindowHeight());
+    }
+
+    float GetAspect() const
+    {
+        int h = GetWindowHeight();
+        if (h == 0) return 1.0f;
+        return (float)GetWindowWidth() / (float)h;
+    }
+
+    void SetInputMode(int mode, int value) const
+    {
+        glfwSetInputMode(m_Window, mode, value);
+    }
+
+    void SetCursorPosCallback(GLFWcursorposfun callback) const
+    {
+        glfwSetCursorPosCallback(m_Window, callback);
+    }
+
+    void AttachInput(class Input* input);
+
+    void SetVSync(bool enabled = 0);
 
     static Scope<Window> Create
-	(
+    (
         unsigned int width,
         unsigned int height,
         const std::string& title,
         unsigned int monitor_selected
     );
 
-	bool ShouldClose() const;
-	void SwapBuffers() const;
-	void PollEvents()  const;
+    bool ShouldClose() const;
+    void SwapBuffers() const;
+    void PollEvents()  const;
+
+    void SetRenderRegion(float panelWidth, float bottomHeight)
+    {
+
+
+        float dpi = GetDPIScale();
+
+        int fbW = m_FramebufferWidth;
+        int fbH = m_FramebufferHeight;
+
+        int panelWidthScaled   = int(panelWidth   * dpi);
+        int bottomHeightScaled = int(bottomHeight * dpi);
+
+        m_RenderX = panelWidthScaled;
+        m_RenderY = bottomHeightScaled;
+        m_RenderWidth  = fbW - m_RenderX;
+        m_RenderHeight = fbH - m_RenderY;
+
+        glViewport(m_RenderX, m_RenderY, m_RenderWidth, m_RenderHeight);
+    }
+
+
+    int GetRenderX() const { return m_RenderX; }
+    int GetRenderY() const { return m_RenderY; }
+    int GetRenderWidth()  const { return m_RenderWidth; }
+    int GetRenderHeight() const { return m_RenderHeight; }
+
+    float GetRenderAspect() const
+    {
+        if (m_RenderHeight == 0) return 1.0f;
+        return (float)m_RenderWidth / (float)m_RenderHeight;
+    }
+
 
 private:
-	GLFWwindow* m_Window = nullptr;
-	WindowProperties m_WindowProperties;
-	int m_FramebufferWidth;
-	int m_FramebufferHeight;
+    GLFWwindow* m_Window = nullptr;
+    WindowProperties m_WindowProperties;
+    int m_FramebufferWidth;
+    int m_FramebufferHeight;
+
+    int m_RenderX = 0;
+    int m_RenderY = 0;
+    int m_RenderWidth  = 0;
+    int m_RenderHeight = 0;
 };

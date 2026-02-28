@@ -7,26 +7,61 @@
 
 void OrbitCameraController::Update(float dt, Input& input)
 {
-	assert(m_Camera && "Camera not bound to FreeCameraController");
+	assert(m_Camera && "Camera not bound to OrbitCameraController");
 
-	glm::vec2 mouse    = input.GetMouseDelta();
+	glm::vec2 mouseDelta = input.GetMouseDelta();
 	double mouseScroll = input.GetMouseScrollY();
 
+	auto& tc = m_SelectedEntity.GetComponent<TransformComponent>();
 
-	// TODO: Set min and max radius proportional to the size the pivot object
 
-	if (input.IsMousePressed(Mouse::Left) && !input.IsInUI())
+	if (input.IsMousePressed(Mouse::Left))
 	{
-		m_Yaw    += mouse.x * m_MouseSensitivity;
-		m_Pitch  -= mouse.y * m_MouseSensitivity;
+		glm::vec2 velocity = mouseDelta / dt * m_MouseSensitivity;
+		// Smooth velocity
+		m_AngularVelocity = glm::mix(m_AngularVelocity, velocity, 0.2f);
 	}
+	else
+	{
+		float decay = std::exp(-8.0f * dt);
+		m_AngularVelocity *= decay;
+
+		if (glm::length(m_AngularVelocity) < 0.001f)
+			m_AngularVelocity = glm::vec2(0.0f);
+	}
+
+	if (input.IsMousePressed(Mouse::Right))
+	{
+		float entityRotSense = 0.025;
+		glm::vec2 velocity = mouseDelta / dt * (m_MouseSensitivity * entityRotSense);
+		// Smooth velocity
+		m_EntityAngularVelocity = glm::mix(m_EntityAngularVelocity, velocity, 0.2f);
+	}
+	else
+	{
+		float decay = std::exp(-8.0f * dt);
+		m_EntityAngularVelocity *= decay;
+
+		if (glm::length(m_EntityAngularVelocity) < 0.001f)
+			m_EntityAngularVelocity = glm::vec2(0.0f);
+	}
+
+	// Rotate entity on right click
+	glm::vec3 rot = tc.GetRotation();
+
+	rot.x += m_EntityAngularVelocity.y * dt; // yaw
+	rot.y -= m_EntityAngularVelocity.x * dt; // pitch
+	tc.SetRotation(rot);
+
+	// Rotate camera on left click
+	m_Yaw   += m_AngularVelocity.x * dt;
+	m_Pitch -= m_AngularVelocity.y * dt;
+
 
 	// Zoom
 	if (mouseScroll != 0.0 && !input.IsInUI())
-	{
-
 		m_Radius *= std::exp(-mouseScroll * m_MouseScrollSensitivity);
-	}
+
 
 	if (!input.IsKeyboardCapturedByUI())
 	{
@@ -34,8 +69,20 @@ void OrbitCameraController::Update(float dt, Input& input)
 		if (input.IsKeyPressed(Key::D) || input.IsKeyPressed(Key::Right)) m_Yaw   -= m_KeySensitivity * dt;
 		if (input.IsKeyPressed(Key::W) || input.IsKeyPressed(Key::Up))    m_Pitch += m_KeySensitivity * dt;
 		if (input.IsKeyPressed(Key::S) || input.IsKeyPressed(Key::Down))  m_Pitch -= m_KeySensitivity * dt;
-		if (input.IsKeyPressed(Key::Space))    m_Radius *= std::exp(-m_KeyZoomSensitivity * dt);
-		if (input.IsKeyPressed(Key::C))		   m_Radius *= std::exp(+m_KeyZoomSensitivity * dt);
+
+
+		if (input.IsKeyPressedOnce(Key::Space))
+			m_ZoomVelocity += m_KeyZoomSensitivity;
+		else if (input.IsKeyPressedOnce(Key::C))
+			m_ZoomVelocity -= m_KeyZoomSensitivity;
+		m_Radius *= std::exp(-m_ZoomVelocity * dt);
+
+		float decay = std::exp(-8.0f * dt);
+		m_ZoomVelocity *= decay;
+
+		if (std::abs(m_ZoomVelocity) < 0.001f)
+			m_ZoomVelocity = 0.0f;
+
 	}
 
 	// Clamp radius
@@ -45,6 +92,8 @@ void OrbitCameraController::Update(float dt, Input& input)
 		m_Radius = m_MaxRadius - 0.001f;
 
 	// Prevent flipping
+	// With euler angles cos(pitch) < 0 when pitch > 90, vice versa for pitch < -90
+	// TODO: switch to quaternions
 	m_Pitch = std::clamp(m_Pitch, -89.0f, 89.0f);
 
 	// Spherical -> Cartesian

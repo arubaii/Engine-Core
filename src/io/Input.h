@@ -1,9 +1,10 @@
 #pragma once
-#include <GLFW/glfw3.h>
+#include "GLcommon.h"
 #include <glm/glm.hpp>
 #include <unordered_map>
 #include "KeyCodes.h"
 #include "MouseCodes.h"
+#include "core/Window.h"
 
 class Input
 {
@@ -29,9 +30,9 @@ public:
 	glm::vec2 GetMouseDelta();
 	double GetMouseScrollY() { return s_Scroll.Y; }
 	double GetMouseScrollX() { return s_Scroll.X; } // Useless for now
-	glm::vec2 GetMousePos()  { return glm::vec2(s_Mouse.x, s_Mouse.y); }
+	glm::vec2 GetViewportMousePos(const Window& window);
 
-
+	glm::vec2 GetGlobalMousePos(GLFWwindow* glfwWindow);
 
 	void EndFrame() { s_Scroll = {}; }
 	bool IsCursorEnabled() const;

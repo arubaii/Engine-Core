@@ -8,7 +8,7 @@
 #include "core/Application.h"
 #include "core/Application.h"
 #include "core/Scene.h"
-#include <GLFW/glfw3.h>
+#include "GLcommon.h"
 
 #include "SelectionSystem.h"
 #include "scene_core/ecs/EntityUtils.h"
@@ -44,14 +44,15 @@ void DragSystem::Update(float dt,
                         FrameContext& ctx)
 {
     auto& registry = m_Scene->GetRegistry();
-    glm::vec2 viewport = m_Scene->GetWindow().GetViewport();
-    GLFWwindow* window   = m_Scene->GetGLFWwindow();
+    Window& window = m_Scene->GetWindow();
+    glm::vec2 viewport = window.GetViewport();
+    GLFWwindow* glfwWindow   = m_Scene->GetGLFWwindow();
 
 
     // if (input.IsMouseCapturedByUI())
     //     return;
 
-    bool inOrbit = m_Scene->GetCameraSystem().GetActiveController() ==
+    bool inOrbit = m_Scene->GetCameraSystem().GetActiveControllerIndex() ==
                    m_Scene->GetCameraSystem().ORBIT_CONTROLLER_INDEX;
 
 
@@ -60,6 +61,7 @@ void DragSystem::Update(float dt,
         input.IsKeyPressed(Key::RightShift);
 
     bool leftClick = input.IsMousePressed(Mouse::Left);
+    bool rightClick = input.IsMousePressed(Mouse::Right);
 
     // Geometry Drag & Drop
     if (!IsDragging &&
@@ -109,13 +111,13 @@ void DragSystem::Update(float dt,
 
 
             m_InitialDragPos = tc.Translation;
-            m_InitialMousePos = input.GetMousePos();
+            m_InitialMousePos = input.GetViewportMousePos(window);
             m_FinalDragPos = m_InitialDragPos;
 
             m_DragDistanceLocked = true;
         }
 
-        glm::vec2 mouseDelta = input.GetMousePos() - m_InitialMousePos;
+        glm::vec2 mouseDelta = input.GetViewportMousePos(window) - m_InitialMousePos;
         glm::vec3 newPos = m_InitialDragPos;
 
 
@@ -129,8 +131,7 @@ void DragSystem::Update(float dt,
 
         if (DragAffectsVertical)
         {
-            glfwSetCursor(window,
-                          m_Cursors.ResizeUpDown);
+            glfwSetCursor(glfwWindow, m_Cursors.ResizeUpDown);
 
             newPos.y -= mouseDelta.y * sensitivity;
         }
@@ -188,27 +189,32 @@ void DragSystem::Update(float dt,
 
 
     // Set cursor
-    if (IsDragging)
+    if (!input.IsInUI())
     {
-        if (DragAffectsVertical)
-            glfwSetCursor(window, m_Cursors.ResizeUpDown);
-        if (DragAffectsXZ)
-            glfwSetCursor(window, m_Cursors.Move);
-    }
-    else if (ctx.HasHit && !inOrbit)
-        glfwSetCursor(window, m_Cursors.OpenHand);
+        if (IsDragging)
+        {
+            if (DragAffectsVertical)
+                glfwSetCursor(glfwWindow, m_Cursors.ResizeUpDown);
+            if (DragAffectsXZ)
+                glfwSetCursor(glfwWindow, m_Cursors.Move);
+        }
 
-    else if (inOrbit)
-    {
-        if (leftClick)
-            glfwSetCursor(window, m_Cursors.GrabHand);
-        else if (ctx.HasHit && !leftClick)
-            glfwSetCursor(window, m_Cursors.OpenHand);
+        // Free camera cursor over entity
+        else if (ctx.HasHit && !inOrbit)
+            glfwSetCursor(glfwWindow, m_Cursors.OpenHand);
+
+        // Orbit camera cursor over entity
+        else if (inOrbit)
+        {
+            if (leftClick || rightClick)
+                glfwSetCursor(glfwWindow, m_Cursors.GrabHand);
+            else if (ctx.HasHit && !leftClick)
+                glfwSetCursor(glfwWindow, m_Cursors.OpenHand);
+            else
+                glfwSetCursor(glfwWindow, m_Cursors.PointHand);
+        }
+
         else
-            glfwSetCursor(window, m_Cursors.PointHand);
+            glfwSetCursor(glfwWindow, m_Cursors.Arrow);
     }
-
-    else
-        glfwSetCursor(window, m_Cursors.Arrow);
-
 }

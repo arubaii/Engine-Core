@@ -14,6 +14,4 @@ public:
 	void Update(float dt, Input& input) override;
 	void OnActivate(Input& input) override;
 
-
-
 };

@@ -5,14 +5,15 @@
 #include <entt/entt.hpp>
 #include "utils/SmartPtrs.h"
 #include "utils/UUID.h"
-#include "scene_core/ecs/Components.h"
+
 #include "scene_core/ecs/EntitySnapshot.h"
-#include "scene_core/ecs/Entity.h"
+
 #include "Renderer.h"
 #include "Window.h"
 #include "io/Input.h"
 #include "scene_core/camera/FreeCameraController.h"
 #include "scene_core/camera/OrbitCameraController.h"
+#include "scene_core/camera/ThirdPersonCameraController.h"
 #include "asset_io/Cursors.h"
 #include "math/Intersect.h"
 #include "renderer_core/Skybox.h"
@@ -214,6 +215,8 @@ public:
 	void DrawSkybox(const CameraComponent &cc, Renderer &renderer) const;
 	void DrawYAxis(const CameraComponent &cc, Renderer &renderer, Entity selected);
 
+	void DrawOutlineDebugAll(const CameraComponent &cc, Renderer &renderer);
+
 	void DrawOutline(const CameraComponent &cc, Renderer &renderer);
 
 
@@ -232,6 +235,8 @@ public:
 
 	entt::entity GetSelectedEntity() const { return m_SelectedEntity; }
 	void SetSelectedEntity(entt::entity e);
+
+
 
 	// glm::vec3 ColorFromTemperature(float kelvin);
 
@@ -265,6 +270,7 @@ public:
 
 	SelectionSystem& GetSelectionSystem() { return *m_SelectionSystem; }
 	const SelectionSystem& GetSelectionSystem() const { return *m_SelectionSystem; }
+
 
 
 private:

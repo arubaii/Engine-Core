@@ -37,6 +37,7 @@ void PerspectiveCamera::RecalculateProjection()
 		m_Far
 	);
 
+
 };
 
 glm::vec3 PerspectiveCamera::GetForwardVector() const
@@ -56,4 +57,14 @@ glm::vec3 PerspectiveCamera::GetRightVector() const
 glm::vec3 PerspectiveCamera::GetUpVector() const
 {
 	return glm::normalize(glm::cross(GetRightVector(), GetForwardVector()));
+}
+
+void PerspectiveCamera::LookAt(const glm::vec3& target)
+{
+	glm::vec3 direction = glm::normalize(target - m_Position);
+
+	m_Pitch = glm::degrees(asin(direction.y));
+	m_Yaw   = glm::degrees(atan2(direction.z, direction.x));
+
+	RecalculateView();
 }

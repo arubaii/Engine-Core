@@ -100,7 +100,7 @@ public:
 
 
 	const std::string& GetName() { return GetComponent<TagComponent>().Tag;}
-	UUID GetUUID()				 { return GetComponent<IDComponent>().ID;}
+	const UUID GetUUID() const	 { return GetComponent<IDComponent>().ID;}
 
 	glm::vec3& GetPosition()
 	{

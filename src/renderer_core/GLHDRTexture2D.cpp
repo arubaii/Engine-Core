@@ -1,7 +1,7 @@
 #include "GLHDRTexture2D.h"
 #include <stb/stb_image.h>
 #include <iostream>
-#include <GL/glew.h>
+#include "GLcommon.h"
 
 GLHDRTexture2D::GLHDRTexture2D(const std::string& path, bool clampToEdge)
 {

@@ -7,27 +7,83 @@
 
 
 
-struct UI
+struct UIData
 {
     int fps;
     float frameTime;
     bool flightMode;
+
     glm::vec3 cameraPos;
     float pitch, yaw;
+
     float greyScale = 0.1f;
     bool showGrid = false;
     bool showAxes = true;
     bool showSkybox = false;
     bool showLights = false;
     bool showCrosshair = false;
+
     float geometryScale = 1.0f;
 
     bool dragAffectsVertical = true;
-    bool dragAffectsXZ;
+    bool dragAffectsXZ = false;
 
     bool enablePhysics = false;
 
+    glm::vec2 viewportSize = { 0.0f, 0.0f };
+    glm::vec2 framebufferSize = { 0.0f, 0.0f };
+    GLuint sceneTextureID;
+
+    bool splitterCursorHovered = false;
+
+    glm::vec4 baseSkyColor{0.12f, 0.12f, 0.16f, 1.0f};
 };
+
+struct EditorConfig
+{
+    bool IsSplitterDraggingX;
+    bool IsSplitterDraggingY;
+    bool IsCornerDragging;
+    bool IsCornerHovered;
+};
+
+
+
+class UIPanel
+{
+private:
+
+public:
+    static void Render(UIData& data, GLFWwindow* glfwWindow, Window* window, Scene* scene, Input* input, entt::entity selected);
+
+
+    static void Splitter(UIData& data, EditorConfig& config,  GLFWwindow* glfwWindow, bool vertical, float thickness, float* size0, float* size1,
+                         float min_size0, float min_size1, float totalWidth);
+
+    static float GetPanelWidth()    { return s_UiWidth; }
+    static float GetBottomHeight()  { return s_BottomHeight; }
+
+    static void SetCursors(GLFWwindow* glfwWindow);
+
+    static float s_UiWidth;
+    static float s_BottomHeight;
+
+    static const int s_MaxSamples;
+    static float s_FPSHistory[120];
+    static int   s_FPSOffset;
+    static float s_RunningSum;
+    static int   s_SampleCount;
+    static float smoothedFPS;
+
+    static EditorConfig s_Config;
+    static EditorCursors s_Cursors;
+
+    static ImVec2 s_CornerDragStartMouse;
+    static float  s_CornerDragStartUiWidth;
+    static float  s_CornerDragStartBottomHeight;
+    static int s_CornerDragDominantAxis;
+};
+
 
 namespace UIUtils
 {
@@ -69,20 +125,4 @@ namespace UIUtils
     }
 }
 
-
-class UIPanel
-{
-public:
-    static void Render(UI& data, entt::entity selected, Scene* scene);
-
-
-
-
-    static const int s_MaxSamples;
-    static float s_FPSHistory[120];
-    static int   s_FPSOffset;
-    static float s_RunningSum;
-    static int   s_SampleCount;
-    static float smoothedFPS;
-};
 

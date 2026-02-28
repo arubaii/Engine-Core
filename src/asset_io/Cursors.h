@@ -23,10 +23,36 @@ inline static GLFWcursor* LoadCursor(const char* path)
 
 struct EditorCursors
 {
-	GLFWcursor* PointHand  		= glfwCreateStandardCursor(GLFW_HAND_CURSOR);
-	GLFWcursor* Arrow 			= glfwCreateStandardCursor(GLFW_ARROW_CURSOR);
-	GLFWcursor* GrabHand 		= LoadCursor("../assets/cursors/handgrabbing.png");	 // macos
-	GLFWcursor* OpenHand 		= LoadCursor("../assets/cursors/handopen.png");		 // macos
-	GLFWcursor* ResizeUpDown 	= LoadCursor("../assets/cursors/resizeupdown.png");	 // macos
-	GLFWcursor* Move 			= LoadCursor("../assets/cursors/move.png");			 // macos
+	GLFWcursor* PointHand;
+	GLFWcursor* Arrow;
+	GLFWcursor* GrabHand;        // macos
+	GLFWcursor* OpenHand;        // macos
+	GLFWcursor* ResizeUpDown;    // macos
+	GLFWcursor* ResizeLeftRight; // macos
+	GLFWcursor* ResizeDiagonal;  // macos
+	GLFWcursor* Move;            // macos
+
+	EditorCursors()
+		: PointHand(       	glfwCreateStandardCursor(GLFW_HAND_CURSOR) ),
+		  Arrow(           	glfwCreateStandardCursor(GLFW_ARROW_CURSOR) ),
+		  GrabHand(        	LoadCursor("../assets/cursors/handgrabbing.png") ),     // macos
+		  OpenHand(        	LoadCursor("../assets/cursors/handopen.png") ),         // macos
+		  ResizeUpDown(		LoadCursor("../assets/cursors/resizeupdown.png") ),     // macos
+		  ResizeLeftRight(	LoadCursor("../assets/cursors/resizeleftright.png") ),  // macos
+		  ResizeDiagonal(   LoadCursor("../assets/cursors/resizediagonal.png") ),   // macos
+		  Move(            	LoadCursor("../assets/cursors/move.png") )              // macos
+	{}
+
+	// For static initialization
+	void Initialize()
+	{
+		PointHand       = glfwCreateStandardCursor(GLFW_HAND_CURSOR);
+		Arrow           = glfwCreateStandardCursor(GLFW_ARROW_CURSOR);
+		GrabHand        = LoadCursor("../assets/cursors/handgrabbing.png");
+		OpenHand        = LoadCursor("../assets/cursors/handopen.png");
+		ResizeUpDown    = LoadCursor("../assets/cursors/resizeupdown.png");
+		ResizeLeftRight = LoadCursor("../assets/cursors/resizeleftright.png");
+		ResizeDiagonal  = LoadCursor("../assets/cursors/resizediagonal.png") ;
+		Move            = LoadCursor("../assets/cursors/move.png");
+	}
 };

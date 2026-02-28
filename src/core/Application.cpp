@@ -29,7 +29,7 @@ Application::Application(const ApplicationProperties& props)
 	}
 
 
-	m_Window->AttachInput(m_Input);
+	m_Window->AttachInput(&m_Input);
 	m_Window->SetInputMode(GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	AssetManager::Init();
@@ -59,9 +59,8 @@ void Application::Run()
 
 		m_Input.Update(m_Window->GetGLFWwindow());
 		m_Scene->Update(m_DeltaTime, m_Input);
-		glClearColor(m_UI.greyScale, m_UI.greyScale, m_UI.greyScale, 1.0f);
+		glClearColor(m_UI.baseSkyColor.x, m_UI.baseSkyColor.y, m_UI.baseSkyColor.z, m_UI.baseSkyColor.w);
 		m_Renderer->Clear();
-		m_Scene->Render(*m_Renderer);
 
 
 		m_ImGuiLayer->BeginFrame();
@@ -87,7 +86,26 @@ void Application::Run()
 		);
 
 
-		UIPanel::Render(m_UI, m_Scene->GetSelectedEntity(), m_Scene.get());
+		UIPanel::Render(m_UI,
+			            m_Window->GetGLFWwindow(),
+					    m_Window.get(),
+		                m_Scene.get(),
+		                &m_Input,
+		                m_Scene->GetSelectedEntity()
+		);
+
+
+		// TEMP: refine later for adding more panels
+		// rather than explicitly setting each panel
+		float panelWidth   = UIPanel::GetPanelWidth();
+		float bottomHeight = UIPanel::GetBottomHeight();
+		m_Window->SetRenderRegion(panelWidth, bottomHeight);
+
+
+		m_Scene->Render(*m_Renderer);
+
+
+
 		m_ImGuiLayer->EndFrame();
 
 		m_Input.EndFrame();

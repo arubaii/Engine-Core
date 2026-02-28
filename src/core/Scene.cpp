@@ -1,6 +1,10 @@
 #include "Scene.h"
 
 #include "Application.h"
+#include "Application.h"
+#include "Application.h"
+#include "Application.h"
+#include "Application.h"
 #include "asset_core/AssetManager.h"
 #include "asset_io/ModelImporter.h"
 #include "../scene_core/ecs/Entity.h"
@@ -8,6 +12,7 @@
 #include "io/MouseCodes.h"
 
 #include "renderer_core/GLHDRTexture2D.h"
+#include "renderer_core/MeshUtils.h"
 #include "scene_core/ecs/EntityUtils.h"
 
 #include "renderer_core/Skybox.h"
@@ -19,12 +24,94 @@ Scene::Scene(Window& window, Input& input)
 	  m_Viewport(m_Window.GetViewport()),
 	  m_CameraProps{
 		  45.0f,
-		  window.GetAspect(),
+		  window.GetRenderAspect(),
 		  0.1f,
 		  100000.0f,
 	  	  100.0f
 	  }
 {
+
+
+	// ==========================================================================================
+	// =================================== ADD ENTITIES =========================================
+	// ==========================================================================================
+
+	{
+		Entity suz = CreateEntityFromModel("../assets/models/suzanne/suzanne.glb", "Suzanne");
+		auto& tcSuz = GetEntityByName("Suzanne").GetComponent<TransformComponent>();
+		tcSuz.Scale *= glm::vec3(10.0f);
+		tcSuz.MarkDirty();
+
+		Entity suzSmooth = CreateEntityFromModel("../assets/models/suzanne_smooth/scene.gltf", "Suzanne Smooth");
+		auto& tcSuzSmooth = GetEntityByName("Suzanne Smooth").GetComponent<TransformComponent>();
+		tcSuzSmooth.Scale *= glm::vec3(10.0f);
+		tcSuzSmooth.Translation += glm::vec3(35.0f, 0.0f, 0.0f);
+		tcSuzSmooth.MarkDirty();
+
+		Entity SH = CreateEntityFromModel("../assets/models/space_helmet/scene.gltf", "Space Helmet");
+		auto& tcSH = GetEntityByName("Space Helmet").GetComponent<TransformComponent>();
+		tcSH.Scale *= glm::vec3(9.0f);
+		tcSH.Translation += glm::vec3(63.0f, 0.0f, 0.0f);
+		tcSH.MarkDirty();
+
+		Entity bunny = CreateEntityFromModel("../assets/models/stanford_bunny/scene.gltf", "Stanford Bunny");
+		auto& tcBunny = GetEntityByName("Stanford Bunny").GetComponent<TransformComponent>();
+		tcBunny.Scale *= glm::vec3(1.0f);
+		tcBunny.Translation += glm::vec3(85.0f, 0.0f, 0.0f);
+		tcBunny.MarkDirty();
+
+
+		{
+			Entity suzSmooth = GetEntityByName("Suzanne Smooth");
+			auto& rootModel = suzSmooth.GetComponent<ModelRootComponent>();
+
+			for (UUID id : rootModel.Parts)
+			{
+				Entity part = GetEntityByID(id);
+				if (!part) continue;
+
+				auto& mc = part.GetComponent<MeshComponent>();
+				mc.BasisRotation.x = glm::radians(-90.0f);
+			}
+		}
+
+		{
+			Entity sh = GetEntityByName("Space Helmet");
+			auto& rootModel = sh.GetComponent<ModelRootComponent>();
+
+			for (UUID id : rootModel.Parts)
+			{
+				Entity part = GetEntityByID(id);
+				if (!part) continue;
+
+				auto& mc = part.GetComponent<MeshComponent>();
+				mc.BasisRotation.x = glm::radians(90.0f);
+			}
+		}
+
+		{
+			Entity bunny = GetEntityByName("Stanford Bunny");
+			auto& rootModel = bunny.GetComponent<ModelRootComponent>();
+
+			for (UUID id : rootModel.Parts)
+			{
+				Entity part = GetEntityByID(id);
+				if (!part) continue;
+
+				auto& mc = part.GetComponent<MeshComponent>();
+				mc.BasisRotation.x = glm::radians(270.0f);
+			}
+		}
+
+
+	}
+
+	// ==========================================================================================
+	// ==========================================================================================
+	// ==========================================================================================
+
+
+
 	{
 		m_CameraSystem		  = CreateScope<CameraSystem>(this);
 		m_RaycastSystem		  = CreateScope<RaycastSystem>(m_Registry);
@@ -65,7 +152,6 @@ Scene::Scene(Window& window, Input& input)
 		cc.Camera.SetPosition(DefaultCameraPosition);
 		cc.Camera.SetRotation(DefaultPitch, DefaultYaw);
 		cc.Camera.RecalculateView();
-
 
 
 		{
@@ -256,43 +342,7 @@ Scene::Scene(Window& window, Input& input)
 		m_MaxMip = (int)std::floor(std::log2(std::min(m_Width, m_Height)));
 		m_SkyboxLoaded     = true;
 	}
-	{
-		CreateEntityFromModel("../assets/models/suzanne/suzanne.glb", "Suzanne");
-		auto& tcSuz = GetEntityByName("Suzanne").GetComponent<TransformComponent>();
-		tcSuz.Scale *= glm::vec3(10.0f);
-		tcSuz.MarkDirty();
 
-		CreateEntityFromModel("../assets/models/stanford_bunny/scene.gltf", "Stanford Bunny");
-		auto& tcBunny = GetEntityByName("Stanford Bunny").GetComponent<TransformComponent>();
-		tcBunny.Scale *= glm::vec3(1.0f);
-		tcBunny.Translation += glm::vec3(25.0f, 0.0f, 0.0f);
-		tcBunny.Rotation.x = glm::radians(270.0f);
-		tcBunny.MarkDirty();
-
-
-		CreateEntityFromModel("../assets/models/space_helmet/scene.gltf", "Space Helmet");
-		auto& tcSH = GetEntityByName("Space Helmet").GetComponent<TransformComponent>();
-		tcSH.Scale *= glm::vec3(5.0f);
-		tcSH.Translation += glm::vec3(45.0f, 0.0f, 0.0f);
-		tcSH.Rotation.x = glm::radians(90.0f);
-
-		tcSH.MarkDirty();
-		{
-			Entity bunny = GetEntityByName("Stanford Bunny");
-			AssetHandle h = AssetManager::GetHandleForPath("materials/test_pbr.mat");
-			Ref<MaterialAsset> mat = AssetManager::GetAsset<MaterialAsset>(h);
-
-			EntityUtils::SetModelMaterial(*this, bunny, h);
-		}
-		{
-			Entity suz = GetEntityByName("Suzanne");
-			AssetHandle h = AssetManager::GetHandleForPath("materials/test_pbr.mat");
-			Ref<MaterialAsset> mat = AssetManager::GetAsset<MaterialAsset>(h);
-
-			EntityUtils::SetModelMaterial(*this, suz, h);
-		}
-
-	}
 
 }
 
@@ -306,24 +356,38 @@ void Scene::Render(Renderer& renderer)
 	if (!cam) return;
 	auto& cc = cam.GetComponent<CameraComponent>();
 
-	int w, h;
-	glfwGetFramebufferSize(m_Window.GetGLFWwindow(), &w, &h);
 
+	glm::vec2 viewport = m_Window.GetFramebufferViewport();
 
-	renderer.BeginFrame(w, h);
+	int vpX = m_Window.GetRenderX();    // framebuffer pixels
+	int vpY = m_Window.GetRenderY();
+	int vpW = m_Window.GetRenderWidth();
+	int vpH = m_Window.GetRenderHeight();
+
+	glm::vec4 log = glm::vec4(vpX, vpY, vpW, vpH);
+
+	renderer.BeginFrame(viewport.x, viewport.y, vpX, vpY, vpW, vpH);
+
+	float sx = float(m_Window.GetFBW()) / float(m_Window.GetWindowWidth());
+	float sy = float(m_Window.GetFBH()) / float(m_Window.GetWindowHeight());
+
+	int vpW_fb = int(m_Window.GetRenderWidth()  * sx);
+	int vpH_fb = int(m_Window.GetRenderHeight() * sy);
+
+	cc.Camera.SetViewportSize(vpW_fb, vpH_fb);
 
 	if (!m_OutlinesInitialized)
 	{
-		renderer.InitOutlines(w, h);
+		renderer.InitOutlines(vpW, vpH);
 		m_OutlinesInitialized = true;
-		m_LastOutlineW = w;
-		m_LastOutlineH = h;
+		m_LastOutlineW = vpW;
+		m_LastOutlineH = vpH;
 	}
-	else if (w != m_LastOutlineW || h != m_LastOutlineH)
+	else if (vpW != m_LastOutlineW || vpH != m_LastOutlineH)
 	{
-		renderer.ResizeOutlines(w, h);
-		m_LastOutlineW = w;
-		m_LastOutlineH = h;
+		renderer.ResizeOutlines(vpW, vpH);
+		m_LastOutlineW = vpW;
+		m_LastOutlineH = vpH;
 	}
 
 	if (m_ShowSkybox) DrawSkybox(cc, renderer);
@@ -331,6 +395,7 @@ void Scene::Render(Renderer& renderer)
 	glm::mat4 VP =
 		cc.Camera.GetProjectionMatrix() *
 		cc.Camera.GetViewMatrix();
+
 
 	m_Lights.clear();
 	auto lightView = m_Registry.view<TransformComponent, LightComponent>();
@@ -349,13 +414,13 @@ void Scene::Render(Renderer& renderer)
 	}
 
 	auto view = m_Registry.view<TransformComponent, TagComponent, MeshComponent>();
-	for (auto raw : view)
+	for (auto ent : view)
 	{
-		Entity e{ raw, &m_Registry };
+		Entity e{ ent, &m_Registry };
 		auto& tc   = m_Registry.get<TransformComponent>(e);
 		auto& tag  = m_Registry.get<TagComponent>(e);
 		auto& mc   = m_Registry.get<MeshComponent>(e);
-		MaterialComponent* matc = m_Registry.try_get<MaterialComponent>(raw);
+		MaterialComponent* matc = m_Registry.try_get<MaterialComponent>(ent);
 
 		if (!mc.MeshData) continue;
 
@@ -370,11 +435,36 @@ void Scene::Render(Renderer& renderer)
 			gpu.BoundsReady = true;
 		}
 
+		// CameraController* controller = m_CameraSystem->GetActiveController();
+		// // If current controller is the third person controller
+		// if (auto* tp = dynamic_cast<ThirdPersonCameraController*>(controller))
+		// {
+		// 	if (tp->GetEntity().GetUUID() == e.GetUUID())
+		// 	{
+		// 		tc.SetTranslation(tp->GetPosition());
+		// 	}
+		// }
+
 		const auto& X = tc.GetCache();
-		const glm::mat4& model = X.Model;
+		glm::mat4 basis = glm::toMat4(glm::quat(mc.BasisRotation));
+		glm::mat4 model = X.Model * basis;
+
 		glm::mat4 MVP = VP * model;
 
 		bool hasMat = (matc != nullptr);
+
+
+		if (e.HasComponent<ModelPartComponent>())
+		{
+			Entity root = EntityUtils::FindModelRootFromPart(*this, e);
+
+			if (root.HasComponent<WireframeComponent>())
+				renderer.DrawWireframe(m_OutlineShader, glm::vec3(0.0, 1.0, 1.0f), MVP, gpu.VA, gpu.IB);
+		}
+		else if (e.HasComponent<WireframeComponent>())
+		{
+			renderer.DrawWireframe(m_OutlineShader, glm::vec3(0.0, 1.0, 1.0f), MVP, gpu.VA, gpu.IB);
+		}
 
 		if (e.HasComponent<LightComponent>())
 		{
@@ -448,15 +538,16 @@ void Scene::Render(Renderer& renderer)
 
 			renderer.Draw(gpu.VA, gpu.IB);
 		}
+
+
 	}
 
 	if (m_ShowGrid)   DrawGrid(cc, renderer);
 	DrawOutline(cc, renderer);
+	// DrawOutlineDebugAll(cc, renderer);
 	DrawScreenOverlays(cc, renderer);
 
 }
-
-
 
 
 void Scene::Update(float dt, Input& input)
@@ -620,6 +711,51 @@ void Scene::DrawYAxis(const CameraComponent& cc, Renderer& renderer, Entity sele
 	renderer.DrawLines(gpu.VA, gpu.IB);
 }
 
+void Scene::DrawOutlineDebugAll(const CameraComponent& cc, Renderer& renderer)
+{
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, renderer.GetSelectionFBO());
+	glBlitFramebuffer(
+		0, 0, m_LastOutlineW, m_LastOutlineH,
+		0, 0, m_LastOutlineW, m_LastOutlineH,
+		GL_DEPTH_BUFFER_BIT,
+		GL_NEAREST
+	);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	renderer.BeginSelectionMask();
+
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
+	glDepthMask(GL_TRUE);
+
+	auto view = m_Registry.view<TransformComponent, MeshComponent>();
+	for (auto raw : view)
+	{
+		Entity e{ raw, &m_Registry };
+
+		auto& tc = m_Registry.get<TransformComponent>(e);
+		auto& mc = m_Registry.get<MeshComponent>(e);
+		if (!mc.MeshData)
+			continue;
+
+		glm::mat4 VP = cc.Camera.GetProjectionMatrix() *
+					   cc.Camera.GetViewMatrix();
+		GPUMesh& gpu = MeshRendererCache::GetOrCreate(*mc.MeshData);
+		glm::mat4 basis = glm::toMat4(glm::quat(mc.BasisRotation));
+		glm::mat4 MVP = VP * tc.GetCache().Model * basis;
+
+		renderer.DrawSelectionMask(m_MaskShader, MVP, gpu.VA, gpu.IB);
+	}
+
+	renderer.EndSelectionMask();
+	renderer.CompositeOutlines(
+		m_OutlinePostShader,
+		glm::vec3(0.980392f, 0.647059f, 0.027451f),
+		4
+	);
+}
+
 void Scene::DrawOutline(const CameraComponent& cc, Renderer& renderer)
 {
 	Entity selectedRoot{};
@@ -643,7 +779,6 @@ void Scene::DrawOutline(const CameraComponent& cc, Renderer& renderer)
 						  m_DragSystem->GetLocalGridHeight(),
 						  m_DragSystem->GetLocalGridSize());
 	}
-
 
 
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
@@ -689,7 +824,8 @@ void Scene::DrawOutline(const CameraComponent& cc, Renderer& renderer)
 		glm::mat4 VP = cc.Camera.GetProjectionMatrix() *
 					   cc.Camera.GetViewMatrix();
 		GPUMesh& gpu = MeshRendererCache::GetOrCreate(*mc.MeshData);
-		glm::mat4 MVP = VP * tc.GetCache().Model;
+		glm::mat4 basis = glm::toMat4(glm::quat(mc.BasisRotation));
+		glm::mat4 MVP = VP * tc.GetCache().Model * basis;
 
 		renderer.DrawSelectionMask(m_MaskShader, MVP, gpu.VA, gpu.IB);
 	}
@@ -701,6 +837,7 @@ void Scene::DrawOutline(const CameraComponent& cc, Renderer& renderer)
 		4
 	);
 }
+
 
 
 Ref<Shader> Scene::GetShader(UUID id)
@@ -751,7 +888,6 @@ void Scene::SyncSubmeshes()
 		}
 	}
 }
-
 
 
 void Scene::SetSelectedEntity(entt::entity e)

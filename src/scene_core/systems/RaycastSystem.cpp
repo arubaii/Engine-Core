@@ -2,6 +2,9 @@
 #include "math/Intersect.h"
 #include "scene_core/ecs/Components.h"
 #include "math/Ray.h"
+#include "renderer_core/Mesh.h"
+#include "renderer_core/MeshUtils.h"
+
 
 RaycastSystem::RaycastSystem(entt::registry& registry)
 	: m_Registry(registry)
@@ -9,29 +12,25 @@ RaycastSystem::RaycastSystem(entt::registry& registry)
 }
 
 void RaycastSystem::Update(Input& input,
-						   CameraComponent& camera,
-						   Window& window,
-						   FrameContext& ctx)
+                           CameraComponent& camera,
+                           Window& window,
+                           FrameContext& ctx)
 {
-	ctx.LastHit = {};
+    ctx.LastHit = {};
 
-	if (input.IsInUI())
-		return;
+    if (input.IsInUI())
+        return;
 
-	glm::vec2 viewport = window.GetViewport();
-	glm::vec2 mousePos = input.IsCursorEnabled()
-		? input.GetMousePos()
-		: viewport * 0.5f;
+    glm::vec2 mousePos = input.GetViewportMousePos(window);
+    Ray ray = camera.Camera.GetRayFromScreen(mousePos, window.GetLogicalViewport());
 
-	Ray ray = camera.Camera.GetRayFromScreen(mousePos, viewport);
+    RayHit hit;
+    if (Raycast(ray, hit))
+    {
+        ctx.LastHit = hit;
+        ctx.HasHit = true;
+    }
 
-	RayHit hit;
-
-	if (Raycast(ray, hit))
-	{
-		ctx.LastHit = hit;
-		ctx.HasHit = true;
-	}
 }
 
 bool RaycastSystem::RayIntersectsSphere(const Ray& ray, const glm::vec3& center, float radius, float& tOut)

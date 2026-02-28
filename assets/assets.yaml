@@ -1,40 +1,49 @@
 Assets:
-  - Handle: 12929799910592865266
+  - Handle: 17134776909996246202
     Type: Material
-    File: models/space_helmet/scene_import/mat_0.mat
-  - Handle: 6990325061173386322
-    Type: Texture
-    File: models/space_helmet/textures/Material_MR_emissive.jpeg
-  - Handle: 716384849547090595
-    Type: Texture
-    File: models/space_helmet/textures/Material_MR_baseColor.jpeg
-  - Handle: 16184155954908168426
+    File: models/suzanne_smooth/scene_import/mat_0.mat
+  - Handle: 16886573103025593761
     Type: Mesh
-    File: models/suzanne/suzanne_import/mesh_0.mesh
-  - Handle: 12321815414181265351
-    Type: Texture
-    File: models/space_helmet/textures/Material_MR_normal.jpeg
-  - Handle: 11674591418888982811
-    Type: Mesh
-    File: models/stanford_bunny/scene_import/mesh_0.mesh
-  - Handle: 14728536471131453509
-    Type: Model
-    File: models/space_helmet/scene.model
-  - Handle: 15124653839020383698
-    Type: Material
-    File: models/suzanne/suzanne_import/mat_0.mat
-  - Handle: 3945969342613177998
-    Type: Texture
-    File: models/space_helmet/textures/Material_MR_metallicRoughness.png
-  - Handle: 14695059441746396083
-    Type: Model
-    File: models/suzanne/suzanne.model
-  - Handle: 8389367106545091083
-    Type: Model
-    File: models/stanford_bunny/scene.model
-  - Handle: 8577804891632943045
-    Type: Mesh
-    File: models/space_helmet/scene_import/mesh_0.mesh
+    File: models/suzanne_smooth/scene_import/mesh_0.mesh
   - Handle: 1556341128137583163
     Type: Material
     File: models/stanford_bunny/scene_import/mat_0.mat
+  - Handle: 14695059441746396083
+    Type: Model
+    File: models/suzanne/suzanne.model
+  - Handle: 3945969342613177998
+    Type: Texture
+    File: models/space_helmet/textures/Material_MR_metallicRoughness.png
+  - Handle: 15124653839020383698
+    Type: Material
+    File: models/suzanne/suzanne_import/mat_0.mat
+  - Handle: 14728536471131453509
+    Type: Model
+    File: models/space_helmet/scene.model
+  - Handle: 716384849547090595
+    Type: Texture
+    File: models/space_helmet/textures/Material_MR_baseColor.jpeg
+  - Handle: 6990325061173386322
+    Type: Texture
+    File: models/space_helmet/textures/Material_MR_emissive.jpeg
+  - Handle: 11674591418888982811
+    Type: Mesh
+    File: models/stanford_bunny/scene_import/mesh_0.mesh
+  - Handle: 13824345379492343671
+    Type: Model
+    File: models/suzanne_smooth/scene.model
+  - Handle: 12321815414181265351
+    Type: Texture
+    File: models/space_helmet/textures/Material_MR_normal.jpeg
+  - Handle: 16184155954908168426
+    Type: Mesh
+    File: models/suzanne/suzanne_import/mesh_0.mesh
+  - Handle: 8577804891632943045
+    Type: Mesh
+    File: models/space_helmet/scene_import/mesh_0.mesh
+  - Handle: 8389367106545091083
+    Type: Model
+    File: models/stanford_bunny/scene.model
+  - Handle: 12929799910592865266
+    Type: Material
+    File: models/space_helmet/scene_import/mat_0.mat

@@ -5,6 +5,7 @@
 #include "scene_core/ecs/Entity.h"
 #include "scene_core/camera/FreeCameraController.h"
 #include "scene_core/camera/OrbitCameraController.h"
+#include "scene_core/camera/ThirdPersonCameraController.h"
 #include "core/Window.h"
 
 
@@ -17,6 +18,7 @@ class CameraSystem
 public:
 	static constexpr int FREE_CONTROLLER_INDEX  = 0;
 	static constexpr int ORBIT_CONTROLLER_INDEX = 1;
+	static constexpr int THIRD_PERSON_CONTROLLER_INDEX = 2;
 
 public:
 	explicit CameraSystem(Scene* scene);
@@ -25,9 +27,22 @@ public:
 
 	Entity GetPrimaryCamera();
 
-	void SetActiveController(size_t index) { m_ActiveController = index; }
+	CameraController* GetActiveController()
+	{
+		if (m_Controllers.empty())
+			return nullptr;
+		return m_Controllers[m_ActiveController].get();
+	}
 
-	size_t GetActiveController() const { return m_ActiveController; }
+	const CameraController* GetActiveController() const
+	{
+		if (m_Controllers.empty())
+			return nullptr;
+		return m_Controllers[m_ActiveController].get();
+	}
+
+	void SetActiveControllerIndex(size_t index) { m_ActiveController = index; }
+	size_t GetActiveControllerIndex() const { return m_ActiveController; }
 
 private:
 	Scene* m_Scene = nullptr;

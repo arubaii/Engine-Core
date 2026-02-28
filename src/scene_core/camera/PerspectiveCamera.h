@@ -28,11 +28,20 @@ public:
 	glm::vec3 		 GetRightVector()	   const override;
 	glm::vec3 		 GetUpVector()		   const override;
 
+	void SetViewportSize(int width, int height)
+	{
+		if (height == 0) return;
+
+		m_Aspect = float(width) / float(height);
+		RecalculateProjection();
+	}
 
 	void RecalculateView();
 	void RecalculateProjection();
 
 	void SetNear(float n) { m_Near = n; }
+
+	void LookAt(const glm::vec3& target);
 
 	float GetWorldUnitsPerPixel(float depth, int viewportHeight) const
 	{
@@ -53,4 +62,6 @@ private:
 
 	glm::mat4 m_ViewMatrix{1.0f};
 	glm::mat4 m_ProjectionMatrix{1.0f};
+
+
 };

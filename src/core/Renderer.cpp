@@ -131,7 +131,8 @@ void Renderer::DrawOutline(const glm::mat4& mvp,
 }
 
 
-void Renderer::DrawWireframe(const Ref<Shader>& outlineShader, const glm::mat4& MVP, const VertexArray& va, const IndexBuffer& ib)
+void Renderer::DrawWireframe(const Ref<Shader>& outlineShader, const glm::vec3& color,
+                             const glm::mat4& MVP, const VertexArray& va, const IndexBuffer& ib)
 {
 	glEnable(GL_POLYGON_OFFSET_LINE);
 
@@ -139,13 +140,12 @@ void Renderer::DrawWireframe(const Ref<Shader>& outlineShader, const glm::mat4& 
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glDisable(GL_CULL_FACE);
 	// glLineWidth(2.0f);
-
 	SetShader(outlineShader);
 	outlineShader->Bind();
+    outlineShader->SetVec4("u_OutlineColor", glm::vec4(color, 1.0f));
 	outlineShader->SetMat4("u_MVP", MVP);
 	Draw(va, ib);
 
-	// glLineWidth(.0f);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 	glDisable(GL_POLYGON_OFFSET_LINE);
@@ -219,13 +219,15 @@ void Renderer::ResizeOutlines(int width, int height)
 }
 
 
-void Renderer::BeginFrame(int frameWidth, int frameHeight)
+void Renderer::BeginFrame(int frameWidth, int frameHeight, int vpX, int vpY, int vpW, int vpH)
 {
     m_FrameWidth = frameWidth;
     m_FrameHeight = frameHeight;
+    m_VpX = vpX; m_VpY = vpY; m_VpW = vpW; m_VpH = vpH;
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glViewport(0, 0, m_FrameWidth, m_FrameHeight);
+    glViewport(vpX, vpY, vpW, vpH);
+
 
     glEnable(GL_DEPTH_TEST);
     glDepthMask(GL_TRUE);
@@ -283,10 +285,8 @@ void Renderer::CompositeOutlines(const Ref<Shader>& outlineShader,
                                  int thicknessPixels)
 {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glViewport(0, 0, m_FrameWidth, m_FrameHeight);
+    glViewport(m_VpX, m_VpY, m_VpW, m_VpH);
 
-    GLint fb = 0;
-    glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &fb);
     glDisable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -309,6 +309,6 @@ void Renderer::CompositeOutlines(const Ref<Shader>& outlineShader,
 
     glEnable(GL_DEPTH_TEST);
     glDepthMask(GL_TRUE);
-
 }
+
 

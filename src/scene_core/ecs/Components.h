@@ -1,5 +1,4 @@
 #pragma once
-#include "GLcommon.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #define GLM_ENABLE_EXPERIMENTAL
@@ -8,10 +7,6 @@
 
 #include "asset_core/AssetTypes.h"
 #include "../camera/PerspectiveCamera.h"
-#include "renderer_core/IndexBuffer.h"
-#include "renderer_core/Mesh.h"
-#include "renderer_core/MeshUtils.h"
-#include "renderer_core/VertexArray.h"
 #include "scene_core/camera/FreeCameraController.h"
 #include "utils/UUID.h"
 #include "utils/SmartPtrs.h"
@@ -28,8 +23,8 @@ struct TransformCache
 struct TransformComponent
 {
 	glm::vec3 Translation {0.0f, 0.0f, 0.0f};
-	glm::vec3 Rotation {0.0f, 0.0f, 0.0f};
-	glm::vec3 Scale    {1.0f, 1.0f, 1.0f};
+	glm::vec3 Rotation    {0.0f, 0.0f, 0.0f}; // { pitch, yaw, roll }
+	glm::vec3 Scale       {1.0f, 1.0f, 1.0f};
 
 	TransformComponent() = default;
 	TransformComponent(const TransformComponent&) = default;
@@ -37,6 +32,7 @@ struct TransformComponent
 		: Translation(translation) {}
 
 	const glm::vec3& GetPosition() const { return Translation; }
+	const glm::vec3& GetRotation() const { return Rotation; }
 	glm::mat4 GetModelMatrix() const
 	{
 		glm::mat4 T = glm::translate(glm::mat4(1.0f), Translation);
@@ -51,7 +47,7 @@ struct TransformComponent
 
 	void SetScale(const glm::vec3& s) { Scale = s; MarkDirty(); }
 	void SetTranslation(const glm::vec3& t) { Translation = t; MarkDirty(); }
-	void SetRotation(const glm::vec3& r) { Rotation = r;MarkDirty(); }
+	void SetRotation(const glm::vec3& r) { Rotation = r; MarkDirty(); }
 
 
 	void MarkDirty() { Cache.Dirty = true; }
@@ -108,6 +104,8 @@ struct MeshComponent
 	glm::vec4 BaseColor = glm::vec4(1.0); // Fallback
 	bool UseNormalColors = false;
 
+	glm::vec3 BasisRotation{0.0f, 0.0f, 0.0f};
+
 };
 
 
@@ -161,6 +159,10 @@ struct BulletComponent
 	glm::vec3 Velocity;
 };
 
+struct WireframeComponent
+{
+	uint8_t _ = 0;
+};
 
 struct CameraComponent
 {

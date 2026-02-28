@@ -7,6 +7,7 @@ CameraSystem::CameraSystem(Scene* scene)
 {
 	m_Controllers.push_back(CreateScope<FreeCameraController>());
 	m_Controllers.push_back(CreateScope<OrbitCameraController>(10.0f));
+	m_Controllers.push_back(CreateScope<ThirdPersonCameraController>());
 	m_ActiveController = FREE_CONTROLLER_INDEX;
 }
 
@@ -51,7 +52,7 @@ void CameraSystem::Update(float dt,
 	auto& cc = camEntity.GetComponent<CameraComponent>();
 	auto& window = m_Scene->GetWindow();
 
-	cc.Camera.SetAspectRatio(window.GetAspect());
+	cc.Camera.SetAspectRatio(window.GetRenderAspect());
 
 	// -------------------------------------------------
 	// Orbit Toggle Logic
@@ -92,11 +93,54 @@ void CameraSystem::Update(float dt,
 				glm::clamp(orbitDistance, 0.01f, 50000.0f);
 
 			m_ActiveController = ORBIT_CONTROLLER_INDEX;
-			m_Controllers[m_ActiveController]
-				->OnSelect(entity.GetPosition(),
-						   orbitDistance);
+			auto* orb = static_cast<OrbitCameraController*>(
+				m_Controllers[m_ActiveController].get());
+
+			if (entity.HasComponent<ModelPartComponent>())
+			{
+				const auto root = EntityUtils::FindModelRootFromPart(*scene, entity);
+				orb->OnSelect(root.GetPosition(),
+							  orbitDistance,
+							  root);
+			}
+			else
+			{
+				orb->OnSelect(entity.GetPosition(),
+						      orbitDistance,
+							  entity);
+			}
 		}
 	}
+
+	else if (input.IsKeyPressedOnce(Key::Y) && ctx.HasHit)
+	{
+		Entity entity{ ctx.LastHit.entity, &registry };
+		auto& tc = entity.GetComponent<TransformComponent>();
+
+		float radius = EntityUtils::ComputeEntityRadius(*scene, entity);
+
+		float viewportCoverage = 0.3f;
+		float fovRadians =
+			glm::radians(cc.Camera.GetFOV() * 0.3f);
+
+		float cameraDistance =
+			radius / (glm::tan(fovRadians) * viewportCoverage);
+
+		cameraDistance =
+			glm::clamp(cameraDistance, 0.01f, 50000.0f);
+
+		m_ActiveController = THIRD_PERSON_CONTROLLER_INDEX;
+
+		auto* tp = static_cast<ThirdPersonCameraController*>(
+			m_Controllers[m_ActiveController].get());
+
+		tp->SetCamera(cc.Camera);
+		tp->SetMoveSpeed(cc.MoveSpeed);
+		tp->OnSelect(tc.Translation,
+					 cameraDistance,
+					 entity);
+	}
+
 
 
 	auto& controller =
@@ -105,4 +149,5 @@ void CameraSystem::Update(float dt,
 	controller.SetCamera(cc.Camera);
 	controller.SetMoveSpeed(cc.MoveSpeed);
 	controller.Update(dt, input);
+
 }

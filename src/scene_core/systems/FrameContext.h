@@ -16,4 +16,5 @@ struct FrameContext
 {
     RayHit LastHit;
     bool   HasHit = false;
+
 };

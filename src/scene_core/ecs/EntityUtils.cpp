@@ -1,8 +1,9 @@
 #include "EntityUtils.h"
 #include "asset_core/AssetManager.h"
 #include "asset_io/ModelImporter.h"
+#include "renderer_core/MeshUtils.h"
 #include "utils/Log.h"
-
+#include "renderer_core/GLTexture2D.h"
 
 namespace EntityUtils
 {
@@ -205,13 +206,12 @@ namespace EntityUtils
 		if (e) scene->DeleteEntity(e);
 	}
 
-
 	Entity FindModelRootFromPart(Scene& scene, Entity part)
 	{
 		if (!part) return {};
 
 		UUID partID = part.GetUUID();
-		entt::registry registry = std::move(scene.GetRegistry());
+		auto& registry = scene.GetRegistry();
 
 		for (auto e : registry.view<ModelRootComponent>())
 		{
@@ -420,6 +420,26 @@ namespace EntityUtils
 				return true;
 
 		return false;
+	}
+
+	glm::vec3 GetEntityForward(const TransformComponent& tc)
+	{
+		const glm::mat4& M = tc.GetCache().Model;
+
+		glm::vec3 right   = glm::vec3(M[0]);
+		glm::vec3 up      = glm::vec3(M[1]);
+		glm::vec3 forward = -glm::vec3(M[2]);
+
+		float r2 = glm::dot(right, right);
+		float u2 = glm::dot(up, up);
+		float f2 = glm::dot(forward, forward);
+
+		if (r2 > 1e-8f) right   /= glm::sqrt(r2); else right   = glm::vec3(1.0f, 0.0f, 0.0f);
+		if (u2 > 1e-8f) up      /= glm::sqrt(u2); else up      = glm::vec3(0.0f, 1.0f, 0.0f);
+		if (f2 > 1e-8f) forward /= glm::sqrt(f2); else forward = glm::vec3(0.0f, 0.0f, -1.0f);
+
+		forward = glm::normalize(glm::cross(right, up));
+		return -forward;
 	}
 
 } // namespace EntityUtils

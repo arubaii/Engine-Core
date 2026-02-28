@@ -2,11 +2,13 @@
 #include <glm/vec3.hpp>
 #include "Asset.h"
 #include "Serializers.h"
-#include "renderer_core/GLTexture2D.h"
 #include "utils/SmartPtrs.h"
-#include "renderer_core/Shader.h"
-#include "renderer_core/Mesh.h"
 
+
+
+class GLTexture2D;
+class Shader;
+class Mesh;
 
 static AssetType DeduceAssetType(const std::filesystem::path& path)
 {

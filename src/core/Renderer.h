@@ -46,13 +46,14 @@ public:
 	void DrawLines(const VertexArray& va, const IndexBuffer& ib) const;
 	void DrawArrays(unsigned int mode, unsigned int first, unsigned int count) const;
 	void DrawOutline(const glm::mat4 & mvp, const VertexArray &va, const IndexBuffer &ib);
-	void DrawWireframe(const Ref<Shader>& outlineShader, const glm::mat4& MVP, const VertexArray& va, const IndexBuffer& ib);
+	void DrawWireframe(const Ref<Shader>& outlineShader, const glm::vec3& color,
+	                   const glm::mat4& MVP, const VertexArray& va, const IndexBuffer& ib);
 
 
 	void InitOutlines(int width, int height);
 	void ResizeOutlines(int width, int height);
 
-	void BeginFrame(int frameWidth, int frameHeight);
+	void BeginFrame(int frameWidth, int frameHeight, int vpX, int vpY, int vpW, int vpH);
 	void BeginSelectionMask();
 	void EndSelectionMask();
 
@@ -75,7 +76,10 @@ private:
 	int m_FrameWidth = 0;
 	int m_FrameHeight = 0;
 
-
+	int m_VpX = 0;
+	int m_VpY = 0;
+	int m_VpW = 0;
+	int m_VpH = 0;
 
 
 };

@@ -1,0 +1,209 @@
+{
+  "accessors": [
+    {
+      "bufferView": 2,
+      "componentType": 5126,
+      "count": 8064,
+      "max": [
+        1.330680012702942,
+        0.7838900089263916,
+        0.9419599771499634
+      ],
+      "min": [
+        -1.330680012702942,
+        -0.8228999972343445,
+        -0.9730799794197083
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 96768,
+      "componentType": 5126,
+      "count": 8064,
+      "max": [
+        0.9999461770057678,
+        0.9999896883964539,
+        0.9999695420265198
+      ],
+      "min": [
+        -0.9999461770057678,
+        -0.9999992251396179,
+        -0.9995733499526978
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 1,
+      "componentType": 5126,
+      "count": 8064,
+      "max": [
+        0.9998400211334229,
+        0.8245300054550171
+      ],
+      "min": [
+        0.00015999999595806003,
+        0.00015999999595806003
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 0,
+      "componentType": 5125,
+      "count": 47232,
+      "type": "SCALAR"
+    }
+  ],
+  "asset": {
+    "extras": {
+      "author": "Maurice Svay (https://sketchfab.com/mauricesvay)",
+      "license": "CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)",
+      "source": "https://sketchfab.com/3d-models/suzanne-skin-material-test-dec6c4080e5e4c38a3dd49faee0a2759",
+      "title": "Suzanne Skin Material Test"
+    },
+    "generator": "Sketchfab-12.66.0",
+    "version": "2.0"
+  },
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteLength": 188928,
+      "name": "floatBufferViews",
+      "target": 34963
+    },
+    {
+      "buffer": 0,
+      "byteLength": 64512,
+      "byteOffset": 188928,
+      "byteStride": 8,
+      "name": "floatBufferViews",
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 193536,
+      "byteOffset": 253440,
+      "byteStride": 12,
+      "name": "floatBufferViews",
+      "target": 34962
+    }
+  ],
+  "buffers": [
+    {
+      "byteLength": 446976,
+      "uri": "scene.bin"
+    }
+  ],
+  "materials": [
+    {
+      "doubleSided": true,
+      "name": "Skin",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.9822505503331171,
+          0.6724431569576873,
+          0.4286904966139066,
+          1.0
+        ],
+        "metallicFactor": 0.0,
+        "roughnessFactor": 0.25
+      }
+    }
+  ],
+  "meshes": [
+    {
+      "name": "Suzanne_0",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 1,
+            "POSITION": 0,
+            "TEXCOORD_0": 2
+          },
+          "indices": 3,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "children": [
+        1
+      ],
+      "matrix": [
+        0.3186972737312317,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        -0.14664671850323957,
+        -0.2829535086047095,
+        0.0,
+        0.0,
+        0.2829535086047095,
+        -0.14664671850323957,
+        0.0,
+        0.0,
+        -0.010720466263592241,
+        -0.004971919115632775,
+        1.0
+      ],
+      "name": "Sketchfab_model"
+    },
+    {
+      "children": [
+        2,
+        4
+      ],
+      "name": "Root"
+    },
+    {
+      "children": [
+        3
+      ],
+      "matrix": [
+        -0.28935000000000005,
+        0.015510000000000003,
+        0.9571000000000001,
+        0.0,
+        -0.77797,
+        -0.5863700000000001,
+        -0.22569000000000003,
+        0.0,
+        0.55771,
+        -0.8099000000000001,
+        0.18173000000000003,
+        0.0,
+        4.076250000000001,
+        1.00545,
+        5.903860000000001,
+        1.0
+      ],
+      "name": "Lamp"
+    },
+    {
+      "name": "Lamp"
+    },
+    {
+      "children": [
+        5
+      ],
+      "name": "Suzanne"
+    },
+    {
+      "mesh": 0,
+      "name": "Suzanne_0"
+    }
+  ],
+  "scene": 0,
+  "scenes": [
+    {
+      "name": "Sketchfab_Scene",
+      "nodes": [
+        0
+      ]
+    }
+  ]
+}

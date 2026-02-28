@@ -26,7 +26,7 @@ namespace EntityUtils
 
 	void DeleteSnapshotRecursive(Scene* scene, const EntitySnapshot& s);
 
-	Entity FindModelRootFromPart(Entity part);
+	Entity FindModelRootFromPart(Scene&, Entity part);
 
 	glm::vec3 ColorFromTemperature(float kelvin);
 
@@ -37,5 +37,7 @@ namespace EntityUtils
 	float ComputeEntityRadius(Scene& scene, Entity entity);
 
 	bool SnapshotContainsUUID(const EntitySnapshot& s, UUID id);
+
+	glm::vec3 GetEntityForward(const TransformComponent& tc);
 
 }

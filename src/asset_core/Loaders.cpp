@@ -10,6 +10,9 @@
 #include "audio/AudioAPI.h"
 #include "audio/AudioDecoder.h"
 #include "renderer_core/Shader.h"
+#include "renderer_core/Mesh.h"
+#include "renderer_core/GLTexture2D.h"
+
 
 Ref<Asset> AudioClipLoader::LoadAsset(const AssetMetaData& meta)
 {

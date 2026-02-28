@@ -19,16 +19,10 @@ int main()
 /*
 
 	TODO:
-	- Refine Orbit Camera controls, e.g. SketchFab
-		- Add interpolation curves to cursor hold movement
-			- Click and throw with velocity
-		- Click selects up close pivot
-			- Add a recenter button
-		- Add cursor hand grab cursor on click
-		- Change cursor to hand when hovering overing over entity (easy)
+	- Add subsurface scattering to pbr shader
 
 	TODO: ============== BUGS ==============
-	-
+
 */
 
 /* Ownership:

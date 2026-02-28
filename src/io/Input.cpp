@@ -71,7 +71,6 @@ void Input::Update(GLFWwindow* window)
 		}
 	}
 
-
 }
 
 bool Input::IsInUI() const
@@ -176,3 +175,26 @@ void Input::ScrollCallback(GLFWwindow*, double xoffset, double yoffset)
 	s_Scroll.X = xoffset;  // Horizontal scroll
 	s_Scroll.Y = yoffset;
 }
+
+glm::vec2 Input::GetGlobalMousePos(GLFWwindow* glfwWindow)
+{
+	glm::dvec2 mouseGLFW;
+	glfwGetCursorPos(glfwWindow, &mouseGLFW.x, &mouseGLFW.y);
+	return mouseGLFW;
+}
+
+glm::vec2 Input::GetViewportMousePos(const Window& window)
+{
+	double mx, my;
+	glfwGetCursorPos(m_Window, &mx, &my);
+
+	float rx = window.GetRenderX() / window.GetDPIScale();
+
+	float vx = float(mx) - rx;
+	float vy = float(my) ;
+
+	return { vx, vy };
+}
+
+
+
