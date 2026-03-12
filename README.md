@@ -1,6 +1,4 @@
-# Engine-Core
-
-
+# Engine-Core: Click [Here](https://arubaii.github.io/Engine-Core/) for the web demo
 
 
 A work-in-progress 3D graphics engine. *Better name TBD*. 
