@@ -1,6 +1,7 @@
 #pragma once
 #include "GLcommon.h"
 #include <cstdint>
+#include <string>
 
 namespace Mouse
 {
@@ -16,9 +17,22 @@ namespace Mouse
 		Button6 = GLFW_MOUSE_BUTTON_7,
 		Button7 = GLFW_MOUSE_BUTTON_8,
 
-		// Common aliases
 		Left   = GLFW_MOUSE_BUTTON_LEFT,
 		Right  = GLFW_MOUSE_BUTTON_RIGHT,
-		Middle = GLFW_MOUSE_BUTTON_MIDDLE
+		Middle = GLFW_MOUSE_BUTTON_MIDDLE,
+
+		Invalid = 0xFFFF
 	};
+
+	enum class Axis : std::uint16_t {
+		MouseWheelUp,
+		MouseWheelDown,
+		// Some mice have these
+		MouseWheelLeft,
+		MouseWheelRight
+	};
+
+	Code StringToMouse(const std::string& name);
+
+	Axis StringToMouseAxis(const std::string& name);
 }

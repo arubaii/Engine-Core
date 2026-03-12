@@ -81,13 +81,17 @@ void Renderer::EnableCulling(bool enabled) const
 
 void Renderer::SetPolygonMode(unsigned int face, unsigned int mode) const
 {
+#ifndef __EMSCRIPTEN__
     glPolygonMode(face, mode);
+#endif
 }
 
 void Renderer::EnablePolygonOffset(bool enabled) const
 {
+#ifndef __EMSCRIPTEN__
     enabled ? glEnable(GL_POLYGON_OFFSET_LINE)
             : glDisable(GL_POLYGON_OFFSET_LINE);
+#endif
 }
 
 void Renderer::SetPolygonOffset(float factor, float units) const
@@ -134,21 +138,21 @@ void Renderer::DrawOutline(const glm::mat4& mvp,
 void Renderer::DrawWireframe(const Ref<Shader>& outlineShader, const glm::vec3& color,
                              const glm::mat4& MVP, const VertexArray& va, const IndexBuffer& ib)
 {
+#ifndef __EMSCRIPTEN__
 	glEnable(GL_POLYGON_OFFSET_LINE);
-
 	glPolygonOffset(-1.0f, -1.0f);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+#endif
 	glDisable(GL_CULL_FACE);
-	// glLineWidth(2.0f);
 	SetShader(outlineShader);
 	outlineShader->Bind();
     outlineShader->SetVec4("u_OutlineColor", glm::vec4(color, 1.0f));
 	outlineShader->SetMat4("u_MVP", MVP);
 	Draw(va, ib);
-
+#ifndef __EMSCRIPTEN__
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
 	glDisable(GL_POLYGON_OFFSET_LINE);
+#endif
 }
 
 void Renderer::InitOutlines(int width, int height)
@@ -250,7 +254,6 @@ void Renderer::BeginSelectionMask()
     glDepthMask(GL_TRUE);
 
     glClearColor(0.f, 0.f, 0.f, 0.f);
-    // TODO: Fix later
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 }
@@ -310,5 +313,3 @@ void Renderer::CompositeOutlines(const Ref<Shader>& outlineShader,
     glEnable(GL_DEPTH_TEST);
     glDepthMask(GL_TRUE);
 }
-
-

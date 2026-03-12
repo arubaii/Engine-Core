@@ -1,8 +1,6 @@
 #include <yaml-cpp/yaml.h>
 #include "Serializers.h"
-
 #include <fstream>
-
 #include "YamlTypes.h"
 
 MaterialDesc MaterialSerializer::Deserialize(const std::filesystem::path& path)

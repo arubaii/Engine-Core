@@ -25,6 +25,9 @@ public:
 	Window& GetWindow() { return *m_Window; }
 	void Run();
 
+	void RunFrame();
+
+	void UpdateUIData();
 
 
 	void TestTriangle();

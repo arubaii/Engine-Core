@@ -1,4 +1,7 @@
-#version 410 core
+#version 300 es
+#ifdef GL_ES
+precision highp float;
+#endif
 
 in vec2 v_UV;
 out vec4 FragColor;
@@ -22,7 +25,7 @@ void main()
     {
         for (int x = -r; x <= r; x++)
         {
-            vec2 offset = vec2(x, y) * u_TexelSize;
+            vec2 offset = vec2(float(x), float(y)) * u_TexelSize;
             float neighbor = texture(u_MaskTex, v_UV + offset).r;
 
             // If any neighbor belongs to selected object,

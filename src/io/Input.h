@@ -1,10 +1,35 @@
 #pragma once
+#include <vector>
 #include "GLcommon.h"
 #include <glm/glm.hpp>
 #include <unordered_map>
 #include "KeyCodes.h"
 #include "MouseCodes.h"
+#include "InputAction.h"
 #include "core/Window.h"
+
+
+enum class BindingType { Key, Mouse, Scroll, Chord };
+
+struct ChordElement
+{
+	bool isKey;
+	Key::Code key;
+	Mouse::Code mouse;
+};
+
+
+struct Binding
+{
+	BindingType type;
+
+	Key::Code key;
+	Mouse::Code mouse;
+	enum ScrollDir { Up, Down, X, Y } scrollDir;
+	std::vector<ChordElement> chord;
+
+	bool wasActive = false;
+};
 
 class Input
 {
@@ -32,12 +57,23 @@ public:
 	double GetMouseScrollX() { return s_Scroll.X; } // Useless for now
 	glm::vec2 GetViewportMousePos(const Window& window);
 
+	void LoadBindings(const std::string &path);
+
+	bool IsBindingActive(const Binding &b);
+
+
 	glm::vec2 GetGlobalMousePos(GLFWwindow* glfwWindow);
 
-	void EndFrame() { s_Scroll = {}; }
+	void EndFrame();
 	bool IsCursorEnabled() const;
 	bool IsKeyboardEnabled() const;
 	static void SetKeyState(int key, bool state);
+
+
+	bool IsActionActive(InputAction a);
+
+	bool IsActionActiveOnce(InputAction a);
+
 private:
 	static void MouseCallback(GLFWwindow* window, double xpos, double ypos);
 	static void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
@@ -53,6 +89,7 @@ private:
 		bool first = true;
 		bool cursorEnabled = false;
 		bool initCursor = true;
+
 
 		// Buttons
 		bool down[GLFW_MOUSE_BUTTON_LAST + 1]        = {};
@@ -83,5 +120,8 @@ private:
 	static bool s_KeyState[GLFW_KEY_LAST + 1];
 	static bool s_KeyPressedOnce[GLFW_KEY_LAST + 1];
 
+
+	static std::unordered_map<InputAction, std::vector<Binding>> s_ActionBindings;
+	static std::unordered_map<InputAction, bool> s_ActionPrevState;
 };
 

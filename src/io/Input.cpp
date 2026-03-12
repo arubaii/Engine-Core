@@ -2,8 +2,11 @@
 #include <iostream>
 #include "Input.h"
 #include "utils/Log.h"
+#include <yaml-cpp/yaml.h>
 
 Input* Input::s_Instance = nullptr;
+std::unordered_map<InputAction, std::vector<Binding>> Input::s_ActionBindings;
+std::unordered_map<InputAction, bool> Input::s_ActionPrevState;
 
 void Input::Init(GLFWwindow* window)
 {
@@ -12,13 +15,19 @@ void Input::Init(GLFWwindow* window)
 	glfwSetCursorPosCallback(m_Window, MouseCallback);
 	glfwSetMouseButtonCallback(m_Window, MouseButtonCallback);
 	glfwSetScrollCallback(m_Window, ScrollCallback);
+#ifdef __EMSCRIPTEN__
+	Input::LoadBindings("config/controls.yaml");
+#else
+	Input::LoadBindings("../config/controls.yaml");
+#endif
+
 }
 
 // GLFWwindow is incomplete, window must be passed through here
 void Input::Update(GLFWwindow* window)
 {
 
-	if (IsKeyPressedOnce(GLFW_KEY_ESCAPE) || s_Mouse.initCursor)
+	if (IsKeyPressedOnce(Key::Tab) || s_Mouse.initCursor)
 	{
 		if (!s_Mouse.cursorEnabled)
 			{
@@ -193,8 +202,143 @@ glm::vec2 Input::GetViewportMousePos(const Window& window)
 	float vx = float(mx) - rx;
 	float vy = float(my) ;
 
-	return { vx, vy };
+	return glm::vec2( vx, vy );
 }
 
+void Input::LoadBindings(const std::string& path)
+{
+    YAML::Node config = YAML::LoadFile(path);
+    YAML::Node actions = config["actions"];
+
+    for (auto it : actions)
+    {
+        std::string actionName = it.first.as<std::string>();
+        InputAction actionEnum = StringToAction(actionName);
+
+        for (auto bindingNode : it.second)
+        {
+            Binding b;
+        	b.wasActive = false;
+
+            if (bindingNode["key"])
+            {
+                b.type = BindingType::Key;
+                b.key = Key::StringToKey(bindingNode["key"].as<std::string>());
+            }
+
+            else if (bindingNode["mouse"])
+            {
+                b.type = BindingType::Mouse;
+                b.mouse = Mouse::StringToMouse(bindingNode["mouse"].as<std::string>());
+            }
+
+            else if (bindingNode["scroll"])
+            {
+                b.type = BindingType::Scroll;
+                std::string dir = bindingNode["scroll"].as<std::string>();
+
+                if (dir == "Up")   b.scrollDir = Binding::ScrollDir::Up;
+                if (dir == "Down") b.scrollDir = Binding::ScrollDir::Down;
+                if (dir == "X")    b.scrollDir = Binding::ScrollDir::X;
+                if (dir == "Y")    b.scrollDir = Binding::ScrollDir::Y;
+            }
+
+            else if (bindingNode["chord"])
+            {
+            	b.type = BindingType::Chord;
+
+            	for (auto k : bindingNode["chord"])
+            	{
+            		std::string item = k.as<std::string>();
+
+            		Mouse::Code m = Mouse::StringToMouse(item);
+            		if (m != Mouse::Invalid)
+            		{
+            			b.chord.push_back({false, Key::Code(0), m});
+            			continue;
+            		}
+
+            		Key::Code key = Key::StringToKey(item);
+            		b.chord.push_back({true, key, Mouse::Code(0)});
+            	}
+            }
+
+            // Add to mapping
+            s_ActionBindings[actionEnum].push_back(b);
+        }
+    }
+}
+
+bool Input::IsBindingActive(const Binding& b)
+{
+	switch (b.type)
+	{
+		case BindingType::Key:
+			return IsKeyPressed(b.key);
+
+		case BindingType::Mouse:
+			return IsMousePressed(b.mouse);
+
+		case BindingType::Scroll:
+			if (b.scrollDir == Binding::ScrollDir::Up)   return s_Scroll.Y > 0;
+			if (b.scrollDir == Binding::ScrollDir::Down) return s_Scroll.Y < 0;
+			if (b.scrollDir == Binding::ScrollDir::X)    return s_Scroll.X != 0;
+			if (b.scrollDir == Binding::ScrollDir::Y)    return s_Scroll.Y != 0;
+			return false;
+
+		case BindingType::Chord:
+			for (auto& c : b.chord)
+			{
+				if (c.isKey)
+				{
+					if (!IsKeyPressed(c.key))
+						return false;
+				}
+				else
+				{
+					if (!IsMousePressed(c.mouse))
+						return false;
+				}
+			}
+			return true;
+	}
+	return false;
+}
+
+bool Input::IsActionActive(InputAction a)
+{
+	auto& binds = s_ActionBindings[a];
+
+	for (auto& b : binds)
+		if (IsBindingActive(b))
+			return true;
+
+	return false;
+}
+
+bool Input::IsActionActiveOnce(InputAction a)
+{
+	auto& binds = s_ActionBindings[a];
+
+	for (auto& b : binds)
+	{
+		bool active = IsBindingActive(b);
+
+		if (active && !b.wasActive)
+		{
+			b.wasActive = true;
+			return true;
+		}
+
+		b.wasActive = active;
+	}
+
+	return false;
+}
+
+void Input::EndFrame()
+{
+	s_Scroll = {};
+}
 
 

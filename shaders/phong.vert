@@ -1,4 +1,7 @@
-#version 410 core
+#version 300 es
+#ifdef GL_ES
+precision highp float;
+#endif
 
 layout(location = 0) in vec3 a_Position;
 layout(location = 1) in vec3 a_Normal;

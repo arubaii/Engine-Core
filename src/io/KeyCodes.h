@@ -1,6 +1,7 @@
 #pragma once
 #include "GLcommon.h"
 #include <cstdint>
+#include <string>
 
 namespace Key
 {
@@ -79,10 +80,10 @@ namespace Key
 		RightCmd    = GLFW_KEY_RIGHT_SUPER,
 
 		// Arrow keys
-		Left  = GLFW_KEY_LEFT,
-		Right = GLFW_KEY_RIGHT,
-		Up    = GLFW_KEY_UP,
-		Down  = GLFW_KEY_DOWN,
+		LeftArrow  = GLFW_KEY_LEFT,
+		RightArrow = GLFW_KEY_RIGHT,
+		UpArrow    = GLFW_KEY_UP,
+		DownArrow  = GLFW_KEY_DOWN,
 
 		// Navigation
 		Insert   = GLFW_KEY_INSERT,
@@ -121,6 +122,10 @@ namespace Key
 		KPSubtract = GLFW_KEY_KP_SUBTRACT,
 		KPAdd      = GLFW_KEY_KP_ADD,
 		KPEnter    = GLFW_KEY_KP_ENTER,
-		KPEqual    = GLFW_KEY_KP_EQUAL
+		KPEqual    = GLFW_KEY_KP_EQUAL,
+
+		Invalid    = 0xFFFF
 	};
+
+	Code StringToKey(const std::string& name);
 }

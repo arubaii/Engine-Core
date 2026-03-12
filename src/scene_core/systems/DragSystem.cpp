@@ -13,6 +13,10 @@
 #include "SelectionSystem.h"
 #include "scene_core/ecs/EntityUtils.h"
 
+
+#include "utils/WebCursor.h"
+
+
 DragSystem::DragSystem(Scene* scene)
     : m_Scene(scene)
 {
@@ -20,13 +24,8 @@ DragSystem::DragSystem(Scene* scene)
 
 void DragSystem::SetDragMode(Input& input, bool vertical, bool xz)
 {
-    bool shift =
-        input.IsKeyPressed(Key::LeftShift) ||
-        input.IsKeyPressed(Key::RightShift);
 
-    bool leftClick = input.IsMousePressed(Mouse::Left);
-
-    if (!shift || !leftClick)
+    if (!input.IsActionActive(InputAction::EntityDrag))
     {
         DragAffectsVertical = false;
         DragAffectsXZ = false;
@@ -49,24 +48,19 @@ void DragSystem::Update(float dt,
     GLFWwindow* glfwWindow   = m_Scene->GetGLFWwindow();
 
 
-    // if (input.IsMouseCapturedByUI())
-    //     return;
 
     bool inOrbit = m_Scene->GetCameraSystem().GetActiveControllerIndex() ==
                    m_Scene->GetCameraSystem().ORBIT_CONTROLLER_INDEX;
 
 
-    bool shift =
-        input.IsKeyPressed(Key::LeftShift) ||
-        input.IsKeyPressed(Key::RightShift);
 
-    bool leftClick = input.IsMousePressed(Mouse::Left);
-    bool rightClick = input.IsMousePressed(Mouse::Right);
+    bool primaryClick = input.IsActionActive(InputAction::PrimaryClick);
+    bool secondaryClick = input.IsActionActive(InputAction::SecondaryClick);
+
 
     // Geometry Drag & Drop
     if (!IsDragging &&
-        shift &&
-        input.IsMousePressedOnce(Mouse::Left) &&
+        input.IsActionActive(InputAction::EntityDrag) &&
         ctx.HasHit)
     {
         entt::entity raw = ctx.LastHit.entity;
@@ -98,7 +92,7 @@ void DragSystem::Update(float dt,
 
 
     if (IsDragging &&
-        leftClick &&
+        primaryClick &&
         m_DraggedEntity != entt::null)
     {
         auto& tc = registry.get<TransformComponent>(m_DraggedEntity);
@@ -167,7 +161,7 @@ void DragSystem::Update(float dt,
 
     // End Drag
     if (IsDragging &&
-        !leftClick)
+        !primaryClick)
     {
         if (m_InitialDragPos != m_FinalDragPos)
         {
@@ -191,30 +185,72 @@ void DragSystem::Update(float dt,
     // Set cursor
     if (!input.IsInUI())
     {
+        m_IsControllingCursor = true;
+
         if (IsDragging)
         {
             if (DragAffectsVertical)
+            {
+#ifdef __EMSCRIPTEN__
+                SetCanvasCursor("ns-resize");
+#else
                 glfwSetCursor(glfwWindow, m_Cursors.ResizeUpDown);
+#endif
+            }
+
             if (DragAffectsXZ)
+            {
+#ifdef __EMSCRIPTEN__
+                SetCanvasCursor("move");
+#else
                 glfwSetCursor(glfwWindow, m_Cursors.Move);
+#endif
+            }
         }
-
-        // Free camera cursor over entity
         else if (ctx.HasHit && !inOrbit)
+        {
+#ifdef __EMSCRIPTEN__
+            SetCanvasCursor("grab");
+#else
             glfwSetCursor(glfwWindow, m_Cursors.OpenHand);
-
-        // Orbit camera cursor over entity
+#endif
+        }
         else if (inOrbit)
         {
-            if (leftClick || rightClick)
+            if (primaryClick || secondaryClick)
+            {
+#ifdef __EMSCRIPTEN__
+                SetCanvasCursor("grabbing");
+#else
                 glfwSetCursor(glfwWindow, m_Cursors.GrabHand);
-            else if (ctx.HasHit && !leftClick)
+#endif
+            }
+            else if (ctx.HasHit && !primaryClick)
+            {
+#ifdef __EMSCRIPTEN__
+                SetCanvasCursor("grab");
+#else
                 glfwSetCursor(glfwWindow, m_Cursors.OpenHand);
+#endif
+            }
             else
+            {
+#ifdef __EMSCRIPTEN__
+                SetCanvasCursor("pointer");
+#else
                 glfwSetCursor(glfwWindow, m_Cursors.PointHand);
+#endif
+            }
         }
-
         else
+        {
+#ifdef __EMSCRIPTEN__
+            SetCanvasCursor("default");
+#else
             glfwSetCursor(glfwWindow, m_Cursors.Arrow);
+#endif
+        }
     }
+    else
+        m_IsControllingCursor = false;
 }

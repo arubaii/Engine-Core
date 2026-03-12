@@ -59,8 +59,7 @@ void CameraSystem::Update(float dt,
 	// -------------------------------------------------
 
 
-	if (input.IsKeyPressedOnce(Key::P) ||
-		input.IsMousePressedOnce(Mouse::Middle))
+	if (input.IsActionActiveOnce(InputAction::OrbitSelect))
 	{
 		if (m_OrbitEntity != entt::entity(ctx.LastHit.entity))
 		{
@@ -112,7 +111,7 @@ void CameraSystem::Update(float dt,
 		}
 	}
 
-	else if (input.IsKeyPressedOnce(Key::Y) && ctx.HasHit)
+	else if (input.IsActionActiveOnce(InputAction::ThirdPersonSelect) && ctx.HasHit)
 	{
 		Entity entity{ ctx.LastHit.entity, &registry };
 		auto& tc = entity.GetComponent<TransformComponent>();

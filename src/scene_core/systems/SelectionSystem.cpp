@@ -17,12 +17,6 @@ void SelectionSystem::Update(Input& input, FrameContext& ctx)
 	if (input.IsMouseCapturedByUI())
 		return;
 
-	bool shift =
-		input.IsKeyPressed(Key::LeftShift) ||
-		input.IsKeyPressed(Key::RightShift);
-
-	if (shift)
-		return;
 
 	entt::entity clicked = entt::null;
 

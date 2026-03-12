@@ -26,6 +26,8 @@ public:
 	float GetLocalGridSize()		const { return m_LocalGridSize; }
 	glm::vec3 GetLocalGridOrigin()  const { return m_LocalGridOrigin; }
 
+	bool ControlsCursor() const { return m_IsControllingCursor; }
+
 public:
 	// Used in renderer loop
 	bool DragAffectsVertical = true;
@@ -57,4 +59,5 @@ private:
 	float m_LocalGridHeight = 0.0f;
 	float m_LocalGridSize = 0.0f;
 
+	bool m_IsControllingCursor = false;
 };

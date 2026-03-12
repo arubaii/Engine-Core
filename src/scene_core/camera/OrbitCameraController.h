@@ -14,8 +14,8 @@ private:
 	Entity m_SelectedEntity;
 
 	// TODO: Add serialization for changes in settings in GUI
-	float m_MouseSensitivity       = 0.20f;
-	float m_MouseScrollSensitivity = 0.01f;
+	float m_MouseSensitivity       = 0.075f;
+	float m_MouseScrollSensitivity = 0.002f;
 	float m_KeySensitivity	       = 135.0f; // 135 deg per second
 	float m_KeyZoomSensitivity     = 10.0f;
 	float m_MinRadius              = 5.0f;

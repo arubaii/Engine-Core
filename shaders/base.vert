@@ -1,4 +1,7 @@
-#version 410 core
+#version 300 es
+#ifdef GL_ES
+precision highp float;
+#endif
 
 
 layout (location = 0) in vec3 a_Position;
@@ -12,4 +15,3 @@ void main()
     v_Color = a_Color;
     gl_Position = u_MVP * vec4(a_Position, 1.0);
 }
-

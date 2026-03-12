@@ -1,10 +1,6 @@
 #include "Scene.h"
+#include "Application.h"
 
-#include "Application.h"
-#include "Application.h"
-#include "Application.h"
-#include "Application.h"
-#include "Application.h"
 #include "asset_core/AssetManager.h"
 #include "asset_io/ModelImporter.h"
 #include "../scene_core/ecs/Entity.h"
@@ -31,79 +27,114 @@ Scene::Scene(Window& window, Input& input)
 	  }
 {
 
+#ifdef __EMSCRIPTEN__
+	const std::string ASSETS = "assets/";
+#else
+	const std::string ASSETS = "../assets/";
+#endif
 
 	// ==========================================================================================
 	// =================================== ADD ENTITIES =========================================
 	// ==========================================================================================
 
 	{
-		Entity suz = CreateEntityFromModel("../assets/models/suzanne/suzanne.glb", "Suzanne");
-		auto& tcSuz = GetEntityByName("Suzanne").GetComponent<TransformComponent>();
-		tcSuz.Scale *= glm::vec3(10.0f);
-		tcSuz.MarkDirty();
+	    auto safeLoad = [&](const std::string& path, const std::string& name) -> Entity
+	    {
+	        try
+	        {
+	            return CreateEntityFromModel(ASSETS + path, name);
+	        }
+	        catch (const std::exception& e)
+	        {
+	            return Entity{};
+	        }
+	    };
 
-		Entity suzSmooth = CreateEntityFromModel("../assets/models/suzanne_smooth/scene.gltf", "Suzanne Smooth");
-		auto& tcSuzSmooth = GetEntityByName("Suzanne Smooth").GetComponent<TransformComponent>();
-		tcSuzSmooth.Scale *= glm::vec3(10.0f);
-		tcSuzSmooth.Translation += glm::vec3(35.0f, 0.0f, 0.0f);
-		tcSuzSmooth.MarkDirty();
+	    Entity suz = safeLoad("models/suzanne/suzanne.glb", "Suzanne");
+	    if (suz)
+	    {
+	        auto& tcSuz = GetEntityByName("Suzanne").GetComponent<TransformComponent>();
+	        tcSuz.Scale *= glm::vec3(10.0f);
+	        tcSuz.MarkDirty();
+	    }
 
-		Entity SH = CreateEntityFromModel("../assets/models/space_helmet/scene.gltf", "Space Helmet");
-		auto& tcSH = GetEntityByName("Space Helmet").GetComponent<TransformComponent>();
-		tcSH.Scale *= glm::vec3(9.0f);
-		tcSH.Translation += glm::vec3(63.0f, 0.0f, 0.0f);
-		tcSH.MarkDirty();
+	    Entity suzSmooth = safeLoad("models/suzanne_smooth/scene.gltf", "Suzanne Smooth");
+	    if (suzSmooth)
+	    {
+	        auto& tcSuzSmooth = GetEntityByName("Suzanne Smooth").GetComponent<TransformComponent>();
+	        tcSuzSmooth.Scale *= glm::vec3(10.0f);
+	        tcSuzSmooth.Translation += glm::vec3(35.0f, 0.0f, 0.0f);
+	        tcSuzSmooth.MarkDirty();
+	    }
 
-		Entity bunny = CreateEntityFromModel("../assets/models/stanford_bunny/scene.gltf", "Stanford Bunny");
-		auto& tcBunny = GetEntityByName("Stanford Bunny").GetComponent<TransformComponent>();
-		tcBunny.Scale *= glm::vec3(1.0f);
-		tcBunny.Translation += glm::vec3(85.0f, 0.0f, 0.0f);
-		tcBunny.MarkDirty();
+	    Entity SH = safeLoad("models/space_helmet/scene.gltf", "Space Helmet");
+	    if (SH)
+	    {
+	        auto& tcSH = GetEntityByName("Space Helmet").GetComponent<TransformComponent>();
+	        tcSH.Scale *= glm::vec3(9.0f);
+	        tcSH.Translation += glm::vec3(63.0f, 0.0f, 0.0f);
+	        tcSH.MarkDirty();
+	    }
 
+	    Entity bunny = safeLoad("models/stanford_bunny/scene.gltf", "Stanford Bunny");
+	    if (bunny)
+	    {
+	        auto& tcBunny = GetEntityByName("Stanford Bunny").GetComponent<TransformComponent>();
+	        tcBunny.Scale *= glm::vec3(1.0f);
+	        tcBunny.Translation += glm::vec3(85.0f, 0.0f, 0.0f);
+	        tcBunny.MarkDirty();
+	    }
 
-		{
-			Entity suzSmooth = GetEntityByName("Suzanne Smooth");
-			auto& rootModel = suzSmooth.GetComponent<ModelRootComponent>();
+	    {
+	        Entity suzSmooth = GetEntityByName("Suzanne Smooth");
+	        if (suzSmooth)
+	        {
+	            auto& rootModel = suzSmooth.GetComponent<ModelRootComponent>();
 
-			for (UUID id : rootModel.Parts)
-			{
-				Entity part = GetEntityByID(id);
-				if (!part) continue;
+	            for (UUID id : rootModel.Parts)
+	            {
+	                Entity part = GetEntityByID(id);
+	                if (!part) continue;
 
-				auto& mc = part.GetComponent<MeshComponent>();
-				mc.BasisRotation.x = glm::radians(-90.0f);
-			}
-		}
+	                auto& mc = part.GetComponent<MeshComponent>();
+	                mc.BasisRotation.x = glm::radians(-90.0f);
+	            }
+	        }
+	    }
 
-		{
-			Entity sh = GetEntityByName("Space Helmet");
-			auto& rootModel = sh.GetComponent<ModelRootComponent>();
+	    {
+	        Entity sh = GetEntityByName("Space Helmet");
+	        if (sh)
+	        {
+	            auto& rootModel = sh.GetComponent<ModelRootComponent>();
 
-			for (UUID id : rootModel.Parts)
-			{
-				Entity part = GetEntityByID(id);
-				if (!part) continue;
+	            for (UUID id : rootModel.Parts)
+	            {
+	                Entity part = GetEntityByID(id);
+	                if (!part) continue;
 
-				auto& mc = part.GetComponent<MeshComponent>();
-				mc.BasisRotation.x = glm::radians(90.0f);
-			}
-		}
+	                auto& mc = part.GetComponent<MeshComponent>();
+	                mc.BasisRotation.x = glm::radians(90.0f);
+	            }
+	        }
+	    }
 
-		{
-			Entity bunny = GetEntityByName("Stanford Bunny");
-			auto& rootModel = bunny.GetComponent<ModelRootComponent>();
+	    {
+	        Entity bunny = GetEntityByName("Stanford Bunny");
+	        if (bunny)
+	        {
+	            auto& rootModel = bunny.GetComponent<ModelRootComponent>();
 
-			for (UUID id : rootModel.Parts)
-			{
-				Entity part = GetEntityByID(id);
-				if (!part) continue;
+	            for (UUID id : rootModel.Parts)
+	            {
+	                Entity part = GetEntityByID(id);
+	                if (!part) continue;
 
-				auto& mc = part.GetComponent<MeshComponent>();
-				mc.BasisRotation.x = glm::radians(270.0f);
-			}
-		}
-
-
+	                auto& mc = part.GetComponent<MeshComponent>();
+	                mc.BasisRotation.x = glm::radians(270.0f);
+	            }
+	        }
+	    }
 	}
 
 	// ==========================================================================================
@@ -288,7 +319,6 @@ Scene::Scene(Window& window, Input& input)
 		m_PBRShader  	     = Shader::Create("pbr.vert", "pbr.frag");
 		m_MaskShader		 = Shader::Create("mask.vert", "mask.frag");
 		m_OutlinePostShader  = Shader::Create("outline_post.vert", "outline_post.frag");
-		m_DepthOnlyShader    = Shader::Create("depth.vert", "depth.frag");
 
 		// Create fallback textures
 		unsigned char whitePixel[4] = {255, 255, 255, 255};
@@ -328,12 +358,12 @@ Scene::Scene(Window& window, Input& input)
 		m_SkyboxVA.ResetAttribIndex();
 		// ----------------- SKYBOX TEXTURE ----
 		std::vector<std::string> faces = {
-			"../assets/skyboxes/sky_13_2k/sky_13_cubemap_2k/px.png", // +X
-			"../assets/skyboxes/sky_13_2k/sky_13_cubemap_2k/nx.png", // -X
-			"../assets/skyboxes/sky_13_2k/sky_13_cubemap_2k/py.png",          // +Y
-			"../assets/skyboxes/sky_13_2k/sky_13_cubemap_2k/ny.png",          // -Y
-			"../assets/skyboxes/sky_13_2k/sky_13_cubemap_2k/pz.png",          // +Z
-			"../assets/skyboxes/sky_13_2k/sky_13_cubemap_2k/nz.png"           // -Z
+			ASSETS + "skyboxes/sky_13_2k/sky_13_cubemap_2k/px.png", // +X
+			ASSETS + "skyboxes/sky_13_2k/sky_13_cubemap_2k/nx.png", // -X
+			ASSETS + "skyboxes/sky_13_2k/sky_13_cubemap_2k/py.png",          // +Y
+			ASSETS + "skyboxes/sky_13_2k/sky_13_cubemap_2k/ny.png",          // -Y
+			ASSETS + "skyboxes/sky_13_2k/sky_13_cubemap_2k/pz.png",          // +Z
+			ASSETS + "skyboxes/sky_13_2k/sky_13_cubemap_2k/nz.png"           // -Z
 		};
 
 		m_HDRSkyboxCubemap = LoadCubemap(faces);
@@ -604,11 +634,21 @@ void Scene::DrawGrid(const CameraComponent& cc, Renderer& renderer) const
 
     renderer.SetShader(m_InfiniteGridShader);
 
-    m_InfiniteGridShader->SetFloat("GridHeight", 0.0f);
-    m_InfiniteGridShader->SetMat4("Projection", cc.Camera.GetProjectionMatrix());
-    m_InfiniteGridShader->SetMat4("View", cc.Camera.GetViewMatrix());
-    m_InfiniteGridShader->SetVec3("CameraWorldPos", cc.Camera.GetPosition());
-    m_InfiniteGridShader->SetBool("ShowAxes", m_ShowAxes);
+	m_InfiniteGridShader->SetMat4("Projection", cc.Camera.GetProjectionMatrix());
+	m_InfiniteGridShader->SetMat4("View", cc.Camera.GetViewMatrix());
+	m_InfiniteGridShader->SetVec3("CameraWorldPos", cc.Camera.GetPosition());
+
+	m_InfiniteGridShader->SetFloat("GridHeight", 0.0f);
+	m_InfiniteGridShader->SetFloat("gGridSize", 400.0f);
+	m_InfiniteGridShader->SetFloat("gGridCellSize", 2.0f);
+	m_InfiniteGridShader->SetFloat("gGridMinPixelsBetweenCells", 2.0f);
+
+	m_InfiniteGridShader->SetVec4("gGridColorThin",  glm::vec4(0.35f, 0.35f, 0.35f, 1.0f));
+	m_InfiniteGridShader->SetVec4("gGridColorThick", glm::vec4(0.6f,  0.6f,  0.6f,  1.0f));
+	m_InfiniteGridShader->SetVec4("xAxisColor",      glm::vec4(0.4f,  0.7f,  0.4f,  1.0f));
+	m_InfiniteGridShader->SetVec4("zAxisColor",      glm::vec4(0.7f,  0.3f,  0.3f,  1.0f));
+
+	m_InfiniteGridShader->SetBool("ShowAxes", true);
 
 	renderer.BindVertexArray(m_InfiniteGridVAO);
 
@@ -713,6 +753,7 @@ void Scene::DrawYAxis(const CameraComponent& cc, Renderer& renderer, Entity sele
 
 void Scene::DrawOutlineDebugAll(const CameraComponent& cc, Renderer& renderer)
 {
+#ifndef __EMSCRIPTEN__
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, renderer.GetSelectionFBO());
 	glBlitFramebuffer(
@@ -722,6 +763,7 @@ void Scene::DrawOutlineDebugAll(const CameraComponent& cc, Renderer& renderer)
 		GL_NEAREST
 	);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+#endif
 
 	renderer.BeginSelectionMask();
 
@@ -781,6 +823,7 @@ void Scene::DrawOutline(const CameraComponent& cc, Renderer& renderer)
 	}
 
 
+#ifndef __EMSCRIPTEN__
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, renderer.GetSelectionFBO());
 	glBlitFramebuffer(
@@ -790,6 +833,7 @@ void Scene::DrawOutline(const CameraComponent& cc, Renderer& renderer)
 		GL_NEAREST
 	);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+#endif
 
 	renderer.BeginSelectionMask();
 
@@ -1064,7 +1108,6 @@ Entity Scene::GetEntityByID(UUID id)
 	return {};
 }
 
-
 glm::vec3 Scene::GetMainCameraPos()
 {
 	Entity camEntity = GetPrimaryCameraEntity();
@@ -1135,7 +1178,11 @@ Entity Scene::CreateEntityFromModel(const std::filesystem::path& path,
 	// Normalize the path to match registry format
 	std::string rel = modelPath.lexically_normal().string();
 
+#ifdef __EMSCRIPTEN__
+	const std::string prefix = "assets/";
+#else
 	const std::string prefix = "../assets/";
+#endif
 	if (rel.starts_with(prefix))
 		rel = rel.substr(prefix.size());
 
@@ -1372,4 +1419,3 @@ void Scene::OnComponentAdded<CameraComponent>(Entity entity, CameraComponent& co
 	if (component.Primary)
 		SetPrimaryCamera(entity);
 }
-

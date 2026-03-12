@@ -10,12 +10,12 @@ void OrbitCameraController::Update(float dt, Input& input)
 	assert(m_Camera && "Camera not bound to OrbitCameraController");
 
 	glm::vec2 mouseDelta = input.GetMouseDelta();
-	double mouseScroll = input.GetMouseScrollY();
+	double mouseScroll   = input.GetMouseScrollY() * m_MouseScrollSensitivity;
 
 	auto& tc = m_SelectedEntity.GetComponent<TransformComponent>();
 
 
-	if (input.IsMousePressed(Mouse::Left))
+	if (input.IsActionActive(InputAction::PrimaryClick))
 	{
 		glm::vec2 velocity = mouseDelta / dt * m_MouseSensitivity;
 		// Smooth velocity
@@ -30,7 +30,7 @@ void OrbitCameraController::Update(float dt, Input& input)
 			m_AngularVelocity = glm::vec2(0.0f);
 	}
 
-	if (input.IsMousePressed(Mouse::Right))
+	if (input.IsActionActive(InputAction::SecondaryClick))
 	{
 		float entityRotSense = 0.025;
 		glm::vec2 velocity = mouseDelta / dt * (m_MouseSensitivity * entityRotSense);
@@ -60,29 +60,26 @@ void OrbitCameraController::Update(float dt, Input& input)
 
 	// Zoom
 	if (mouseScroll != 0.0 && !input.IsInUI())
-		m_Radius *= std::exp(-mouseScroll * m_MouseScrollSensitivity);
+		m_Radius *= std::exp(-mouseScroll);
 
 
 	if (!input.IsKeyboardCapturedByUI())
 	{
-		if (input.IsKeyPressed(Key::A) || input.IsKeyPressed(Key::Left))  m_Yaw   += m_KeySensitivity * dt;
-		if (input.IsKeyPressed(Key::D) || input.IsKeyPressed(Key::Right)) m_Yaw   -= m_KeySensitivity * dt;
-		if (input.IsKeyPressed(Key::W) || input.IsKeyPressed(Key::Up))    m_Pitch += m_KeySensitivity * dt;
-		if (input.IsKeyPressed(Key::S) || input.IsKeyPressed(Key::Down))  m_Pitch -= m_KeySensitivity * dt;
+		if (input.IsActionActive(InputAction::MoveLeft))      m_Yaw   += m_KeySensitivity * dt;
+		if (input.IsActionActive(InputAction::MoveRight))     m_Yaw   -= m_KeySensitivity * dt;
+		if (input.IsActionActive(InputAction::MoveForward))   m_Pitch += m_KeySensitivity * dt;
+		if (input.IsActionActive(InputAction::MoveBackward))  m_Pitch -= m_KeySensitivity * dt;
+
+		if (input.IsActionActiveOnce(InputAction::OrbitZoomIn))  m_ZoomVelocity += m_KeyZoomSensitivity;
+		if (input.IsActionActiveOnce(InputAction::OrbitZoomOut)) m_ZoomVelocity -= m_KeyZoomSensitivity;
 
 
-		if (input.IsKeyPressedOnce(Key::Space))
-			m_ZoomVelocity += m_KeyZoomSensitivity;
-		else if (input.IsKeyPressedOnce(Key::C))
-			m_ZoomVelocity -= m_KeyZoomSensitivity;
 		m_Radius *= std::exp(-m_ZoomVelocity * dt);
-
 		float decay = std::exp(-8.0f * dt);
-		m_ZoomVelocity *= decay;
 
+		m_ZoomVelocity *= decay;
 		if (std::abs(m_ZoomVelocity) < 0.001f)
 			m_ZoomVelocity = 0.0f;
-
 	}
 
 	// Clamp radius

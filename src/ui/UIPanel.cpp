@@ -4,6 +4,8 @@
 
 #include "scene_core/ecs/EntityUtils.h"
 
+#include "utils/WebCursor.h"
+
 
 const int	  UIPanel::s_MaxSamples = 120;
 float 		  UIPanel::s_FPSHistory[120] = {};
@@ -35,20 +37,41 @@ static int FindMatchingMaterialPreset(const MaterialDesc& d)
 	return (int)MATERIALS::None;
 }
 
-void UIPanel::SetCursors(GLFWwindow* glfwWindow)
+
+void UIPanel::SetCursors(GLFWwindow* glfwWindow, Scene* scene)
 {
 	bool inUI = ImGui::GetIO().WantCaptureMouse;
 
+
+	if (scene && scene->GetDragSystem().ControlsCursor())
+		return;
+
+#ifdef __EMSCRIPTEN__
+	if (glfwGetInputMode(glfwWindow, GLFW_CURSOR) != GLFW_CURSOR_NORMAL)
+		return;
+
+	if (s_Config.IsSplitterDraggingX)
+		SetCanvasCursor("ew-resize");
+	else if (s_Config.IsSplitterDraggingY)
+		SetCanvasCursor("ns-resize");
+	else if (s_Config.IsCornerDragging || s_Config.IsCornerHovered)
+		SetCanvasCursor("news-resize");
+	else if (inUI)
+		SetCanvasCursor("default");
+	else
+		SetCanvasCursor("default");
+#else
 	if (s_Config.IsSplitterDraggingX)
 		glfwSetCursor(glfwWindow, s_Cursors.ResizeLeftRight);
 	else if (s_Config.IsSplitterDraggingY)
 		glfwSetCursor(glfwWindow, s_Cursors.ResizeUpDown);
 	else if (s_Config.IsCornerDragging || s_Config.IsCornerHovered)
-	{
 		glfwSetCursor(glfwWindow, s_Cursors.ResizeDiagonal);
-	}
 	else if (inUI)
 		glfwSetCursor(glfwWindow, s_Cursors.Arrow);
+	else
+		glfwSetCursor(glfwWindow, nullptr);
+#endif
 }
 
 void UIPanel::Splitter(UIData& data,
@@ -296,12 +319,10 @@ void UIPanel::Render(UIData& data, GLFWwindow* glfwWindow, Window* window, Scene
 
 				ImGui::PopItemWidth();
 				if (ImGui::Button("Show Grid"))          data.showGrid     = !data.showGrid;
-				if (ImGui::Button("Show Grid Axes"))     data.showAxes	   = !data.showAxes;
+				// if (ImGui::Button("Show Grid Axes"))     data.showAxes	   = !data.showAxes;
 				if (ImGui::Button("Show Skybox"))		 data.showSkybox   = !data.showSkybox;
 				if (!data.showSkybox)
 					ImGui::ColorEdit4("Base Color", &data.baseSkyColor.x);
-
-				if (ImGui::Checkbox("Enable Physics",    &data.enablePhysics)) {}
 
 				if (ImGui::Button("Reveal Hidden Lights")) { UIUtils::StartLightsFlash(data.showLights); }
 			}
@@ -456,13 +477,13 @@ void UIPanel::Render(UIData& data, GLFWwindow* glfwWindow, Window* window, Scene
 						}
 
 
-						if (ImGui::Button("Show Wireframe"))
-						{
-							if (e.HasComponent<WireframeComponent>())
-								e.RemoveComponent<WireframeComponent>();
-							else
-								e.AddComponent<WireframeComponent>();
-						}
+						// if (ImGui::Button("Show Wireframe"))
+						// {
+						// 	if (e.HasComponent<WireframeComponent>())
+						// 		e.RemoveComponent<WireframeComponent>();
+						// 	else
+						// 		e.AddComponent<WireframeComponent>();
+						// }
 
 						ImGui::Dummy(ImVec2(0.0f, 8.0f)); ImGui::Separator(); ImGui::Dummy(ImVec2(0.0f, 8.0f));
 
@@ -673,12 +694,12 @@ void UIPanel::Render(UIData& data, GLFWwindow* glfwWindow, Window* window, Scene
 				}
 			}
 
-			if (ImGui::CollapsingHeader("Controls"))
+			if (ImGui::CollapsingHeader("Controls", ImGuiTreeNodeFlags_DefaultOpen))
 			{
 				ImGui::TextUnformatted("Controls:");
 				ImGui::Separator();
 
-				ImGui::BulletText("Escape: Enable / Disable Cursor");
+				ImGui::BulletText("Tab: Enable / Disable Cursor");
 				ImGui::BulletText("Space: Move Upward / Zoom Out");
 				ImGui::BulletText("C: Move Upward / Zoom In");
 				ImGui::BulletText("WASD / Arrow Keys (In Orbit): Movement");
@@ -728,6 +749,17 @@ void UIPanel::Render(UIData& data, GLFWwindow* glfwWindow, Window* window, Scene
 
 		ImGui::PopStyleVar(3);
 		ImGui::PopStyleColor();
+
+
+		ImGui::SetWindowFontScale(1.35f);
+
+		ImGui::BulletText("Try turning off the skybox to see objects without reflections!");
+		ImGui::Indent();
+		ImGui::Text("> Scene Config");
+		ImGui::Text("> Show Skybox");
+		ImGui::Unindent();
+
+		ImGui::SetWindowFontScale(1.0f);
 
 		Splitter(
 			data,
@@ -874,5 +906,5 @@ void UIPanel::Render(UIData& data, GLFWwindow* glfwWindow, Window* window, Scene
 		ImGui::End();
 	}
 
-	SetCursors(glfwWindow);
+	SetCursors(glfwWindow, scene);
 }

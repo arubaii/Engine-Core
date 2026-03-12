@@ -1,14 +1,23 @@
 cmake_minimum_required(VERSION 3.31)
 project(Engine_Core)
+
+if(EMSCRIPTEN)
+    set(CMAKE_EXECUTABLE_SUFFIX ".html")
+endif()
+
 set(CMAKE_CXX_STANDARD 23)
 
-find_package(glfw3 CONFIG REQUIRED)
-#find_package(GLEW REQUIRED)
-find_package(glm CONFIG REQUIRED)
+# ======================================================
+# =============== Find Packages (Native Only) ==========
+# ======================================================
 
+if(NOT EMSCRIPTEN)
+    find_package(glfw3 CONFIG REQUIRED)
+    find_package(glm CONFIG REQUIRED)
+endif()
 
 # ======================================================
-# =============== EnTT (ECS) SETUP =====================
+# =============== EnTT + GLM (Emscripten) ==============
 # ======================================================
 
 include(FetchContent)
@@ -19,17 +28,29 @@ FetchContent_Declare(
         GIT_TAG v3.13.0
 )
 
-FetchContent_MakeAvailable(entt)
+if(EMSCRIPTEN)
+    FetchContent_Declare(
+            glm
+            GIT_REPOSITORY https://github.com/g-truc/glm.git
+            GIT_TAG 1.0.1
+    )
+    FetchContent_MakeAvailable(entt glm)
+else()
+    FetchContent_MakeAvailable(entt)
+endif()
 
+# ======================================================
+# =============== GLAD (Native Only) ===================
+# ======================================================
 
-add_library(glad STATIC
-        vendor/glad/src/gl.c
-)
-
-target_include_directories(glad PUBLIC
-        ${CMAKE_SOURCE_DIR}/vendor/glad/include
-)
-
+if(NOT EMSCRIPTEN)
+    add_library(glad STATIC
+            vendor/glad/src/gl.c
+    )
+    target_include_directories(glad PUBLIC
+            ${CMAKE_SOURCE_DIR}/vendor/glad/include
+    )
+endif()
 
 # ======================================================
 # =============== IMGUI SETUP ==========================
@@ -53,8 +74,28 @@ target_include_directories(imgui PUBLIC
         ${IMGUI_DIR}/backends
 )
 
-target_link_libraries(imgui PUBLIC glfw glad)
+if(NOT EMSCRIPTEN)
+    target_link_libraries(imgui PUBLIC glfw glad)
+endif()
 
+# ======================================================
+# =============== Assimp Setup =========================
+# ======================================================
+
+set(ASSIMP_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(ASSIMP_BUILD_ASSIMP_VIEW OFF CACHE BOOL "" FORCE)
+set(ASSIMP_BUILD_SAMPLES OFF CACHE BOOL "" FORCE)
+set(ASSIMP_NO_EXPORT ON CACHE BOOL "" FORCE)
+
+if(EMSCRIPTEN)
+    set(ASSIMP_BUILD_ALL_IMPORTERS_BY_DEFAULT OFF CACHE BOOL "" FORCE)
+    set(ASSIMP_BUILD_GLTF_IMPORTER ON CACHE BOOL "" FORCE)
+    set(ASSIMP_BUILD_OBJ_IMPORTER  ON CACHE BOOL "" FORCE)
+    set(ASSIMP_BUILD_FBX_IMPORTER  ON CACHE BOOL "" FORCE)
+endif()
+
+add_subdirectory(vendor/yaml-cpp)
+add_subdirectory(vendor/assimp)
 
 # ======================================================
 # =============== Project Sources ======================
@@ -62,6 +103,10 @@ target_link_libraries(imgui PUBLIC glfw glad)
 
 file(GLOB_RECURSE SRC_FILES
         ${CMAKE_SOURCE_DIR}/src/*.cpp
+)
+
+list(APPEND SRC_FILES
+        ${CMAKE_SOURCE_DIR}/src/utils/WebCursor.cpp
 )
 
 add_executable(Engine_Core
@@ -73,18 +118,13 @@ target_compile_definitions(Engine_Core PRIVATE
         PROJECT_DIR="${CMAKE_SOURCE_DIR}"
 )
 
+if(EMSCRIPTEN)
+    target_compile_definitions(Engine_Core PRIVATE __EMSCRIPTEN__)
+endif()
 
 # ======================================================
 # =============== Include Directories ==================
 # ======================================================
-
-set(ASSIMP_BUILD_TESTS OFF CACHE BOOL "" FORCE)
-set(ASSIMP_BUILD_ASSIMP_VIEW OFF CACHE BOOL "" FORCE)
-set(ASSIMP_BUILD_SAMPLES OFF CACHE BOOL "" FORCE)
-set(ASSIMP_NO_EXPORT ON CACHE BOOL "" FORCE)
-
-add_subdirectory(vendor/yaml-cpp)
-add_subdirectory(vendor/assimp)
 
 target_include_directories(Engine_Core PRIVATE
         ${CMAKE_SOURCE_DIR}/src
@@ -94,15 +134,49 @@ target_include_directories(Engine_Core PRIVATE
         ${CMAKE_SOURCE_DIR}/vendor/imgui/backends
 )
 
+if(NOT EMSCRIPTEN)
+    target_include_directories(Engine_Core PRIVATE
+            ${CMAKE_SOURCE_DIR}/vendor/glad/include
+    )
+endif()
 
 # ======================================================
 # =============== Link Libraries =======================
 # ======================================================
 
-if(APPLE)
+if(EMSCRIPTEN)
+    target_compile_options(Engine_Core PRIVATE
+            "-fexceptions"
+    )
+    target_link_options(Engine_Core PRIVATE
+            "-fexceptions"
+            "-sUSE_GLFW=3"
+            "-sFULL_ES3=1"
+            "-sUSE_WEBGL2=1"
+            "-sWASM=1"
+            "-sALLOW_MEMORY_GROWTH=1"
+            "-sFORCE_FILESYSTEM=1"
+            "-sASSERTIONS=2"
+            "-sSTACK_OVERFLOW_CHECK=2"
+            "-sNO_DISABLE_EXCEPTION_CATCHING"
+            "-sMAXIMUM_MEMORY=512mb"
+            "SHELL:--preload-file ${CMAKE_SOURCE_DIR}/assets@assets"
+            "SHELL:--preload-file ${CMAKE_SOURCE_DIR}/shaders@shaders"
+            "SHELL:--preload-file ${CMAKE_SOURCE_DIR}/config@config"
+            "--shell-file"   "${CMAKE_SOURCE_DIR}/shell.html"
+    )
+
+    target_link_libraries(Engine_Core PRIVATE
+            imgui
+            EnTT::EnTT
+            glm::glm
+            yaml-cpp
+            assimp
+    )
+
+elseif(APPLE)
     target_link_libraries(Engine_Core PRIVATE
             glfw
-            #            GLEW::GLEW
             glad
             imgui
             EnTT::EnTT
@@ -113,7 +187,6 @@ if(APPLE)
 else()
     target_link_libraries(Engine_Core PRIVATE
             glfw
-            #            GLEW::GLEW
             glad
             imgui
             EnTT::EnTT

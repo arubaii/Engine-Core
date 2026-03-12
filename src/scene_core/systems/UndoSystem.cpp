@@ -47,7 +47,6 @@ void UndoSystem::Update(Input& input)
 
 void UndoSystem::Undo()
 {
-
     if (m_UndoStack.empty())
         return;
 
@@ -60,7 +59,6 @@ void UndoSystem::Undo()
     }, a);
 
     m_RedoStack.push_back(std::move(a));
-
 }
 
 void UndoSystem::Redo()

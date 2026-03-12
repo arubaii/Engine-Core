@@ -1,4 +1,7 @@
-#version 410 core
+#version 300 es
+#ifdef GL_ES
+precision highp float;
+#endif
 
 #define MAX_LIGHTS 32
 
@@ -13,12 +16,10 @@ struct SceneLight {
 uniform int u_LightCount;
 uniform SceneLight u_Lights[MAX_LIGHTS];
 
-in VS_OUT {
-    vec3 WorldPos;
-    vec3 Normal;
-    vec2 UV;
-    mat3 TBN;
-} fs_in;
+in vec3 vs_WorldPos;
+in vec3 vs_Normal;
+in vec2 vs_UV;
+in mat3 vs_TBN;
 
 uniform vec3 u_CamPos;
 
@@ -35,9 +36,9 @@ uniform sampler2D u_NormalTex;
 uniform sampler2D u_MetallicRoughnessTex;
 uniform sampler2D u_EmissiveTex;
 uniform sampler2D u_OcclusionTex;
-uniform samplerCube u_IrradianceMap;   // diffuse convolution of skybox
-uniform samplerCube u_PrefilterMap;    // prefiltered specular mip chain
-uniform sampler2D   u_BRDFLUT;         // 2D BRDF integration LUT
+//uniform samplerCube u_IrradianceMap;   // diffuse convolution of skybox
+//uniform samplerCube u_PrefilterMap;    // prefiltered specular mip chain
+//uniform sampler2D   u_BRDFLUT;         // 2D BRDF integration LUT
 
 uniform samplerCube u_EnvMap;
 uniform float u_MaxEnvMip;
@@ -85,35 +86,35 @@ vec3 ACESFilm(vec3 x)
 // === Normal mapping ===
 vec3 GetNormal()
 {
-    vec3 tn = texture(u_NormalTex, fs_in.UV).xyz * 2.0 - 1.0;
-    return normalize(fs_in.TBN * tn);
+    vec3 tn = texture(u_NormalTex, vs_UV).xyz * 2.0 - 1.0;
+    return normalize(vs_TBN * tn);
 }
 
 vec4 NormalMapColoring ()
 {
-    return vec4(normalize(fs_in.Normal) * 0.5 + 0.3, 1.0);
+    return vec4(normalize(vs_Normal) * 0.5 + 0.3, 1.0);
 }
 
 void main()
 {
     // Base color
-    vec3 baseTex = pow(texture(u_BaseColorTex, fs_in.UV).rgb, vec3(2.2));
+    vec3 baseTex = pow(texture(u_BaseColorTex, vs_UV).rgb, vec3(2.2));
     vec3 baseCol = baseTex * u_BaseColorFactor.rgb;
 
     // Metallic & roughness
-    vec4 mr = texture(u_MetallicRoughnessTex, fs_in.UV);
+    vec4 mr = texture(u_MetallicRoughnessTex, vs_UV);
     float roughness = clamp(mr.g * u_RoughnessFactor, 0.04, 1.0);
     float metallic  = mr.b * u_MetallicFactor;
 
     // Emissive
-    vec3 emissive = pow(texture(u_EmissiveTex, fs_in.UV).rgb, vec3(2.2)) * u_EmissiveFactor;
+    vec3 emissive = pow(texture(u_EmissiveTex, vs_UV).rgb, vec3(2.2)) * u_EmissiveFactor;
     emissive *= u_EmissiveStrength;
 
     // Normal
     vec3 N = GetNormal();
 
     // View vector
-    vec3 V = normalize(u_CamPos - fs_in.WorldPos);
+    vec3 V = normalize(u_CamPos - vs_WorldPos);
 
     // Reflectance
     vec3 R = reflect(-V, N);
@@ -133,23 +134,23 @@ void main()
     {
         SceneLight Lgt = u_Lights[i];
 
-        vec3 L = normalize(Lgt.Position - fs_in.WorldPos);
+        vec3 L = normalize(Lgt.Position - vs_WorldPos);
         vec3 H = normalize(V + L);
 
-        float lightSizeScale = 3.0f;
-        float R    = Lgt.Radius * lightSizeScale;
-        float dist = length(Lgt.Position - fs_in.WorldPos);
+        float lightSizeScale = 3.0;
+        float LightR = Lgt.Radius * lightSizeScale;
+        float dist = length(Lgt.Position - vs_WorldPos);
 
         // Distance measured from the *surface* of the light
-        float d = max(dist - R, 0.001);
+        float d = max(dist - LightR, 0.001);
 
         // Inverse-square falloff starting at the sphere surface
         float att = 1.0 / (d * d);
 
         // If the fragment is inside the light sphere, dampen the intensity smoothly
-        if (dist < R)
+        if (dist < LightR)
         {
-            att *= dist / R;   // prevents infinite brightness inside the light
+            att *= dist / LightR;   // prevents infinite brightness inside the light
         }
 
         // Radiance contribution
@@ -181,7 +182,7 @@ void main()
     }
 
     // Ambient occlusion
-    float ao = texture(u_OcclusionTex, fs_in.UV).r;
+    float ao = texture(u_OcclusionTex, vs_UV).r;
     vec3 ambient = baseCol * (0.03 * ao);
 
     // Final color

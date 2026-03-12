@@ -19,7 +19,7 @@ struct UIData
     float greyScale = 0.1f;
     bool showGrid = false;
     bool showAxes = true;
-    bool showSkybox = false;
+    bool showSkybox = true;
     bool showLights = false;
     bool showCrosshair = false;
 
@@ -63,7 +63,7 @@ public:
     static float GetPanelWidth()    { return s_UiWidth; }
     static float GetBottomHeight()  { return s_BottomHeight; }
 
-    static void SetCursors(GLFWwindow* glfwWindow);
+    static void SetCursors(GLFWwindow *glfwWindow, Scene *scene);
 
     static float s_UiWidth;
     static float s_BottomHeight;

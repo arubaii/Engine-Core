@@ -1,4 +1,8 @@
-#version 410 core
+#version 300 es
+#ifdef GL_ES
+precision highp float;
+#endif
+
 
 in vec2 TexCoord;
 in vec3 Dir;
@@ -40,10 +44,10 @@ void main()
 
     vec4 baseColor = vec4(1.0, 0.0, 1.0, 1.0);
     if (useColor)
-        baseColor = u_Color;
+    baseColor = u_Color;
 
     if (useNormalColors)
-        FragColor = vec4(normal * 0.5 + 0.5, 1.0);
+    FragColor = vec4(normal * 0.5 + 0.5, 1.0);
     else
-        FragColor = baseColor * lightColor * (diff + ambient + specular) * lightIntensity;
+    FragColor = baseColor * lightColor * (diff + ambient + specular) * lightIntensity;
 }

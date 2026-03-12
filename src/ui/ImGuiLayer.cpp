@@ -4,7 +4,6 @@
 #include "io/Input.h"
 #include "utils/Log.h"
 
-
 void ImGuiLayer::OnAttach(GLFWwindow* window)
 {
     IMGUI_CHECKVERSION();
@@ -13,12 +12,11 @@ void ImGuiLayer::OnAttach(GLFWwindow* window)
     ImGuiIO& io = ImGui::GetIO(); (void)io;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
     io.ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange;
-
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-    // io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 
     ImGui::StyleColorsDark();
     ImGuiStyle& style = ImGui::GetStyle();
+
     if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
     {
         style.WindowRounding = 0.0f;
@@ -28,10 +26,16 @@ void ImGuiLayer::OnAttach(GLFWwindow* window)
     io.IniFilename = nullptr;
 
     ImGui_ImplGlfw_InitForOpenGL(window, true);
+
+#ifdef __EMSCRIPTEN__
+    ImGui_ImplOpenGL3_Init("#version 300 es");
+    style.ScaleAllSizes(1.75f);
+    io.FontGlobalScale = 1.75f;
+#else
     ImGui_ImplOpenGL3_Init("#version 410");
+#endif
 
     UIPanel::s_Cursors.Initialize();
-
 }
 
 void ImGuiLayer::BeginFrame()
@@ -67,6 +71,7 @@ void ImGuiLayer::EndFrame()
         glfwMakeContextCurrent(backup_current_context);
     }
 }
+
 void ImGuiLayer::OnDetach()
 {
     ImGui_ImplOpenGL3_Shutdown();

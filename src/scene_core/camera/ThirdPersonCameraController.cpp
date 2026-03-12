@@ -24,12 +24,12 @@ void ThirdPersonCameraController::Update(float dt, Input& input)
 
 	if (input.IsKeyboardEnabled())
 	{
-		if (input.IsKeyPressed(Key::W)) move += fwd;
-		if (input.IsKeyPressed(Key::S)) move -= fwd;
-		if (input.IsKeyPressed(Key::A)) move -= right;
-		if (input.IsKeyPressed(Key::D)) move += right;
-		if (input.IsKeyPressed(Key::Space)) move += up;
-		if (input.IsKeyPressed(Key::C)) move -= up;
+		if (input.IsActionActive(InputAction::MoveForward))  move += fwd;
+		if (input.IsActionActive(InputAction::MoveBackward)) move -= fwd;
+		if (input.IsActionActive(InputAction::MoveLeft)) 	 move -= right;
+		if (input.IsActionActive(InputAction::MoveRight))	 move += right;
+		if (input.IsActionActive(InputAction::MoveUp))       move += up;
+		if (input.IsActionActive(InputAction::MoveDown))     move -= up;
 	}
 
 	if (move != glm::vec3(0.0f))

@@ -15,13 +15,6 @@ void EditorCommandSystem::Update(Input& input, FrameContext& ctx)
 	if (input.IsMouseCapturedByUI())
 		return;
 
-	bool shift =
-		input.IsKeyPressed(Key::LeftShift) ||
-		input.IsKeyPressed(Key::RightShift);
-
-	if (!shift)
-		return;
-
 	if (!ctx.HasHit)
 		return;
 
@@ -50,7 +43,7 @@ void EditorCommandSystem::Update(Input& input, FrameContext& ctx)
 		return;
 
 	// Delete
-	if (input.IsKeyPressedOnce(Key::L))
+	if (input.IsActionActiveOnce(InputAction::EntityDelete))
 	{
 		EntitySnapshot snapshot = m_Scene->SnapshotEntity(hovered);
 
@@ -64,7 +57,7 @@ void EditorCommandSystem::Update(Input& input, FrameContext& ctx)
 	}
 
 	// Duplicate
-	if (input.IsKeyPressedOnce(Key::K))
+	if (input.IsActionActiveOnce(InputAction::EntityDuplicate))
 	{
 		Entity duplicate = m_Scene->DuplicateEntity(hovered);
 		if (!duplicate)

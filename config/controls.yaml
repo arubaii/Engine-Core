@@ -1,0 +1,79 @@
+actions:
+
+  PrimaryClick:
+    - mouse: Left
+
+  SecondaryClick:
+    - mouse: Right
+
+  MiddleClick:
+    - mouse: Middle
+
+  MoveForward:
+    - key: W
+    - key: UpArrow
+
+  MoveBackward:
+    - key: S
+    - key: DownArrow
+
+  MoveLeft:
+    - key: A
+    - key: LeftArrow
+
+  MoveRight:
+    - key: D
+    - key: RightArrow
+
+  MoveUp:
+    - key: Space
+
+  MoveDown:
+    - key: C
+
+  ThirdPersonSelect:
+    - key:
+
+  OrbitSelect:
+    - mouse: Middle
+    - key: P
+
+  OrbitZoomIn:
+    - scroll: Up
+    - key: Space
+
+  OrbitZoomOut:
+    - scroll: Down
+    - key: C
+
+  EntityDrag:
+    - chord: [LeftShift, Left]
+
+  EntityRotate:
+    - chord: [LeftShift, Left]
+
+  EntityDelete:
+    - chord: [LeftShift, L]
+
+  EntityDuplicate:
+    - chord: [LeftShift, K]
+
+
+
+
+  Undo:
+    - chord: [RightCmd, Z]
+    - chord: [LeftCmd, Z]
+    - chord: [LeftControl,  Z]
+    - chord: [RightControl,  Z]
+    - chord: [RightControl,  Z]
+
+  Redo:
+    - chord: [RightCmd, LeftShift, Z]
+    - chord: [RightCmd, RightShift, Z]
+    - chord: [LeftCmd, LeftShift, Z]
+    - chord: [LeftCmd, RightShift, Z]
+    - chord: [LeftControl,  RightShift, Z]
+    - chord: [LeftControl,  LeftShift, Z]
+    - chord: [RightControl,  RightShift, Z]
+    - chord: [RightControl,  LeftShift, Z]

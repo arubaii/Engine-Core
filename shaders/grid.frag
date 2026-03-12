@@ -1,4 +1,7 @@
-#version 410 core
+#version 300 es
+#ifdef GL_ES
+precision highp float;
+#endif
 
 in vec3 WorldPos;
 out vec4 FragColor;
@@ -8,10 +11,10 @@ uniform float gGridSize;
 uniform float GridHeight;
 uniform vec3 CameraWorldPos;
 
-uniform vec4 gGridColorThin  = vec4(0.35, 0.35, 0.35, 1.0);
-uniform vec4 gGridColorThick = vec4(0.7, 0.7, 0.7, 1.0);
-uniform vec4 xAxisColor      = vec4(0.4, 0.8, 0.4, 1.0);
-uniform vec4 zAxisColor      = vec4(0.9, 0.4, 0.4, 1.0);
+uniform vec4 gGridColorThin;
+uniform vec4 gGridColorThick;
+uniform vec4 xAxisColor;
+uniform vec4 zAxisColor;
 
 void main()
 {
