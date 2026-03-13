@@ -25,10 +25,8 @@ float log10(float x)
 
 void main(){
 
-    vec2 localXZ = WorldPos.xz - CameraWorldPos.xz;
-
-    vec2 dvx = vec2(dFdx(localXZ.x), dFdy(localXZ.x));
-    vec2 dvy = vec2(dFdx(localXZ.y), dFdy(localXZ.y));
+    vec2 dvx = vec2(dFdx(WorldPos.x), dFdy(WorldPos.x));
+    vec2 dvy = vec2(dFdx(WorldPos.z), dFdy(WorldPos.z));
 
     float lx = length(dvx);
     float ly = length(dvy);
@@ -43,14 +41,16 @@ void main(){
 
     dudv *= 4.0;
 
-    float xAxisWidth = dudv.y * 0.75;
-    float zAxisWidth = dudv.x * 0.75;
+    // Axis line detection - use appropriate derivative for each axis
+    float xAxisWidth = dudv.y * 0.75; // X-axis runs along X, varies in Z direction
+    float zAxisWidth = dudv.x * 0.75; // Z-axis runs along Z, varies in X direction
 
-    float xAxisMask = 1.0 - clamp(abs(localXZ.y) / xAxisWidth, 0.0, 1.0);
-    float zAxisMask = 1.0 - clamp(abs(localXZ.x) / zAxisWidth, 0.0, 1.0);
+    float xAxisMask = 1.0 - clamp(abs(WorldPos.z) / xAxisWidth, 0.0, 1.0);
+    float zAxisMask = 1.0 - clamp(abs(WorldPos.x) / zAxisWidth, 0.0, 1.0);
 
     vec4 Color;
 
+    // Check if we're on an axis first
     if (xAxisMask > 0.0 && ShowAxes) {
         Color = xAxisColor;
         Color.a = xAxisMask;
@@ -59,21 +59,24 @@ void main(){
         Color = zAxisColor;
         Color.a = zAxisMask;
     }
-    else
+    else // Only draw grid if we're not on an axis
     {
-        vec2 mod_div_dudv = mod(localXZ, GridCellSizeLod0) / dudv;
+        vec2 mod_div_dudv = mod(WorldPos.xz, GridCellSizeLod0) / dudv;
+        // Level of Detail 0
         float Lod0a = max(
         (1.0 - abs(clamp(mod_div_dudv.x, 0.0, 1.0) * 2.0 - 1.0)),
         (1.0 - abs(clamp(mod_div_dudv.y, 0.0, 1.0) * 2.0 - 1.0))
         );
 
-        mod_div_dudv = mod(localXZ, GridCellSizeLod1) / dudv;
+        mod_div_dudv = mod(WorldPos.xz, GridCellSizeLod1) / dudv;
+        // Level of Detail 1
         float Lod1a = max(
         (1.0 - abs(clamp(mod_div_dudv.x, 0.0, 1.0) * 2.0 - 1.0)),
         (1.0 - abs(clamp(mod_div_dudv.y, 0.0, 1.0) * 2.0 - 1.0))
         );
 
-        mod_div_dudv = mod(localXZ, GridCellSizeLod2) / dudv;
+        mod_div_dudv = mod(WorldPos.xz, GridCellSizeLod2) / dudv;
+        // Level of Detail 2
         float Lod2a = max(
         (1.0 - abs(clamp(mod_div_dudv.x, 0.0, 1.0) * 2.0 - 1.0)),
         (1.0 - abs(clamp(mod_div_dudv.y, 0.0, 1.0) * 2.0 - 1.0))
@@ -101,7 +104,7 @@ void main(){
         }
     }
 
-    float OpacityFalloff = 1.0 - clamp(length(localXZ) / gGridSize, 0.0, 1.0);
+    float OpacityFalloff = 1.0 - clamp(length(WorldPos.xz - CameraWorldPos.xz) / gGridSize, 0.0, 1.0);
 
     Color.a *= OpacityFalloff;
 
