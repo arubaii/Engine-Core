@@ -1,0 +1,9 @@
+{
+  "revision": 0,
+  "rules": [
+    {
+      "primary-output": "CMakeFiles/Engine_Core.dir/src/io/Input.cpp.o"
+    }
+  ],
+  "version": 1
+}

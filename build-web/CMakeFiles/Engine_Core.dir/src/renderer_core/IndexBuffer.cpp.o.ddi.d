@@ -1,0 +1,30 @@
+CMakeFiles/Engine_Core.dir/src/renderer_core/IndexBuffer.cpp.o.ddi: \
+  /Users/ahmadrubaii/Engine-Core/src/renderer_core/IndexBuffer.cpp \
+  /Users/ahmadrubaii/Engine-Core/src/renderer_core/IndexBuffer.h \
+  /Users/ahmadrubaii/Engine-Core/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/cstdint \
+  /Users/ahmadrubaii/Engine-Core/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__config \
+  /Users/ahmadrubaii/Engine-Core/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__config_site \
+  /Users/ahmadrubaii/Engine-Core/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__configuration/abi.h \
+  /Users/ahmadrubaii/Engine-Core/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__configuration/compiler.h \
+  /Users/ahmadrubaii/Engine-Core/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__configuration/platform.h \
+  /Users/ahmadrubaii/Engine-Core/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__configuration/availability.h \
+  /Users/ahmadrubaii/Engine-Core/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__configuration/language.h \
+  /Users/ahmadrubaii/Engine-Core/emsdk/upstream/lib/clang/23/include/stdint.h \
+  /Users/ahmadrubaii/Engine-Core/emsdk/upstream/emscripten/cache/sysroot/include/stdint.h \
+  /Users/ahmadrubaii/Engine-Core/emsdk/upstream/emscripten/cache/sysroot/include/bits/alltypes.h \
+  /Users/ahmadrubaii/Engine-Core/emsdk/upstream/emscripten/cache/sysroot/include/bits/stdint.h \
+  /Users/ahmadrubaii/Engine-Core/include/GLcommon.h \
+  /Users/ahmadrubaii/Engine-Core/emsdk/upstream/emscripten/cache/sysroot/include/GLES3/gl3.h \
+  /Users/ahmadrubaii/Engine-Core/emsdk/upstream/emscripten/cache/sysroot/include/GLES3/gl3platform.h \
+  /Users/ahmadrubaii/Engine-Core/emsdk/upstream/emscripten/cache/sysroot/include/KHR/khrplatform.h \
+  /Users/ahmadrubaii/Engine-Core/emsdk/upstream/emscripten/cache/sysroot/include/GLFW/glfw3.h \
+  /Users/ahmadrubaii/Engine-Core/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/stddef.h \
+  /Users/ahmadrubaii/Engine-Core/emsdk/upstream/lib/clang/23/include/stddef.h \
+  /Users/ahmadrubaii/Engine-Core/emsdk/upstream/lib/clang/23/include/__stddef_header_macro.h \
+  /Users/ahmadrubaii/Engine-Core/emsdk/upstream/lib/clang/23/include/__stddef_ptrdiff_t.h \
+  /Users/ahmadrubaii/Engine-Core/emsdk/upstream/lib/clang/23/include/__stddef_size_t.h \
+  /Users/ahmadrubaii/Engine-Core/emsdk/upstream/lib/clang/23/include/__stddef_wchar_t.h \
+  /Users/ahmadrubaii/Engine-Core/emsdk/upstream/lib/clang/23/include/__stddef_null.h \
+  /Users/ahmadrubaii/Engine-Core/emsdk/upstream/lib/clang/23/include/__stddef_nullptr_t.h \
+  /Users/ahmadrubaii/Engine-Core/emsdk/upstream/lib/clang/23/include/__stddef_max_align_t.h \
+  /Users/ahmadrubaii/Engine-Core/emsdk/upstream/lib/clang/23/include/__stddef_offsetof.h

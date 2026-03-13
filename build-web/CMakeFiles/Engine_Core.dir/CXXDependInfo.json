@@ -1,0 +1,244 @@
+{
+	"bmi-installation" : null,
+	"compiler-frontend-variant" : "GNU",
+	"compiler-id" : "Clang",
+	"compiler-simulate-id" : "",
+	"config" : "Release",
+	"cxx-modules" : {},
+	"database-info" : null,
+	"dir-cur-bld" : "/Users/ahmadrubaii/Engine-Core/build-web",
+	"dir-cur-src" : "/Users/ahmadrubaii/Engine-Core",
+	"dir-top-bld" : "/Users/ahmadrubaii/Engine-Core/build-web",
+	"dir-top-src" : "/Users/ahmadrubaii/Engine-Core",
+	"exports" : [],
+	"forward-modules-from-target-dirs" : [],
+	"include-dirs" : 
+	[
+		"/Users/ahmadrubaii/Engine-Core/src",
+		"/Users/ahmadrubaii/Engine-Core/include",
+		"/Users/ahmadrubaii/Engine-Core/vendor",
+		"/Users/ahmadrubaii/Engine-Core/vendor/imgui",
+		"/Users/ahmadrubaii/Engine-Core/vendor/imgui/backends",
+		"_deps/entt-src/src",
+		"_deps/glm-src",
+		"/Users/ahmadrubaii/Engine-Core/vendor/yaml-cpp/include",
+		"/Users/ahmadrubaii/Engine-Core/vendor/assimp/code/../include",
+		"vendor/assimp/code/../include"
+	],
+	"language" : "CXX",
+	"linked-target-dirs" : [],
+	"module-dir" : "/Users/ahmadrubaii/Engine-Core/build-web/CMakeFiles/Engine_Core.dir",
+	"sources" : 
+	{
+		"CMakeFiles/Engine_Core.dir/src/asset_core/AssetManager.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/src/asset_core/AssetManager.cpp"
+		},
+		"CMakeFiles/Engine_Core.dir/src/asset_core/Loaders.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/src/asset_core/Loaders.cpp"
+		},
+		"CMakeFiles/Engine_Core.dir/src/asset_core/Serializers.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/src/asset_core/Serializers.cpp"
+		},
+		"CMakeFiles/Engine_Core.dir/src/asset_io/MeshImporter.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/src/asset_io/MeshImporter.cpp"
+		},
+		"CMakeFiles/Engine_Core.dir/src/asset_io/ModelImporter.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/src/asset_io/ModelImporter.cpp"
+		},
+		"CMakeFiles/Engine_Core.dir/src/asset_io/ShaderParser.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/src/asset_io/ShaderParser.cpp"
+		},
+		"CMakeFiles/Engine_Core.dir/src/audio/AudioAPI.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/src/audio/AudioAPI.cpp"
+		},
+		"CMakeFiles/Engine_Core.dir/src/audio/AudioDecoder.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/src/audio/AudioDecoder.cpp"
+		},
+		"CMakeFiles/Engine_Core.dir/src/core/Application.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/src/core/Application.cpp"
+		},
+		"CMakeFiles/Engine_Core.dir/src/core/Renderer.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/src/core/Renderer.cpp"
+		},
+		"CMakeFiles/Engine_Core.dir/src/core/Scene.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/src/core/Scene.cpp"
+		},
+		"CMakeFiles/Engine_Core.dir/src/core/Window.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/src/core/Window.cpp"
+		},
+		"CMakeFiles/Engine_Core.dir/src/io/Input.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/src/io/Input.cpp"
+		},
+		"CMakeFiles/Engine_Core.dir/src/io/InputStrings.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/src/io/InputStrings.cpp"
+		},
+		"CMakeFiles/Engine_Core.dir/src/main.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/src/main.cpp"
+		},
+		"CMakeFiles/Engine_Core.dir/src/renderer_core/GLCubemap.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/src/renderer_core/GLCubemap.cpp"
+		},
+		"CMakeFiles/Engine_Core.dir/src/renderer_core/GLHDRTexture2D.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/src/renderer_core/GLHDRTexture2D.cpp"
+		},
+		"CMakeFiles/Engine_Core.dir/src/renderer_core/GLMesh.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/src/renderer_core/GLMesh.cpp"
+		},
+		"CMakeFiles/Engine_Core.dir/src/renderer_core/GLTexture2D.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/src/renderer_core/GLTexture2D.cpp"
+		},
+		"CMakeFiles/Engine_Core.dir/src/renderer_core/IndexBuffer.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/src/renderer_core/IndexBuffer.cpp"
+		},
+		"CMakeFiles/Engine_Core.dir/src/renderer_core/Mesh.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/src/renderer_core/Mesh.cpp"
+		},
+		"CMakeFiles/Engine_Core.dir/src/renderer_core/Shader.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/src/renderer_core/Shader.cpp"
+		},
+		"CMakeFiles/Engine_Core.dir/src/renderer_core/Skybox.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/src/renderer_core/Skybox.cpp"
+		},
+		"CMakeFiles/Engine_Core.dir/src/renderer_core/VertexArray.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/src/renderer_core/VertexArray.cpp"
+		},
+		"CMakeFiles/Engine_Core.dir/src/renderer_core/VertexBuffer.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/src/renderer_core/VertexBuffer.cpp"
+		},
+		"CMakeFiles/Engine_Core.dir/src/scene_core/camera/FreeCameraController.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/src/scene_core/camera/FreeCameraController.cpp"
+		},
+		"CMakeFiles/Engine_Core.dir/src/scene_core/camera/OrbitCameraController.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/src/scene_core/camera/OrbitCameraController.cpp"
+		},
+		"CMakeFiles/Engine_Core.dir/src/scene_core/camera/PerspectiveCamera.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/src/scene_core/camera/PerspectiveCamera.cpp"
+		},
+		"CMakeFiles/Engine_Core.dir/src/scene_core/camera/ThirdPersonCameraController.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/src/scene_core/camera/ThirdPersonCameraController.cpp"
+		},
+		"CMakeFiles/Engine_Core.dir/src/scene_core/ecs/EntityUtils.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/src/scene_core/ecs/EntityUtils.cpp"
+		},
+		"CMakeFiles/Engine_Core.dir/src/scene_core/systems/CameraSystem.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/src/scene_core/systems/CameraSystem.cpp"
+		},
+		"CMakeFiles/Engine_Core.dir/src/scene_core/systems/DragSystem.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/src/scene_core/systems/DragSystem.cpp"
+		},
+		"CMakeFiles/Engine_Core.dir/src/scene_core/systems/EditorCommandSystem.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/src/scene_core/systems/EditorCommandSystem.cpp"
+		},
+		"CMakeFiles/Engine_Core.dir/src/scene_core/systems/RaycastSystem.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/src/scene_core/systems/RaycastSystem.cpp"
+		},
+		"CMakeFiles/Engine_Core.dir/src/scene_core/systems/SelectionSystem.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/src/scene_core/systems/SelectionSystem.cpp"
+		},
+		"CMakeFiles/Engine_Core.dir/src/scene_core/systems/UndoSystem.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/src/scene_core/systems/UndoSystem.cpp"
+		},
+		"CMakeFiles/Engine_Core.dir/src/ui/ImGuiLayer.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/src/ui/ImGuiLayer.cpp"
+		},
+		"CMakeFiles/Engine_Core.dir/src/ui/UIPanel.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/src/ui/UIPanel.cpp"
+		},
+		"CMakeFiles/Engine_Core.dir/src/utils/LoadingSplash.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/src/utils/LoadingSplash.cpp"
+		},
+		"CMakeFiles/Engine_Core.dir/src/utils/UUID.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/src/utils/UUID.cpp"
+		},
+		"CMakeFiles/Engine_Core.dir/src/utils/WebCursor.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/src/utils/WebCursor.cpp"
+		},
+		"CMakeFiles/Engine_Core.dir/vendor/stb/stb_image.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/vendor/stb/stb_image.cpp"
+		}
+	}
+}

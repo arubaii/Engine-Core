@@ -1,0 +1,85 @@
+ninja_dyndep_version = 1.0
+build CMakeFiles/Engine_Core.dir/src/asset_core/AssetManager.cpp.o: dyndep
+
+build CMakeFiles/Engine_Core.dir/src/asset_core/Loaders.cpp.o: dyndep
+
+build CMakeFiles/Engine_Core.dir/src/asset_core/Serializers.cpp.o: dyndep
+
+build CMakeFiles/Engine_Core.dir/src/asset_io/MeshImporter.cpp.o: dyndep
+
+build CMakeFiles/Engine_Core.dir/src/asset_io/ModelImporter.cpp.o: dyndep
+
+build CMakeFiles/Engine_Core.dir/src/asset_io/ShaderParser.cpp.o: dyndep
+
+build CMakeFiles/Engine_Core.dir/src/audio/AudioAPI.cpp.o: dyndep
+
+build CMakeFiles/Engine_Core.dir/src/audio/AudioDecoder.cpp.o: dyndep
+
+build CMakeFiles/Engine_Core.dir/src/core/Application.cpp.o: dyndep
+
+build CMakeFiles/Engine_Core.dir/src/core/Renderer.cpp.o: dyndep
+
+build CMakeFiles/Engine_Core.dir/src/core/Scene.cpp.o: dyndep
+
+build CMakeFiles/Engine_Core.dir/src/core/Window.cpp.o: dyndep
+
+build CMakeFiles/Engine_Core.dir/src/io/Input.cpp.o: dyndep
+
+build CMakeFiles/Engine_Core.dir/src/io/InputStrings.cpp.o: dyndep
+
+build CMakeFiles/Engine_Core.dir/src/main.cpp.o: dyndep
+
+build CMakeFiles/Engine_Core.dir/src/renderer_core/GLCubemap.cpp.o: dyndep
+
+build CMakeFiles/Engine_Core.dir/src/renderer_core/GLHDRTexture2D.cpp.o: dyndep
+
+build CMakeFiles/Engine_Core.dir/src/renderer_core/GLMesh.cpp.o: dyndep
+
+build CMakeFiles/Engine_Core.dir/src/renderer_core/GLTexture2D.cpp.o: dyndep
+
+build CMakeFiles/Engine_Core.dir/src/renderer_core/IndexBuffer.cpp.o: dyndep
+
+build CMakeFiles/Engine_Core.dir/src/renderer_core/Mesh.cpp.o: dyndep
+
+build CMakeFiles/Engine_Core.dir/src/renderer_core/Shader.cpp.o: dyndep
+
+build CMakeFiles/Engine_Core.dir/src/renderer_core/Skybox.cpp.o: dyndep
+
+build CMakeFiles/Engine_Core.dir/src/renderer_core/VertexArray.cpp.o: dyndep
+
+build CMakeFiles/Engine_Core.dir/src/renderer_core/VertexBuffer.cpp.o: dyndep
+
+build CMakeFiles/Engine_Core.dir/src/scene_core/camera/FreeCameraController.cpp.o: dyndep
+
+build CMakeFiles/Engine_Core.dir/src/scene_core/camera/OrbitCameraController.cpp.o: dyndep
+
+build CMakeFiles/Engine_Core.dir/src/scene_core/camera/PerspectiveCamera.cpp.o: dyndep
+
+build CMakeFiles/Engine_Core.dir/src/scene_core/camera/ThirdPersonCameraController.cpp.o: dyndep
+
+build CMakeFiles/Engine_Core.dir/src/scene_core/ecs/EntityUtils.cpp.o: dyndep
+
+build CMakeFiles/Engine_Core.dir/src/scene_core/systems/CameraSystem.cpp.o: dyndep
+
+build CMakeFiles/Engine_Core.dir/src/scene_core/systems/DragSystem.cpp.o: dyndep
+
+build CMakeFiles/Engine_Core.dir/src/scene_core/systems/EditorCommandSystem.cpp.o: dyndep
+
+build CMakeFiles/Engine_Core.dir/src/scene_core/systems/RaycastSystem.cpp.o: dyndep
+
+build CMakeFiles/Engine_Core.dir/src/scene_core/systems/SelectionSystem.cpp.o: dyndep
+
+build CMakeFiles/Engine_Core.dir/src/scene_core/systems/UndoSystem.cpp.o: dyndep
+
+build CMakeFiles/Engine_Core.dir/src/ui/ImGuiLayer.cpp.o: dyndep
+
+build CMakeFiles/Engine_Core.dir/src/ui/UIPanel.cpp.o: dyndep
+
+build CMakeFiles/Engine_Core.dir/src/utils/LoadingSplash.cpp.o: dyndep
+
+build CMakeFiles/Engine_Core.dir/src/utils/UUID.cpp.o: dyndep
+
+build CMakeFiles/Engine_Core.dir/src/utils/WebCursor.cpp.o: dyndep
+
+build CMakeFiles/Engine_Core.dir/vendor/stb/stb_image.cpp.o: dyndep
+

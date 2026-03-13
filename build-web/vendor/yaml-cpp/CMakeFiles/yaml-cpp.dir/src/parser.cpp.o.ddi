@@ -1,0 +1,9 @@
+{
+  "revision": 0,
+  "rules": [
+    {
+      "primary-output": "vendor/yaml-cpp/CMakeFiles/yaml-cpp.dir/src/parser.cpp.o"
+    }
+  ],
+  "version": 1
+}

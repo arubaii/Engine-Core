@@ -1,0 +1,32 @@
+CMakeFiles/Engine_Core.dir/src/utils/WebCursor.cpp.o.ddi: \
+  /Users/ahmadrubaii/Engine-Core/src/utils/WebCursor.cpp \
+  /Users/ahmadrubaii/Engine-Core/src/utils/WebCursor.h \
+  /Users/ahmadrubaii/Engine-Core/emsdk/upstream/emscripten/cache/sysroot/include/emscripten.h \
+  /Users/ahmadrubaii/Engine-Core/emsdk/upstream/emscripten/cache/sysroot/include/emscripten/emscripten.h \
+  /Users/ahmadrubaii/Engine-Core/emsdk/upstream/emscripten/cache/sysroot/include/emscripten/em_asm.h \
+  /Users/ahmadrubaii/Engine-Core/emsdk/upstream/emscripten/cache/sysroot/include/emscripten/em_macros.h \
+  /Users/ahmadrubaii/Engine-Core/emsdk/upstream/emscripten/cache/sysroot/include/emscripten/em_types.h \
+  /Users/ahmadrubaii/Engine-Core/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/stdbool.h \
+  /Users/ahmadrubaii/Engine-Core/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__config \
+  /Users/ahmadrubaii/Engine-Core/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__config_site \
+  /Users/ahmadrubaii/Engine-Core/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__configuration/abi.h \
+  /Users/ahmadrubaii/Engine-Core/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__configuration/compiler.h \
+  /Users/ahmadrubaii/Engine-Core/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__configuration/platform.h \
+  /Users/ahmadrubaii/Engine-Core/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__configuration/availability.h \
+  /Users/ahmadrubaii/Engine-Core/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__configuration/language.h \
+  /Users/ahmadrubaii/Engine-Core/emsdk/upstream/lib/clang/23/include/stdbool.h \
+  /Users/ahmadrubaii/Engine-Core/emsdk/upstream/emscripten/cache/sysroot/include/emscripten/em_js.h \
+  /Users/ahmadrubaii/Engine-Core/emsdk/upstream/emscripten/cache/sysroot/include/emscripten/promise.h \
+  /Users/ahmadrubaii/Engine-Core/emsdk/upstream/emscripten/cache/sysroot/include/compat/stdlib.h \
+  /Users/ahmadrubaii/Engine-Core/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/stdlib.h \
+  /Users/ahmadrubaii/Engine-Core/emsdk/upstream/emscripten/cache/sysroot/include/stdlib.h \
+  /Users/ahmadrubaii/Engine-Core/emsdk/upstream/emscripten/cache/sysroot/include/features.h \
+  /Users/ahmadrubaii/Engine-Core/emsdk/upstream/emscripten/cache/sysroot/include/bits/alltypes.h \
+  /Users/ahmadrubaii/Engine-Core/emsdk/upstream/emscripten/cache/sysroot/include/alloca.h \
+  /Users/ahmadrubaii/Engine-Core/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__math/abs.h \
+  /Users/ahmadrubaii/Engine-Core/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__type_traits/enable_if.h \
+  /Users/ahmadrubaii/Engine-Core/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__type_traits/is_integral.h \
+  /Users/ahmadrubaii/Engine-Core/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__type_traits/integral_constant.h \
+  /Users/ahmadrubaii/Engine-Core/emsdk/upstream/emscripten/cache/sysroot/include/c++/v1/__type_traits/remove_cv.h \
+  /Users/ahmadrubaii/Engine-Core/emsdk/upstream/emscripten/cache/sysroot/include/emscripten/wget.h \
+  /Users/ahmadrubaii/Engine-Core/emsdk/upstream/emscripten/cache/sysroot/include/emscripten/version.h

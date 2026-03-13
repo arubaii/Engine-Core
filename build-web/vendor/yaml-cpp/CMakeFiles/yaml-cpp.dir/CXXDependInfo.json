@@ -1,0 +1,186 @@
+{
+	"bmi-installation" : null,
+	"compiler-frontend-variant" : "GNU",
+	"compiler-id" : "Clang",
+	"compiler-simulate-id" : "",
+	"config" : "Release",
+	"cxx-modules" : {},
+	"database-info" : null,
+	"dir-cur-bld" : "/Users/ahmadrubaii/Engine-Core/build-web/vendor/yaml-cpp",
+	"dir-cur-src" : "/Users/ahmadrubaii/Engine-Core/vendor/yaml-cpp",
+	"dir-top-bld" : "/Users/ahmadrubaii/Engine-Core/build-web",
+	"dir-top-src" : "/Users/ahmadrubaii/Engine-Core",
+	"exports" : [],
+	"forward-modules-from-target-dirs" : [],
+	"include-dirs" : 
+	[
+		"/Users/ahmadrubaii/Engine-Core/vendor/yaml-cpp/include",
+		"/Users/ahmadrubaii/Engine-Core/vendor/yaml-cpp/src"
+	],
+	"language" : "CXX",
+	"linked-target-dirs" : [],
+	"module-dir" : "/Users/ahmadrubaii/Engine-Core/build-web/vendor/yaml-cpp/CMakeFiles/yaml-cpp.dir",
+	"sources" : 
+	{
+		"vendor/yaml-cpp/CMakeFiles/yaml-cpp.dir/src/binary.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/vendor/yaml-cpp/src/binary.cpp"
+		},
+		"vendor/yaml-cpp/CMakeFiles/yaml-cpp.dir/src/contrib/graphbuilder.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/vendor/yaml-cpp/src/contrib/graphbuilder.cpp"
+		},
+		"vendor/yaml-cpp/CMakeFiles/yaml-cpp.dir/src/contrib/graphbuilderadapter.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/vendor/yaml-cpp/src/contrib/graphbuilderadapter.cpp"
+		},
+		"vendor/yaml-cpp/CMakeFiles/yaml-cpp.dir/src/convert.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/vendor/yaml-cpp/src/convert.cpp"
+		},
+		"vendor/yaml-cpp/CMakeFiles/yaml-cpp.dir/src/depthguard.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/vendor/yaml-cpp/src/depthguard.cpp"
+		},
+		"vendor/yaml-cpp/CMakeFiles/yaml-cpp.dir/src/directives.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/vendor/yaml-cpp/src/directives.cpp"
+		},
+		"vendor/yaml-cpp/CMakeFiles/yaml-cpp.dir/src/emit.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/vendor/yaml-cpp/src/emit.cpp"
+		},
+		"vendor/yaml-cpp/CMakeFiles/yaml-cpp.dir/src/emitfromevents.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/vendor/yaml-cpp/src/emitfromevents.cpp"
+		},
+		"vendor/yaml-cpp/CMakeFiles/yaml-cpp.dir/src/emitter.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/vendor/yaml-cpp/src/emitter.cpp"
+		},
+		"vendor/yaml-cpp/CMakeFiles/yaml-cpp.dir/src/emitterstate.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/vendor/yaml-cpp/src/emitterstate.cpp"
+		},
+		"vendor/yaml-cpp/CMakeFiles/yaml-cpp.dir/src/emitterutils.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/vendor/yaml-cpp/src/emitterutils.cpp"
+		},
+		"vendor/yaml-cpp/CMakeFiles/yaml-cpp.dir/src/exceptions.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/vendor/yaml-cpp/src/exceptions.cpp"
+		},
+		"vendor/yaml-cpp/CMakeFiles/yaml-cpp.dir/src/exp.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/vendor/yaml-cpp/src/exp.cpp"
+		},
+		"vendor/yaml-cpp/CMakeFiles/yaml-cpp.dir/src/fptostring.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/vendor/yaml-cpp/src/fptostring.cpp"
+		},
+		"vendor/yaml-cpp/CMakeFiles/yaml-cpp.dir/src/memory.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/vendor/yaml-cpp/src/memory.cpp"
+		},
+		"vendor/yaml-cpp/CMakeFiles/yaml-cpp.dir/src/node.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/vendor/yaml-cpp/src/node.cpp"
+		},
+		"vendor/yaml-cpp/CMakeFiles/yaml-cpp.dir/src/node_data.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/vendor/yaml-cpp/src/node_data.cpp"
+		},
+		"vendor/yaml-cpp/CMakeFiles/yaml-cpp.dir/src/nodebuilder.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/vendor/yaml-cpp/src/nodebuilder.cpp"
+		},
+		"vendor/yaml-cpp/CMakeFiles/yaml-cpp.dir/src/nodeevents.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/vendor/yaml-cpp/src/nodeevents.cpp"
+		},
+		"vendor/yaml-cpp/CMakeFiles/yaml-cpp.dir/src/null.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/vendor/yaml-cpp/src/null.cpp"
+		},
+		"vendor/yaml-cpp/CMakeFiles/yaml-cpp.dir/src/ostream_wrapper.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/vendor/yaml-cpp/src/ostream_wrapper.cpp"
+		},
+		"vendor/yaml-cpp/CMakeFiles/yaml-cpp.dir/src/parse.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/vendor/yaml-cpp/src/parse.cpp"
+		},
+		"vendor/yaml-cpp/CMakeFiles/yaml-cpp.dir/src/parser.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/vendor/yaml-cpp/src/parser.cpp"
+		},
+		"vendor/yaml-cpp/CMakeFiles/yaml-cpp.dir/src/regex_yaml.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/vendor/yaml-cpp/src/regex_yaml.cpp"
+		},
+		"vendor/yaml-cpp/CMakeFiles/yaml-cpp.dir/src/scanner.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/vendor/yaml-cpp/src/scanner.cpp"
+		},
+		"vendor/yaml-cpp/CMakeFiles/yaml-cpp.dir/src/scanscalar.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/vendor/yaml-cpp/src/scanscalar.cpp"
+		},
+		"vendor/yaml-cpp/CMakeFiles/yaml-cpp.dir/src/scantag.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/vendor/yaml-cpp/src/scantag.cpp"
+		},
+		"vendor/yaml-cpp/CMakeFiles/yaml-cpp.dir/src/scantoken.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/vendor/yaml-cpp/src/scantoken.cpp"
+		},
+		"vendor/yaml-cpp/CMakeFiles/yaml-cpp.dir/src/simplekey.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/vendor/yaml-cpp/src/simplekey.cpp"
+		},
+		"vendor/yaml-cpp/CMakeFiles/yaml-cpp.dir/src/singledocparser.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/vendor/yaml-cpp/src/singledocparser.cpp"
+		},
+		"vendor/yaml-cpp/CMakeFiles/yaml-cpp.dir/src/stream.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/vendor/yaml-cpp/src/stream.cpp"
+		},
+		"vendor/yaml-cpp/CMakeFiles/yaml-cpp.dir/src/tag.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/vendor/yaml-cpp/src/tag.cpp"
+		}
+	}
+}

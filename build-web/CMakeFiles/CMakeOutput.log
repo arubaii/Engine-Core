@@ -1,0 +1,9 @@
+Determining size of off64_t passed with the following output:
+Change Dir: '/Users/ahmadrubaii/Engine-Core/build-web/CMakeFiles/CMakeTmp'
+
+Run Build Command(s): /opt/homebrew/bin/ninja -v cmTC_f930d
+[1/2] /Users/ahmadrubaii/Engine-Core/emsdk/upstream/emscripten/emcc -DHAVE_STDDEF_H -DHAVE_STDINT_H -DHAVE_SYS_TYPES_H -D_LARGEFILE64_SOURCE=1  -Wno-deprecated-non-prototype -fno-strict-aliasing   -std=gnu99 -fPIE -MD -MT CMakeFiles/cmTC_f930d.dir/OFF64_T.c.o -MF CMakeFiles/cmTC_f930d.dir/OFF64_T.c.o.d -o CMakeFiles/cmTC_f930d.dir/OFF64_T.c.o -c /Users/ahmadrubaii/Engine-Core/build-web/CMakeFiles/CheckTypeSize/OFF64_T.c
+[2/2] : && /Users/ahmadrubaii/Engine-Core/emsdk/upstream/emscripten/emcc -Wno-deprecated-non-prototype -fno-strict-aliasing  CMakeFiles/cmTC_f930d.dir/OFF64_T.c.o -o cmTC_f930d.js  --oformat=wasm  -sWASM=1 && :
+
+
+

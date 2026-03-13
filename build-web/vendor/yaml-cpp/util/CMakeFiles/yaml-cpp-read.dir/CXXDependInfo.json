@@ -1,0 +1,30 @@
+{
+	"bmi-installation" : null,
+	"compiler-frontend-variant" : "GNU",
+	"compiler-id" : "Clang",
+	"compiler-simulate-id" : "",
+	"config" : "Release",
+	"cxx-modules" : {},
+	"database-info" : null,
+	"dir-cur-bld" : "/Users/ahmadrubaii/Engine-Core/build-web/vendor/yaml-cpp/util",
+	"dir-cur-src" : "/Users/ahmadrubaii/Engine-Core/vendor/yaml-cpp/util",
+	"dir-top-bld" : "/Users/ahmadrubaii/Engine-Core/build-web",
+	"dir-top-src" : "/Users/ahmadrubaii/Engine-Core",
+	"exports" : [],
+	"forward-modules-from-target-dirs" : [],
+	"include-dirs" : 
+	[
+		"/Users/ahmadrubaii/Engine-Core/vendor/yaml-cpp/include"
+	],
+	"language" : "CXX",
+	"linked-target-dirs" : [],
+	"module-dir" : "/Users/ahmadrubaii/Engine-Core/build-web/vendor/yaml-cpp/util/CMakeFiles/yaml-cpp-read.dir",
+	"sources" : 
+	{
+		"vendor/yaml-cpp/util/CMakeFiles/yaml-cpp-read.dir/read.cpp.o" : 
+		{
+			"language" : "CXX",
+			"source" : "/Users/ahmadrubaii/Engine-Core/vendor/yaml-cpp/util/read.cpp"
+		}
+	}
+}

@@ -1,0 +1,15 @@
+{
+	"InstallScripts" : 
+	[
+		"/Users/ahmadrubaii/Engine-Core/build-web/cmake_install.cmake",
+		"/Users/ahmadrubaii/Engine-Core/build-web/_deps/entt-build/cmake_install.cmake",
+		"/Users/ahmadrubaii/Engine-Core/build-web/_deps/glm-build/cmake_install.cmake",
+		"/Users/ahmadrubaii/Engine-Core/build-web/_deps/glm-build/glm/cmake_install.cmake",
+		"/Users/ahmadrubaii/Engine-Core/build-web/vendor/yaml-cpp/cmake_install.cmake",
+		"/Users/ahmadrubaii/Engine-Core/build-web/vendor/yaml-cpp/util/cmake_install.cmake",
+		"/Users/ahmadrubaii/Engine-Core/build-web/vendor/assimp/cmake_install.cmake",
+		"/Users/ahmadrubaii/Engine-Core/build-web/vendor/assimp/contrib/zlib/cmake_install.cmake",
+		"/Users/ahmadrubaii/Engine-Core/build-web/vendor/assimp/code/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

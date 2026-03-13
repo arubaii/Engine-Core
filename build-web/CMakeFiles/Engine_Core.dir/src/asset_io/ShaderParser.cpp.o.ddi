@@ -1,0 +1,9 @@
+{
+  "revision": 0,
+  "rules": [
+    {
+      "primary-output": "CMakeFiles/Engine_Core.dir/src/asset_io/ShaderParser.cpp.o"
+    }
+  ],
+  "version": 1
+}
